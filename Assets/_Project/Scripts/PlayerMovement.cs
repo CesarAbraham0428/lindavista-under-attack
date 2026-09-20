@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private float horizontal;
+    private bool movementLocked;
 
     private void Awake()
     {
@@ -17,6 +18,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (movementLocked)
+        {
+            animator.SetBool("IsMoving", false);
+            return;
+        }
+
         horizontal = 0f;
 
         if (Keyboard.current != null)
@@ -35,9 +42,26 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (movementLocked)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            return;
+        }
+
         rb.linearVelocity = new Vector2(
             horizontal * speed,
             rb.linearVelocity.y
         );
+    }
+
+    public void StopForDefeat()
+    {
+        movementLocked = true;
+        horizontal = 0f;
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        animator.SetBool("IsMoving", false);
     }
 }
