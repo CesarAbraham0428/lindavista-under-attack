@@ -2497,7 +2497,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cb3e2822bd680f418e0be348e3780c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  speed: 3
+  speed: 2
 --- !u!70 &1517596040
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -2633,7 +2633,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 6
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8733822067767856762, guid: e87ab12cad3fd1c4ab2dacb146f019ec, type: 3}
+  m_Sprite: {fileID: 8945791375273038477, guid: 700ad2c1d18cb1a41b77402a8811fd7a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
