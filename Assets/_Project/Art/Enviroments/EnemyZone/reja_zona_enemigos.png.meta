@@ -1,0 +1,663 @@
+fileFormatVersion: 2
+guid: 0d9d7aa3c34273746a781e6caee513c5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6943313870212425349
+    second: reja_zona_enemigos_0
+  - first:
+      213: 4638220483633053410
+    second: reja_zona_enemigos_1
+  - first:
+      213: 2618751051160056040
+    second: reja_zona_enemigos_2
+  - first:
+      213: -2941539580754851066
+    second: reja_zona_enemigos_3
+  - first:
+      213: -5359394157345399146
+    second: reja_zona_enemigos_4
+  - first:
+      213: -8875940923801619872
+    second: reja_zona_enemigos_5
+  - first:
+      213: -4961608829225304841
+    second: reja_zona_enemigos_6
+  - first:
+      213: 1304037779026569420
+    second: reja_zona_enemigos_7
+  - first:
+      213: 4037660335065937950
+    second: reja_zona_enemigos_8
+  - first:
+      213: 2812094742145492558
+    second: reja_zona_enemigos_9
+  - first:
+      213: -1044034315976544189
+    second: reja_zona_enemigos_10
+  - first:
+      213: -7905013492458523299
+    second: reja_zona_enemigos_11
+  - first:
+      213: 2266188027224140983
+    second: reja_zona_enemigos_12
+  - first:
+      213: 4766355164811771864
+    second: reja_zona_enemigos_13
+  - first:
+      213: -4706739618319567195
+    second: reja_zona_enemigos_14
+  - first:
+      213: 9125775404598822247
+    second: reja_zona_enemigos_15
+  - first:
+      213: -85413293197680516
+    second: reja_zona_enemigos_16
+  - first:
+      213: 5437864330746484610
+    second: reja_zona_enemigos_17
+  - first:
+      213: -901866829503460969
+    second: reja_zona_enemigos_18
+  - first:
+      213: -5200052013969183471
+    second: reja_zona_enemigos_19
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: reja_zona_enemigos_0
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 25
+        width: 1055
+        height: 1391
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 586ed0e7d2b9b5060800000000000000
+      internalID: 6943313870212425349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_1
+      rect:
+        serializedVersion: 2
+        x: 423
+        y: 1272
+        width: 14
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ee73ec94f44e5040800000000000000
+      internalID: 4638220483633053410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_2
+      rect:
+        serializedVersion: 2
+        x: 573
+        y: 159
+        width: 14
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e0739fc43ca75420800000000000000
+      internalID: 2618751051160056040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_3
+      rect:
+        serializedVersion: 2
+        x: 581
+        y: 138
+        width: 18
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60b0b54165d8d27d0800000000000000
+      internalID: -2941539580754851066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_4
+      rect:
+        serializedVersion: 2
+        x: 604
+        y: 135
+        width: 29
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69e9f10c86b9f95b0800000000000000
+      internalID: -5359394157345399146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_5
+      rect:
+        serializedVersion: 2
+        x: 806
+        y: 162
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 062b37da1c252d480800000000000000
+      internalID: -8875940923801619872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_6
+      rect:
+        serializedVersion: 2
+        x: 815
+        y: 160
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fc759bbe03d42bb0800000000000000
+      internalID: -4961608829225304841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_7
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 140
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc86190737fd81210800000000000000
+      internalID: 1304037779026569420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_8
+      rect:
+        serializedVersion: 2
+        x: 348
+        y: 144
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e183a4baea6a80830800000000000000
+      internalID: 4037660335065937950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_9
+      rect:
+        serializedVersion: 2
+        x: 597
+        y: 131
+        width: 16
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e466354d441960720800000000000000
+      internalID: 2812094742145492558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_10
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 130
+        width: 13
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34076e63258d281f0800000000000000
+      internalID: -1044034315976544189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_11
+      rect:
+        serializedVersion: 2
+        x: 867
+        y: 146
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d55f6557c10cb4290800000000000000
+      internalID: -7905013492458523299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_12
+      rect:
+        serializedVersion: 2
+        x: 873
+        y: 146
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bc20f4010e137f10800000000000000
+      internalID: 2266188027224140983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_13
+      rect:
+        serializedVersion: 2
+        x: 519
+        y: 112
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8df34f7e4ce752240800000000000000
+      internalID: 4766355164811771864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_14
+      rect:
+        serializedVersion: 2
+        x: 535
+        y: 112
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a6fdc7214d4eaeb0800000000000000
+      internalID: -4706739618319567195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_15
+      rect:
+        serializedVersion: 2
+        x: 847
+        y: 118
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7650c1b416445ae70800000000000000
+      internalID: 9125775404598822247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_16
+      rect:
+        serializedVersion: 2
+        x: 851
+        y: 118
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c702bd7ff0d80def0800000000000000
+      internalID: -85413293197680516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_17
+      rect:
+        serializedVersion: 2
+        x: 857
+        y: 118
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28759ea3ccc277b40800000000000000
+      internalID: 5437864330746484610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_18
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 101
+        width: 8
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7990db895eceb73f0800000000000000
+      internalID: -901866829503460969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: reja_zona_enemigos_19
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 39
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11defcd8e34b5d7b0800000000000000
+      internalID: -5200052013969183471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      reja_zona_enemigos_0: 6943313870212425349
+      reja_zona_enemigos_1: 4638220483633053410
+      reja_zona_enemigos_10: -1044034315976544189
+      reja_zona_enemigos_11: -7905013492458523299
+      reja_zona_enemigos_12: 2266188027224140983
+      reja_zona_enemigos_13: 4766355164811771864
+      reja_zona_enemigos_14: -4706739618319567195
+      reja_zona_enemigos_15: 9125775404598822247
+      reja_zona_enemigos_16: -85413293197680516
+      reja_zona_enemigos_17: 5437864330746484610
+      reja_zona_enemigos_18: -901866829503460969
+      reja_zona_enemigos_19: -5200052013969183471
+      reja_zona_enemigos_2: 2618751051160056040
+      reja_zona_enemigos_3: -2941539580754851066
+      reja_zona_enemigos_4: -5359394157345399146
+      reja_zona_enemigos_5: -8875940923801619872
+      reja_zona_enemigos_6: -4961608829225304841
+      reja_zona_enemigos_7: 1304037779026569420
+      reja_zona_enemigos_8: 4037660335065937950
+      reja_zona_enemigos_9: 2812094742145492558
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

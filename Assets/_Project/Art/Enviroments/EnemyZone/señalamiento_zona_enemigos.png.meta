@@ -1,0 +1,715 @@
+fileFormatVersion: 2
+guid: 533c625c0345b7a4587792aded5f9bce
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3010352213353195550
+    second: "se\xF1alamiento_zona_enemigos_0"
+  - first:
+      213: -345303998575334204
+    second: "se\xF1alamiento_zona_enemigos_1"
+  - first:
+      213: -7889354765753217712
+    second: "se\xF1alamiento_zona_enemigos_2"
+  - first:
+      213: -3168726428059042944
+    second: "se\xF1alamiento_zona_enemigos_3"
+  - first:
+      213: -1888597264482063766
+    second: "se\xF1alamiento_zona_enemigos_4"
+  - first:
+      213: -1908515166770336408
+    second: "se\xF1alamiento_zona_enemigos_5"
+  - first:
+      213: -5526583534194410293
+    second: "se\xF1alamiento_zona_enemigos_6"
+  - first:
+      213: -6099126565135064832
+    second: "se\xF1alamiento_zona_enemigos_7"
+  - first:
+      213: -3460746925494830072
+    second: "se\xF1alamiento_zona_enemigos_8"
+  - first:
+      213: -1328125118753100078
+    second: "se\xF1alamiento_zona_enemigos_9"
+  - first:
+      213: -2271910656999743543
+    second: "se\xF1alamiento_zona_enemigos_10"
+  - first:
+      213: -3226367078864392049
+    second: "se\xF1alamiento_zona_enemigos_11"
+  - first:
+      213: -1601577765543024020
+    second: "se\xF1alamiento_zona_enemigos_12"
+  - first:
+      213: -454575041952381722
+    second: "se\xF1alamiento_zona_enemigos_13"
+  - first:
+      213: -708373473190420555
+    second: "se\xF1alamiento_zona_enemigos_14"
+  - first:
+      213: -7866371249370793467
+    second: "se\xF1alamiento_zona_enemigos_15"
+  - first:
+      213: 885851199981188893
+    second: "se\xF1alamiento_zona_enemigos_16"
+  - first:
+      213: -5188162643512662247
+    second: "se\xF1alamiento_zona_enemigos_17"
+  - first:
+      213: 4534893875895299328
+    second: "se\xF1alamiento_zona_enemigos_18"
+  - first:
+      213: -7883569862622697696
+    second: "se\xF1alamiento_zona_enemigos_19"
+  - first:
+      213: 2243674317851942506
+    second: "se\xF1alamiento_zona_enemigos_20"
+  - first:
+      213: 8970166019402697258
+    second: "se\xF1alamiento_zona_enemigos_21"
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_0"
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 25
+        width: 1302
+        height: 1031
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e7954a8c941936d0800000000000000
+      internalID: -3010352213353195550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_1"
+      rect:
+        serializedVersion: 2
+        x: 571
+        y: 1052
+        width: 43
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4cc2561c7db353bf0800000000000000
+      internalID: -345303998575334204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_2"
+      rect:
+        serializedVersion: 2
+        x: 756
+        y: 1043
+        width: 132
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05d8e30e3a1638290800000000000000
+      internalID: -7889354765753217712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_3"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 250
+        width: 78
+        height: 652
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08bf5213a1c6604d0800000000000000
+      internalID: -3168726428059042944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_4"
+      rect:
+        serializedVersion: 2
+        x: 453
+        y: 75
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6aa5ce4bca5ac5e0800000000000000
+      internalID: -1888597264482063766
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_5"
+      rect:
+        serializedVersion: 2
+        x: 599
+        y: 70
+        width: 9
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86d653c41979385e0800000000000000
+      internalID: -1908515166770336408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_6"
+      rect:
+        serializedVersion: 2
+        x: 740
+        y: 64
+        width: 11
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bccb1d68e81ad43b0800000000000000
+      internalID: -5526583534194410293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_7"
+      rect:
+        serializedVersion: 2
+        x: 770
+        y: 72
+        width: 9
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 001e9fc14bc8b5ba0800000000000000
+      internalID: -6099126565135064832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_8"
+      rect:
+        serializedVersion: 2
+        x: 835
+        y: 86
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80cfa50d105f8ffc0800000000000000
+      internalID: -3460746925494830072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_9"
+      rect:
+        serializedVersion: 2
+        x: 899
+        y: 80
+        width: 29
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2dea27fbd3d819de0800000000000000
+      internalID: -1328125118753100078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_10"
+      rect:
+        serializedVersion: 2
+        x: 927
+        y: 72
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9cf1b186b4d8870e0800000000000000
+      internalID: -2271910656999743543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_11"
+      rect:
+        serializedVersion: 2
+        x: 941
+        y: 82
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f80f54d5c34a933d0800000000000000
+      internalID: -3226367078864392049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_12"
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 80
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6ae4acf18d06c9e0800000000000000
+      internalID: -1601577765543024020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_13"
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 43
+        width: 17
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e48ba4686601b9f0800000000000000
+      internalID: -454575041952381722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_14"
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 64
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bfdc2a441a5b26f0800000000000000
+      internalID: -708373473190420555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_15"
+      rect:
+        serializedVersion: 2
+        x: 521
+        y: 64
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50a78e9c60905d290800000000000000
+      internalID: -7866371249370793467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_16"
+      rect:
+        serializedVersion: 2
+        x: 812
+        y: 64
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d177bb219fc2b4c00800000000000000
+      internalID: 885851199981188893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_17"
+      rect:
+        serializedVersion: 2
+        x: 939
+        y: 48
+        width: 27
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 917e9745091fff7b0800000000000000
+      internalID: -5188162643512662247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_18"
+      rect:
+        serializedVersion: 2
+        x: 1070
+        y: 63
+        width: 10
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00d65d604fd2fee30800000000000000
+      internalID: 4534893875895299328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_19"
+      rect:
+        serializedVersion: 2
+        x: 1076
+        y: 66
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02726689afee79290800000000000000
+      internalID: -7883569862622697696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_20"
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 48
+        width: 9
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6e5b3397e1232f10800000000000000
+      internalID: 2243674317851942506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "se\xF1alamiento_zona_enemigos_21"
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 55
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2a07caf77e6c7c70800000000000000
+      internalID: 8970166019402697258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      "se\xF1alamiento_zona_enemigos_0": -3010352213353195550
+      "se\xF1alamiento_zona_enemigos_1": -345303998575334204
+      "se\xF1alamiento_zona_enemigos_10": -2271910656999743543
+      "se\xF1alamiento_zona_enemigos_11": -3226367078864392049
+      "se\xF1alamiento_zona_enemigos_12": -1601577765543024020
+      "se\xF1alamiento_zona_enemigos_13": -454575041952381722
+      "se\xF1alamiento_zona_enemigos_14": -708373473190420555
+      "se\xF1alamiento_zona_enemigos_15": -7866371249370793467
+      "se\xF1alamiento_zona_enemigos_16": 885851199981188893
+      "se\xF1alamiento_zona_enemigos_17": -5188162643512662247
+      "se\xF1alamiento_zona_enemigos_18": 4534893875895299328
+      "se\xF1alamiento_zona_enemigos_19": -7883569862622697696
+      "se\xF1alamiento_zona_enemigos_2": -7889354765753217712
+      "se\xF1alamiento_zona_enemigos_20": 2243674317851942506
+      "se\xF1alamiento_zona_enemigos_21": 8970166019402697258
+      "se\xF1alamiento_zona_enemigos_3": -3168726428059042944
+      "se\xF1alamiento_zona_enemigos_4": -1888597264482063766
+      "se\xF1alamiento_zona_enemigos_5": -1908515166770336408
+      "se\xF1alamiento_zona_enemigos_6": -5526583534194410293
+      "se\xF1alamiento_zona_enemigos_7": -6099126565135064832
+      "se\xF1alamiento_zona_enemigos_8": -3460746925494830072
+      "se\xF1alamiento_zona_enemigos_9": -1328125118753100078
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

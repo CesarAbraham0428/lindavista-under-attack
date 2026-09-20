@@ -1,0 +1,637 @@
+fileFormatVersion: 2
+guid: 3079ae13078a2664aa7fd5be5f7d69d4
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3871048514921055278
+    second: estandarte_zona_enemigos_0
+  - first:
+      213: 5298788079502504392
+    second: estandarte_zona_enemigos_1
+  - first:
+      213: -5849649756267824730
+    second: estandarte_zona_enemigos_2
+  - first:
+      213: 4069286930821254361
+    second: estandarte_zona_enemigos_3
+  - first:
+      213: -3521410667507207629
+    second: estandarte_zona_enemigos_4
+  - first:
+      213: 1953762422146270782
+    second: estandarte_zona_enemigos_5
+  - first:
+      213: 2723086514741223755
+    second: estandarte_zona_enemigos_6
+  - first:
+      213: -2137654861185752890
+    second: estandarte_zona_enemigos_7
+  - first:
+      213: -5511579179582879527
+    second: estandarte_zona_enemigos_8
+  - first:
+      213: -2602907720999968896
+    second: estandarte_zona_enemigos_9
+  - first:
+      213: -9057654392989868006
+    second: estandarte_zona_enemigos_10
+  - first:
+      213: 3006620806029084811
+    second: estandarte_zona_enemigos_11
+  - first:
+      213: 2524645858752862146
+    second: estandarte_zona_enemigos_12
+  - first:
+      213: 4580317326825308044
+    second: estandarte_zona_enemigos_13
+  - first:
+      213: 6811686398406755810
+    second: estandarte_zona_enemigos_14
+  - first:
+      213: -5679396685180404445
+    second: estandarte_zona_enemigos_15
+  - first:
+      213: 603726155664406259
+    second: estandarte_zona_enemigos_16
+  - first:
+      213: 8274267155283223403
+    second: estandarte_zona_enemigos_17
+  - first:
+      213: -3246687454313915252
+    second: estandarte_zona_enemigos_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_0
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 15
+        width: 953
+        height: 1397
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e244c285d1ab8b530800000000000000
+      internalID: 3871048514921055278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_1
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 1292
+        width: 32
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c132d22fa3198940800000000000000
+      internalID: 5298788079502504392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_2
+      rect:
+        serializedVersion: 2
+        x: 117
+        y: 1352
+        width: 34
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a9b4391a8ed1dea0800000000000000
+      internalID: -5849649756267824730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_3
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 1320
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dc8db057e2097830800000000000000
+      internalID: 4069286930821254361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_4
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 1334
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33236f6b7af612fc0800000000000000
+      internalID: -3521410667507207629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_5
+      rect:
+        serializedVersion: 2
+        x: 887
+        y: 1130
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e36098b42982d1b10800000000000000
+      internalID: 1953762422146270782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_6
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 999
+        width: 10
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b41aec3f1c85ac520800000000000000
+      internalID: 2723086514741223755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_7
+      rect:
+        serializedVersion: 2
+        x: 940
+        y: 902
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c0e2a2ca368552e0800000000000000
+      internalID: -2137654861185752890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_8
+      rect:
+        serializedVersion: 2
+        x: 924
+        y: 884
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d8068110ffe283b0800000000000000
+      internalID: -5511579179582879527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_9
+      rect:
+        serializedVersion: 2
+        x: 928
+        y: 852
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08fdca2f73d90ebd0800000000000000
+      internalID: -2602907720999968896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_10
+      rect:
+        serializedVersion: 2
+        x: 924
+        y: 819
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a10259fa15fbc4280800000000000000
+      internalID: -9057654392989868006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_11
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 677
+        width: 19
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8889ad71b9a9b920800000000000000
+      internalID: 3006620806029084811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_12
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 644
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c710aa4808590320800000000000000
+      internalID: 2524645858752862146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_13
+      rect:
+        serializedVersion: 2
+        x: 930
+        y: 634
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8f3df7575e809f30800000000000000
+      internalID: 4580317326825308044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_14
+      rect:
+        serializedVersion: 2
+        x: 964
+        y: 627
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e5056280b8f78e50800000000000000
+      internalID: 6811686398406755810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_15
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 490
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32d7a493ecabe21b0800000000000000
+      internalID: -5679396685180404445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_16
+      rect:
+        serializedVersion: 2
+        x: 887
+        y: 425
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f63df96dbdd06800800000000000000
+      internalID: 603726155664406259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_17
+      rect:
+        serializedVersion: 2
+        x: 883
+        y: 347
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b63a657832a14d270800000000000000
+      internalID: 8274267155283223403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: estandarte_zona_enemigos_18
+      rect:
+        serializedVersion: 2
+        x: 513
+        y: 25
+        width: 21
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8cd6e446f271f2d0800000000000000
+      internalID: -3246687454313915252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      estandarte_zona_enemigos_0: 3871048514921055278
+      estandarte_zona_enemigos_1: 5298788079502504392
+      estandarte_zona_enemigos_10: -9057654392989868006
+      estandarte_zona_enemigos_11: 3006620806029084811
+      estandarte_zona_enemigos_12: 2524645858752862146
+      estandarte_zona_enemigos_13: 4580317326825308044
+      estandarte_zona_enemigos_14: 6811686398406755810
+      estandarte_zona_enemigos_15: -5679396685180404445
+      estandarte_zona_enemigos_16: 603726155664406259
+      estandarte_zona_enemigos_17: 8274267155283223403
+      estandarte_zona_enemigos_18: -3246687454313915252
+      estandarte_zona_enemigos_2: -5849649756267824730
+      estandarte_zona_enemigos_3: 4069286930821254361
+      estandarte_zona_enemigos_4: -3521410667507207629
+      estandarte_zona_enemigos_5: 1953762422146270782
+      estandarte_zona_enemigos_6: 2723086514741223755
+      estandarte_zona_enemigos_7: -2137654861185752890
+      estandarte_zona_enemigos_8: -5511579179582879527
+      estandarte_zona_enemigos_9: -2602907720999968896
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
