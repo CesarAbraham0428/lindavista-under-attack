@@ -5,7 +5,7 @@ public class CameraFollow2D : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private float startFollowingAtX = 3f;
     [SerializeField] private float horizontalOffset = 2f;
-    [SerializeField] private float maximumCameraX = 79.5f;
+    [SerializeField] private float maximumCameraX = 115f;
     [SerializeField] private float smoothTime = 0.3f;
 
     private float startCameraX;
