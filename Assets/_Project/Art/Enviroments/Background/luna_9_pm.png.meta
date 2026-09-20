@@ -1,0 +1,1131 @@
+fileFormatVersion: 2
+guid: 29ac6d5778af04b47b984d3b8d09cfd2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2039199997175570130
+    second: luna_9_pm_0
+  - first:
+      213: 3561506980494397977
+    second: luna_9_pm_1
+  - first:
+      213: 7818307648564285815
+    second: luna_9_pm_2
+  - first:
+      213: 6820546552758296145
+    second: luna_9_pm_3
+  - first:
+      213: -2968689676577440634
+    second: luna_9_pm_4
+  - first:
+      213: -6205322709413311996
+    second: luna_9_pm_5
+  - first:
+      213: 114770143206045746
+    second: luna_9_pm_6
+  - first:
+      213: -8181412824933426533
+    second: luna_9_pm_7
+  - first:
+      213: -5525605876363294018
+    second: luna_9_pm_8
+  - first:
+      213: -1653567816833170320
+    second: luna_9_pm_9
+  - first:
+      213: -1065621068667918258
+    second: luna_9_pm_10
+  - first:
+      213: -6394193923532704050
+    second: luna_9_pm_11
+  - first:
+      213: -6377839472800172532
+    second: luna_9_pm_12
+  - first:
+      213: -7725046038501634911
+    second: luna_9_pm_13
+  - first:
+      213: 2004542963520051474
+    second: luna_9_pm_14
+  - first:
+      213: 2240658122715273271
+    second: luna_9_pm_15
+  - first:
+      213: -8842992480009657867
+    second: luna_9_pm_16
+  - first:
+      213: -357878564239399187
+    second: luna_9_pm_17
+  - first:
+      213: -191613178859599402
+    second: luna_9_pm_18
+  - first:
+      213: -4788827567569758489
+    second: luna_9_pm_19
+  - first:
+      213: -7478650402006899918
+    second: luna_9_pm_20
+  - first:
+      213: 6904841775864858827
+    second: luna_9_pm_21
+  - first:
+      213: -5524241385057534871
+    second: luna_9_pm_22
+  - first:
+      213: -2112954397603725218
+    second: luna_9_pm_23
+  - first:
+      213: -1438583271806711288
+    second: luna_9_pm_24
+  - first:
+      213: -1159191500556231851
+    second: luna_9_pm_25
+  - first:
+      213: -3436451557447622952
+    second: luna_9_pm_26
+  - first:
+      213: 3874145399683636956
+    second: luna_9_pm_27
+  - first:
+      213: -5916415562130329461
+    second: luna_9_pm_28
+  - first:
+      213: 5470823038988436211
+    second: luna_9_pm_29
+  - first:
+      213: -5457758171875321031
+    second: luna_9_pm_30
+  - first:
+      213: 3898495652528038973
+    second: luna_9_pm_31
+  - first:
+      213: 2330765668949462509
+    second: luna_9_pm_32
+  - first:
+      213: -7654132252450466653
+    second: luna_9_pm_33
+  - first:
+      213: -7261345837937780335
+    second: luna_9_pm_34
+  - first:
+      213: -7063345319765387365
+    second: luna_9_pm_35
+  - first:
+      213: -870425222232712913
+    second: luna_9_pm_36
+  - first:
+      213: 6993870356793526509
+    second: luna_9_pm_37
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: luna_9_pm_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1237
+        height: 1234
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2de90a1e791bc4c10800000000000000
+      internalID: 2039199997175570130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_1
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 1188
+        width: 9
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9125175aab30d6130800000000000000
+      internalID: 3561506980494397977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_2
+      rect:
+        serializedVersion: 2
+        x: 426
+        y: 1205
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 771d4691265308c60800000000000000
+      internalID: 7818307648564285815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_3
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 1187
+        width: 8
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15e5c23f3f277ae50800000000000000
+      internalID: 6820546552758296145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_4
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 1181
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68c7b3bc7781dc6d0800000000000000
+      internalID: -2968689676577440634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_5
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 1164
+        width: 14
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40a41cc7fd342e9a0800000000000000
+      internalID: -6205322709413311996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_6
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 1173
+        width: 25
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 238fd9056deb79100800000000000000
+      internalID: 114770143206045746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_7
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 1114
+        width: 46
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9a9409f168c57e80800000000000000
+      internalID: -8181412824933426533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_8
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 1174
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eba0e8a3bba1153b0800000000000000
+      internalID: -5525605876363294018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_9
+      rect:
+        serializedVersion: 2
+        x: 828
+        y: 1167
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07404a1e4d85d09e0800000000000000
+      internalID: -1653567816833170320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_10
+      rect:
+        serializedVersion: 2
+        x: 883
+        y: 1130
+        width: 32
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4860e0b8472631f0800000000000000
+      internalID: -1065621068667918258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_11
+      rect:
+        serializedVersion: 2
+        x: 860
+        y: 1160
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec63fd221824347a0800000000000000
+      internalID: -6394193923532704050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_12
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 1110
+        width: 25
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c06f74d6acc5d77a0800000000000000
+      internalID: -6377839472800172532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_13
+      rect:
+        serializedVersion: 2
+        x: 868
+        y: 1138
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ac42999e8f1bc490800000000000000
+      internalID: -7725046038501634911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_14
+      rect:
+        serializedVersion: 2
+        x: 118
+        y: 1016
+        width: 42
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2191f9d643191db10800000000000000
+      internalID: 2004542963520051474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_15
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 966
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 738998be0ba681f10800000000000000
+      internalID: 2240658122715273271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_16
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 923
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f1e29d0131674580800000000000000
+      internalID: -8842992480009657867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_17
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 833
+        width: 61
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de6a8c9875f880bf0800000000000000
+      internalID: -357878564239399187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_18
+      rect:
+        serializedVersion: 2
+        x: 1214
+        y: 628
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d94acb34d0475df0800000000000000
+      internalID: -191613178859599402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_19
+      rect:
+        serializedVersion: 2
+        x: 1224
+        y: 628
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e6186813baaa8db0800000000000000
+      internalID: -4788827567569758489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_20
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 401
+        width: 9
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 233eb0d351f763890800000000000000
+      internalID: -7478650402006899918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_21
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 286
+        width: 28
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc8c3b0030de2df50800000000000000
+      internalID: 6904841775864858827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_22
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 274
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96c322e9ab3f553b0800000000000000
+      internalID: -5524241385057534871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_23
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 216
+        width: 24
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e500b389b274da2e0800000000000000
+      internalID: -2112954397603725218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_24
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 208
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80a4420e220290ce0800000000000000
+      internalID: -1438583271806711288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_25
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 94
+        width: 31
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55b91bec879b9efe0800000000000000
+      internalID: -1159191500556231851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_26
+      rect:
+        serializedVersion: 2
+        x: 1047
+        y: 101
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8de1f7ef3854f40d0800000000000000
+      internalID: -3436451557447622952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_27
+      rect:
+        serializedVersion: 2
+        x: 1059
+        y: 95
+        width: 33
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cde5b5407bab3c530800000000000000
+      internalID: 3874145399683636956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_28
+      rect:
+        serializedVersion: 2
+        x: 1121
+        y: 101
+        width: 20
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b80f0ab846ba4eda0800000000000000
+      internalID: -5916415562130329461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_29
+      rect:
+        serializedVersion: 2
+        x: 1133
+        y: 97
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f2cdeb71944ceb40800000000000000
+      internalID: 5470823038988436211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_30
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 79
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93bd26febd52244b0800000000000000
+      internalID: -5457758171875321031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_31
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 75
+        width: 11
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d34a65f042d3a1630800000000000000
+      internalID: 3898495652528038973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_32
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 63
+        width: 13
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ded8868e60b885020800000000000000
+      internalID: 2330765668949462509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_33
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 67
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a454dc054f07c590800000000000000
+      internalID: -7654132252450466653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_34
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 45
+        width: 26
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1991572ce648a3b90800000000000000
+      internalID: -7261345837937780335
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_35
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 31
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b975779dad4f9fd90800000000000000
+      internalID: -7063345319765387365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_36
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 38
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2957414fd0abe3f0800000000000000
+      internalID: -870425222232712913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_9_pm_37
+      rect:
+        serializedVersion: 2
+        x: 1043
+        y: 30
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de800ddc8083f0160800000000000000
+      internalID: 6993870356793526509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      luna_9_pm_0: 2039199997175570130
+      luna_9_pm_1: 3561506980494397977
+      luna_9_pm_10: -1065621068667918258
+      luna_9_pm_11: -6394193923532704050
+      luna_9_pm_12: -6377839472800172532
+      luna_9_pm_13: -7725046038501634911
+      luna_9_pm_14: 2004542963520051474
+      luna_9_pm_15: 2240658122715273271
+      luna_9_pm_16: -8842992480009657867
+      luna_9_pm_17: -357878564239399187
+      luna_9_pm_18: -191613178859599402
+      luna_9_pm_19: -4788827567569758489
+      luna_9_pm_2: 7818307648564285815
+      luna_9_pm_20: -7478650402006899918
+      luna_9_pm_21: 6904841775864858827
+      luna_9_pm_22: -5524241385057534871
+      luna_9_pm_23: -2112954397603725218
+      luna_9_pm_24: -1438583271806711288
+      luna_9_pm_25: -1159191500556231851
+      luna_9_pm_26: -3436451557447622952
+      luna_9_pm_27: 3874145399683636956
+      luna_9_pm_28: -5916415562130329461
+      luna_9_pm_29: 5470823038988436211
+      luna_9_pm_3: 6820546552758296145
+      luna_9_pm_30: -5457758171875321031
+      luna_9_pm_31: 3898495652528038973
+      luna_9_pm_32: 2330765668949462509
+      luna_9_pm_33: -7654132252450466653
+      luna_9_pm_34: -7261345837937780335
+      luna_9_pm_35: -7063345319765387365
+      luna_9_pm_36: -870425222232712913
+      luna_9_pm_37: 6993870356793526509
+      luna_9_pm_4: -2968689676577440634
+      luna_9_pm_5: -6205322709413311996
+      luna_9_pm_6: 114770143206045746
+      luna_9_pm_7: -8181412824933426533
+      luna_9_pm_8: -5525605876363294018
+      luna_9_pm_9: -1653567816833170320
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

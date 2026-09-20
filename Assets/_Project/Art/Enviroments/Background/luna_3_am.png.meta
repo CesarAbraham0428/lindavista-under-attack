@@ -1,0 +1,767 @@
+fileFormatVersion: 2
+guid: bfe53f0a2d6c17b4091b1973ba91401b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1738045062547311973
+    second: luna_3_am_0
+  - first:
+      213: -8089621919517155397
+    second: luna_3_am_1
+  - first:
+      213: 6944138836327893318
+    second: luna_3_am_2
+  - first:
+      213: -5754555186955517169
+    second: luna_3_am_3
+  - first:
+      213: -814882112851590288
+    second: luna_3_am_4
+  - first:
+      213: 8703295474669173633
+    second: luna_3_am_5
+  - first:
+      213: -5549873530438945612
+    second: luna_3_am_6
+  - first:
+      213: 8932452245744898560
+    second: luna_3_am_7
+  - first:
+      213: 4009187102311283313
+    second: luna_3_am_8
+  - first:
+      213: -4504495442557566789
+    second: luna_3_am_9
+  - first:
+      213: -3675738198953425688
+    second: luna_3_am_10
+  - first:
+      213: -341043234051839392
+    second: luna_3_am_11
+  - first:
+      213: -6569845092088656309
+    second: luna_3_am_12
+  - first:
+      213: -5238436923804085667
+    second: luna_3_am_13
+  - first:
+      213: 2427085228096256085
+    second: luna_3_am_14
+  - first:
+      213: 9148119870690102104
+    second: luna_3_am_15
+  - first:
+      213: 564187239391768483
+    second: luna_3_am_16
+  - first:
+      213: 3897695651744990619
+    second: luna_3_am_17
+  - first:
+      213: 5977977467711486467
+    second: luna_3_am_18
+  - first:
+      213: -6449527329877087387
+    second: luna_3_am_19
+  - first:
+      213: -8156914301705904020
+    second: luna_3_am_20
+  - first:
+      213: -5787540388973573193
+    second: luna_3_am_21
+  - first:
+      213: -501209251091362953
+    second: luna_3_am_22
+  - first:
+      213: -1380542161985635225
+    second: luna_3_am_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: luna_3_am_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1254
+        height: 1254
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56d01cc96c6ce1810800000000000000
+      internalID: 1738045062547311973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_1
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1247
+        width: 10
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbf57ff89b3ebbf80800000000000000
+      internalID: -8089621919517155397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_2
+      rect:
+        serializedVersion: 2
+        x: 524
+        y: 1240
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6498152ea798e5060800000000000000
+      internalID: 6944138836327893318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_3
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 1242
+        width: 21
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f038221eb86b320b0800000000000000
+      internalID: -5754555186955517169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_4
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 1225
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07349a92905f0b4f0800000000000000
+      internalID: -814882112851590288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_5
+      rect:
+        serializedVersion: 2
+        x: 796
+        y: 1226
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18bbbe64f1158c870800000000000000
+      internalID: 8703295474669173633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_6
+      rect:
+        serializedVersion: 2
+        x: 1067
+        y: 1223
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b4f7d5bd63eaf2b0800000000000000
+      internalID: -5549873530438945612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_7
+      rect:
+        serializedVersion: 2
+        x: 954
+        y: 1213
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 002d3c8cdf176fb70800000000000000
+      internalID: 8932452245744898560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_8
+      rect:
+        serializedVersion: 2
+        x: 1051
+        y: 1197
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17a775f8d6e73a730800000000000000
+      internalID: 4009187102311283313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1046
+        width: 17
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb08df5c241dc71c0800000000000000
+      internalID: -4504495442557566789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_10
+      rect:
+        serializedVersion: 2
+        x: 1153
+        y: 1065
+        width: 66
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e40c0c35972dfcc0800000000000000
+      internalID: -3675738198953425688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_11
+      rect:
+        serializedVersion: 2
+        x: 1210
+        y: 1080
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06a2a4d4cfe544bf0800000000000000
+      internalID: -341043234051839392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 990
+        width: 6
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4e46b082b833d4a0800000000000000
+      internalID: -6569845092088656309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_13
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 1004
+        width: 35
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d521e5a4f555d47b0800000000000000
+      internalID: -5238436923804085667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_14
+      rect:
+        serializedVersion: 2
+        x: 1194
+        y: 1028
+        width: 41
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 558764cd72dbea120800000000000000
+      internalID: 2427085228096256085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_15
+      rect:
+        serializedVersion: 2
+        x: 1213
+        y: 996
+        width: 24
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85b0d27bd86a4fe70800000000000000
+      internalID: 9148119870690102104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_16
+      rect:
+        serializedVersion: 2
+        x: 1246
+        y: 537
+        width: 8
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3af21c61e4564d700800000000000000
+      internalID: 564187239391768483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_17
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 252
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9548dc5b85671630800000000000000
+      internalID: 3897695651744990619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 166
+        width: 15
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30a7b3e85da06f250800000000000000
+      internalID: 5977977467711486467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_19
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 176
+        width: 22
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56ba085801dae76a0800000000000000
+      internalID: -6449527329877087387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_20
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 31
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c602487e8a1dcce80800000000000000
+      internalID: -8156914301705904020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_21
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 31
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bb01001ea68eafa0800000000000000
+      internalID: -5787540388973573193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_22
+      rect:
+        serializedVersion: 2
+        x: 378
+        y: 35
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77b4f8677d85b09f0800000000000000
+      internalID: -501209251091362953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: luna_3_am_23
+      rect:
+        serializedVersion: 2
+        x: 555
+        y: 15
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76c7565d73457dce0800000000000000
+      internalID: -1380542161985635225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      luna_3_am_0: 1738045062547311973
+      luna_3_am_1: -8089621919517155397
+      luna_3_am_10: -3675738198953425688
+      luna_3_am_11: -341043234051839392
+      luna_3_am_12: -6569845092088656309
+      luna_3_am_13: -5238436923804085667
+      luna_3_am_14: 2427085228096256085
+      luna_3_am_15: 9148119870690102104
+      luna_3_am_16: 564187239391768483
+      luna_3_am_17: 3897695651744990619
+      luna_3_am_18: 5977977467711486467
+      luna_3_am_19: -6449527329877087387
+      luna_3_am_2: 6944138836327893318
+      luna_3_am_20: -8156914301705904020
+      luna_3_am_21: -5787540388973573193
+      luna_3_am_22: -501209251091362953
+      luna_3_am_23: -1380542161985635225
+      luna_3_am_3: -5754555186955517169
+      luna_3_am_4: -814882112851590288
+      luna_3_am_5: 8703295474669173633
+      luna_3_am_6: -5549873530438945612
+      luna_3_am_7: 8932452245744898560
+      luna_3_am_8: 4009187102311283313
+      luna_3_am_9: -4504495442557566789
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
