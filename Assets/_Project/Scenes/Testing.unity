@@ -1442,6 +1442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 2
+  maxHorizontalPosition: 81.5
 --- !u!114 &184105908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3867,6 +3868,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3992,6 +3994,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e841659287ab13744b874e30bec1dfa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraFollow2D
+  target: {fileID: 184105904}
+  startFollowingAtX: 3
+  horizontalOffset: 2
+  maximumCameraX: 79.5
+  smoothTime: 0.3
 --- !u!1 &523926354
 GameObject:
   m_ObjectHideFlags: 0
@@ -11061,6 +11080,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 2
+  maxHorizontalPosition: 81.5
 --- !u!70 &1517596040
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

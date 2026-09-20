@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
+    [SerializeField] private float maxHorizontalPosition = 81.5f;
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -30,11 +31,30 @@ public class PlayerMovement : MonoBehaviour
                 horizontal = 1f;
         }
 
+        if (horizontal > 0f && rb.position.x >= maxHorizontalPosition)
+            horizontal = 0f;
+
         animator.SetBool("IsMoving", horizontal != 0f);
     }
 
     private void FixedUpdate()
     {
+        float nextX = rb.position.x + horizontal * speed * Time.fixedDeltaTime;
+
+        if (horizontal > 0f && nextX >= maxHorizontalPosition)
+        {
+            Vector2 position = rb.position;
+            position.x = maxHorizontalPosition;
+            rb.position = position;
+            horizontal = 0f;
+        }
+        else if (rb.position.x > maxHorizontalPosition)
+        {
+            Vector2 position = rb.position;
+            position.x = maxHorizontalPosition;
+            rb.position = position;
+        }
+
         rb.linearVelocity = new Vector2(
             horizontal * speed,
             rb.linearVelocity.y
