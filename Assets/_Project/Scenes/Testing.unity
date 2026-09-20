@@ -7323,6 +7323,7 @@ GameObject:
   - component: {fileID: 184105906}
   - component: {fileID: 184105905}
   - component: {fileID: 184105907}
+  - component: {fileID: 184105908}
   m_Layer: 0
   m_Name: Player_Cesar
   m_TagString: Untagged
@@ -7517,6 +7518,7 @@ GameObject:
   - component: {fileID: 1517596041}
   - component: {fileID: 1517596040}
   - component: {fileID: 1517596039}
+  - component: {fileID: 1517596045}
   m_Layer: 0
   m_Name: Player_Marco
   m_TagString: Untagged
@@ -7697,6 +7699,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &184105908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184105901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 743a4833751f30a4da6ef5529c21f787, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerActions
+--- !u!114 &1517596045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517596038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 743a4833751f30a4da6ef5529c21f787, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerActions
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
