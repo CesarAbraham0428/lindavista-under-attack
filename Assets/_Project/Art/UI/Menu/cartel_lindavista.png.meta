@@ -1,0 +1,689 @@
+fileFormatVersion: 2
+guid: e9e380a3763ea814b83af4b879d7dc98
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4339414617309183906
+    second: cartel_lindavista_0
+  - first:
+      213: 9007440869473891754
+    second: cartel_lindavista_1
+  - first:
+      213: 8666445458787700211
+    second: cartel_lindavista_2
+  - first:
+      213: 6367758077349096322
+    second: cartel_lindavista_3
+  - first:
+      213: -7239931453494787303
+    second: cartel_lindavista_4
+  - first:
+      213: -7649333014134383940
+    second: cartel_lindavista_5
+  - first:
+      213: 535318692187043062
+    second: cartel_lindavista_6
+  - first:
+      213: -7373653284238487989
+    second: cartel_lindavista_7
+  - first:
+      213: 3713961274104099291
+    second: cartel_lindavista_8
+  - first:
+      213: -4281501574092676706
+    second: cartel_lindavista_9
+  - first:
+      213: -3583871844720206490
+    second: cartel_lindavista_10
+  - first:
+      213: 359651152124106199
+    second: cartel_lindavista_11
+  - first:
+      213: 103615572393353503
+    second: cartel_lindavista_12
+  - first:
+      213: -3789238505676708017
+    second: cartel_lindavista_13
+  - first:
+      213: -8575344919611157121
+    second: cartel_lindavista_14
+  - first:
+      213: -8828124946797505892
+    second: cartel_lindavista_15
+  - first:
+      213: 6202871680872798575
+    second: cartel_lindavista_16
+  - first:
+      213: -7464685457611223942
+    second: cartel_lindavista_17
+  - first:
+      213: 5417336938575110638
+    second: cartel_lindavista_18
+  - first:
+      213: -6080291497444480612
+    second: cartel_lindavista_19
+  - first:
+      213: 4744817441449128122
+    second: cartel_lindavista_20
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: cartel_lindavista_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 2167
+        height: 704
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e500622956d47c3c0800000000000000
+      internalID: -4339414617309183906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_1
+      rect:
+        serializedVersion: 2
+        x: 916
+        y: 31
+        width: 6
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa5b3505fbbd00d70800000000000000
+      internalID: 9007440869473891754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_2
+      rect:
+        serializedVersion: 2
+        x: 919
+        y: 33
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fd865c5a36654870800000000000000
+      internalID: 8666445458787700211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_3
+      rect:
+        serializedVersion: 2
+        x: 1048
+        y: 34
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28b6408cb32de5850800000000000000
+      internalID: 6367758077349096322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_4
+      rect:
+        serializedVersion: 2
+        x: 1102
+        y: 15
+        width: 23
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 913044ca3b8968b90800000000000000
+      internalID: -7239931453494787303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_5
+      rect:
+        serializedVersion: 2
+        x: 1339
+        y: 17
+        width: 34
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cba1adbc62c18d590800000000000000
+      internalID: -7649333014134383940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_6
+      rect:
+        serializedVersion: 2
+        x: 1343
+        y: 55
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f47f69a385dd6700800000000000000
+      internalID: 535318692187043062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_7
+      rect:
+        serializedVersion: 2
+        x: 1363
+        y: 41
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4e8210c7658ba990800000000000000
+      internalID: -7373653284238487989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_8
+      rect:
+        serializedVersion: 2
+        x: 1368
+        y: 15
+        width: 35
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd13884f914aa8330800000000000000
+      internalID: 3713961274104099291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_9
+      rect:
+        serializedVersion: 2
+        x: 1443
+        y: 35
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e912ee2b00d0594c0800000000000000
+      internalID: -4281501574092676706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_10
+      rect:
+        serializedVersion: 2
+        x: 1448
+        y: 33
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66d9dee9b87834ec0800000000000000
+      internalID: -3583871844720206490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_11
+      rect:
+        serializedVersion: 2
+        x: 1462
+        y: 35
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d5da6d31dcbdf400800000000000000
+      internalID: 359651152124106199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_12
+      rect:
+        serializedVersion: 2
+        x: 1472
+        y: 33
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1164b960dd107100800000000000000
+      internalID: 103615572393353503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_13
+      rect:
+        serializedVersion: 2
+        x: 1518
+        y: 33
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4768e3c7abe96bc0800000000000000
+      internalID: -3789238505676708017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_14
+      rect:
+        serializedVersion: 2
+        x: 1530
+        y: 31
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f755020da314ef880800000000000000
+      internalID: -8575344919611157121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_15
+      rect:
+        serializedVersion: 2
+        x: 1534
+        y: 46
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c92de5162233c7580800000000000000
+      internalID: -8828124946797505892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_16
+      rect:
+        serializedVersion: 2
+        x: 1543
+        y: 31
+        width: 33
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f69d0c5fde6051650800000000000000
+      internalID: 6202871680872798575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_17
+      rect:
+        serializedVersion: 2
+        x: 1651
+        y: 17
+        width: 13
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a7c0f0b302c186890800000000000000
+      internalID: -7464685457611223942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_18
+      rect:
+        serializedVersion: 2
+        x: 1821
+        y: 0
+        width: 44
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee12f5c4e3f3e2b40800000000000000
+      internalID: 5417336938575110638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_19
+      rect:
+        serializedVersion: 2
+        x: 1864
+        y: 23
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c996efb09177e9ba0800000000000000
+      internalID: -6080291497444480612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_lindavista_20
+      rect:
+        serializedVersion: 2
+        x: 1896
+        y: 19
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab037a9e25af8d140800000000000000
+      internalID: 4744817441449128122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      cartel_lindavista_0: -4339414617309183906
+      cartel_lindavista_1: 9007440869473891754
+      cartel_lindavista_10: -3583871844720206490
+      cartel_lindavista_11: 359651152124106199
+      cartel_lindavista_12: 103615572393353503
+      cartel_lindavista_13: -3789238505676708017
+      cartel_lindavista_14: -8575344919611157121
+      cartel_lindavista_15: -8828124946797505892
+      cartel_lindavista_16: 6202871680872798575
+      cartel_lindavista_17: -7464685457611223942
+      cartel_lindavista_18: 5417336938575110638
+      cartel_lindavista_19: -6080291497444480612
+      cartel_lindavista_2: 8666445458787700211
+      cartel_lindavista_20: 4744817441449128122
+      cartel_lindavista_3: 6367758077349096322
+      cartel_lindavista_4: -7239931453494787303
+      cartel_lindavista_5: -7649333014134383940
+      cartel_lindavista_6: 535318692187043062
+      cartel_lindavista_7: -7373653284238487989
+      cartel_lindavista_8: 3713961274104099291
+      cartel_lindavista_9: -4281501574092676706
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

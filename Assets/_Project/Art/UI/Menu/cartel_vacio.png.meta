@@ -1,0 +1,1001 @@
+fileFormatVersion: 2
+guid: fa6e057df3b9dc84a82f648fd2ef0a99
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6831378015836837486
+    second: cartel_vacio_0
+  - first:
+      213: -6503242245371857043
+    second: cartel_vacio_1
+  - first:
+      213: 2540707580816819845
+    second: cartel_vacio_2
+  - first:
+      213: -8257350719826763152
+    second: cartel_vacio_3
+  - first:
+      213: -8230683677555432198
+    second: cartel_vacio_4
+  - first:
+      213: -9217796550008068366
+    second: cartel_vacio_5
+  - first:
+      213: -5301174098829739568
+    second: cartel_vacio_6
+  - first:
+      213: -1136585269936599484
+    second: cartel_vacio_7
+  - first:
+      213: -6883092694100408149
+    second: cartel_vacio_8
+  - first:
+      213: 4526973803583420229
+    second: cartel_vacio_9
+  - first:
+      213: 3538003225951442262
+    second: cartel_vacio_10
+  - first:
+      213: -1193688882531791237
+    second: cartel_vacio_11
+  - first:
+      213: 1597991230921633183
+    second: cartel_vacio_12
+  - first:
+      213: -3446115190098804809
+    second: cartel_vacio_13
+  - first:
+      213: 2832374073692977670
+    second: cartel_vacio_14
+  - first:
+      213: -8471732714986169331
+    second: cartel_vacio_15
+  - first:
+      213: -62531647996990483
+    second: cartel_vacio_16
+  - first:
+      213: 5492769796216984197
+    second: cartel_vacio_17
+  - first:
+      213: -6438654386552015349
+    second: cartel_vacio_18
+  - first:
+      213: -8503964739249550863
+    second: cartel_vacio_19
+  - first:
+      213: -8771037885460092832
+    second: cartel_vacio_20
+  - first:
+      213: 8239013894030791331
+    second: cartel_vacio_21
+  - first:
+      213: -5535831099697508534
+    second: cartel_vacio_22
+  - first:
+      213: 2337084870210869654
+    second: cartel_vacio_23
+  - first:
+      213: -7256864386426865590
+    second: cartel_vacio_24
+  - first:
+      213: 1590941212640779105
+    second: cartel_vacio_25
+  - first:
+      213: 3640119380031127644
+    second: cartel_vacio_26
+  - first:
+      213: 7775460667767279064
+    second: cartel_vacio_27
+  - first:
+      213: -6903832319494063206
+    second: cartel_vacio_28
+  - first:
+      213: -3169662233888705584
+    second: cartel_vacio_29
+  - first:
+      213: -3934326098618315637
+    second: cartel_vacio_30
+  - first:
+      213: -4394123347112060762
+    second: cartel_vacio_31
+  - first:
+      213: 1400921791037759372
+    second: cartel_vacio_32
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: cartel_vacio_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 63
+        width: 2141
+        height: 608
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e661e587c1eedce50800000000000000
+      internalID: 6831378015836837486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_1
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 83
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d67fb4c22a7dfb5a0800000000000000
+      internalID: -6503242245371857043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_2
+      rect:
+        serializedVersion: 2
+        x: 460
+        y: 65
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5868ab06518624320800000000000000
+      internalID: 2540707580816819845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_3
+      rect:
+        serializedVersion: 2
+        x: 509
+        y: 61
+        width: 27
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 072e8e6054ff76d80800000000000000
+      internalID: -8257350719826763152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_4
+      rect:
+        serializedVersion: 2
+        x: 541
+        y: 82
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af4e3b4adccb6cd80800000000000000
+      internalID: -8230683677555432198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_5
+      rect:
+        serializedVersion: 2
+        x: 565
+        y: 65
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f6a2f030eec31080800000000000000
+      internalID: -9217796550008068366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_6
+      rect:
+        serializedVersion: 2
+        x: 627
+        y: 95
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d970c27e327e66b0800000000000000
+      internalID: -5301174098829739568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_7
+      rect:
+        serializedVersion: 2
+        x: 634
+        y: 97
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44ecc7808b90a30f0800000000000000
+      internalID: -1136585269936599484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_8
+      rect:
+        serializedVersion: 2
+        x: 668
+        y: 73
+        width: 41
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba80f04b9a75a70a0800000000000000
+      internalID: -6883092694100408149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_9
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 66
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 547b61e70ba03de30800000000000000
+      internalID: 4526973803583420229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_10
+      rect:
+        serializedVersion: 2
+        x: 702
+        y: 79
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65595095033891130800000000000000
+      internalID: 3538003225951442262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_11
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 81
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7e0c58294a2f6fe0800000000000000
+      internalID: -1193688882531791237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_12
+      rect:
+        serializedVersion: 2
+        x: 909
+        y: 81
+        width: 23
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9de549de843d2610800000000000000
+      internalID: 1597991230921633183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_13
+      rect:
+        serializedVersion: 2
+        x: 957
+        y: 79
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bf351f2e70fc20d0800000000000000
+      internalID: -3446115190098804809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_14
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 81
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60afe75a63d9e4720800000000000000
+      internalID: 2832374073692977670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_15
+      rect:
+        serializedVersion: 2
+        x: 971
+        y: 79
+        width: 20
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0c913b1bfb5e6a80800000000000000
+      internalID: -8471732714986169331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_16
+      rect:
+        serializedVersion: 2
+        x: 997
+        y: 93
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: deb6be52cc7d12ff0800000000000000
+      internalID: -62531647996990483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_17
+      rect:
+        serializedVersion: 2
+        x: 1005
+        y: 97
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5821288170d3a3c40800000000000000
+      internalID: 5492769796216984197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_18
+      rect:
+        serializedVersion: 2
+        x: 1030
+        y: 93
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b067e0ae2fd45a6a0800000000000000
+      internalID: -6438654386552015349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_19
+      rect:
+        serializedVersion: 2
+        x: 1046
+        y: 81
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f945962029dbf980800000000000000
+      internalID: -8503964739249550863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_20
+      rect:
+        serializedVersion: 2
+        x: 1180
+        y: 74
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06868ad9383074680800000000000000
+      internalID: -8771037885460092832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_21
+      rect:
+        serializedVersion: 2
+        x: 1221
+        y: 82
+        width: 19
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a296350c7bd65270800000000000000
+      internalID: 8239013894030791331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_22
+      rect:
+        serializedVersion: 2
+        x: 1237
+        y: 81
+        width: 7
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4f48f5e1f6cc23b0800000000000000
+      internalID: -5535831099697508534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_23
+      rect:
+        serializedVersion: 2
+        x: 1247
+        y: 81
+        width: 19
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 699dbda9e4efe6020800000000000000
+      internalID: 2337084870210869654
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_24
+      rect:
+        serializedVersion: 2
+        x: 1281
+        y: 101
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a48f7dff9407a4b90800000000000000
+      internalID: -7256864386426865590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_25
+      rect:
+        serializedVersion: 2
+        x: 1414
+        y: 61
+        width: 25
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16b9bfd8a98241610800000000000000
+      internalID: 1590941212640779105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_26
+      rect:
+        serializedVersion: 2
+        x: 1428
+        y: 76
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5045ca3a4d448230800000000000000
+      internalID: 3640119380031127644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_27
+      rect:
+        serializedVersion: 2
+        x: 1472
+        y: 65
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8dd4a4bf74cf7eb60800000000000000
+      internalID: 7775460667767279064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_28
+      rect:
+        serializedVersion: 2
+        x: 1510
+        y: 67
+        width: 30
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9bf1bf5519a030a0800000000000000
+      internalID: -6903832319494063206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_29
+      rect:
+        serializedVersion: 2
+        x: 1519
+        y: 63
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d3b71bedf81304d0800000000000000
+      internalID: -3169662233888705584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_30
+      rect:
+        serializedVersion: 2
+        x: 1671
+        y: 81
+        width: 17
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8c8e4d12477669c0800000000000000
+      internalID: -3934326098618315637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_31
+      rect:
+        serializedVersion: 2
+        x: 1852
+        y: 85
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a8922cc810f403c0800000000000000
+      internalID: -4394123347112060762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cartel_vacio_32
+      rect:
+        serializedVersion: 2
+        x: 1856
+        y: 79
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8fd8e052f2117310800000000000000
+      internalID: 1400921791037759372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      cartel_vacio_0: 6831378015836837486
+      cartel_vacio_1: -6503242245371857043
+      cartel_vacio_10: 3538003225951442262
+      cartel_vacio_11: -1193688882531791237
+      cartel_vacio_12: 1597991230921633183
+      cartel_vacio_13: -3446115190098804809
+      cartel_vacio_14: 2832374073692977670
+      cartel_vacio_15: -8471732714986169331
+      cartel_vacio_16: -62531647996990483
+      cartel_vacio_17: 5492769796216984197
+      cartel_vacio_18: -6438654386552015349
+      cartel_vacio_19: -8503964739249550863
+      cartel_vacio_2: 2540707580816819845
+      cartel_vacio_20: -8771037885460092832
+      cartel_vacio_21: 8239013894030791331
+      cartel_vacio_22: -5535831099697508534
+      cartel_vacio_23: 2337084870210869654
+      cartel_vacio_24: -7256864386426865590
+      cartel_vacio_25: 1590941212640779105
+      cartel_vacio_26: 3640119380031127644
+      cartel_vacio_27: 7775460667767279064
+      cartel_vacio_28: -6903832319494063206
+      cartel_vacio_29: -3169662233888705584
+      cartel_vacio_3: -8257350719826763152
+      cartel_vacio_30: -3934326098618315637
+      cartel_vacio_31: -4394123347112060762
+      cartel_vacio_32: 1400921791037759372
+      cartel_vacio_4: -8230683677555432198
+      cartel_vacio_5: -9217796550008068366
+      cartel_vacio_6: -5301174098829739568
+      cartel_vacio_7: -1136585269936599484
+      cartel_vacio_8: -6883092694100408149
+      cartel_vacio_9: 4526973803583420229
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
