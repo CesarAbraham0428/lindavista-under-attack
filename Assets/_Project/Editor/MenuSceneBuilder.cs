@@ -179,7 +179,13 @@ public static class MenuSceneBuilder
         GameObject canvasObject = new GameObject(name, typeof(RectTransform), typeof(Canvas),
             typeof(CanvasScaler), typeof(GraphicRaycaster));
         Canvas canvas = canvasObject.GetComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        Camera uiCamera = Camera.main;
+        if (uiCamera == null)
+            throw new InvalidOperationException("A tagged Main Camera is required to build the menu canvases.");
+
+        canvas.renderMode = RenderMode.ScreenSpaceCamera;
+        canvas.worldCamera = uiCamera;
+        canvas.planeDistance = 1f;
         canvas.pixelPerfect = true;
 
         CanvasScaler scaler = canvasObject.GetComponent<CanvasScaler>();
