@@ -6683,6 +6683,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 991108624}
+  - component: {fileID: 991108625}
   m_Layer: 0
   m_Name: Escenario
   m_TagString: Untagged
@@ -6711,6 +6712,20 @@ Transform:
   - {fileID: 274124233}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &991108625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991108623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14a3a415c2a16804684c7d1156146023, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::SelectedLevelEnvironment
+  sunsetSunSprite: {fileID: 3729200777042963002, guid: eae53a802b76d3d42998175e40a9fece, type: 3}
+  sunsetSkyColor: {r: 0.16, g: 0.27, b: 0.43, a: 1}
 --- !u!1 &992800464
 GameObject:
   m_ObjectHideFlags: 0
