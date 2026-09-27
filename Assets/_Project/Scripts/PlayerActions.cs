@@ -48,7 +48,7 @@ public class PlayerActions : MonoBehaviour
 
     public void SetInputLocked(bool locked)
     {
-        inputLocked = locked;
+        inputLocked = locked || defeated || GameFlowController.IsDefeatActive;
         if (!locked)
             return;
 
@@ -147,7 +147,8 @@ public class PlayerActions : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        if (defeated || amount <= 0 || Time.time < nextDamageTime)
+        if (defeated || GameFlowController.IsDefeatActive ||
+            amount <= 0 || Time.time < nextDamageTime)
             return;
 
         currentHealth = Mathf.Max(0, currentHealth - amount);
@@ -173,6 +174,7 @@ public class PlayerActions : MonoBehaviour
             animator.SetTrigger("Defeat");
         }
         movement?.StopForDefeat();
+        GameFlowController.ReportPlayerDefeat();
     }
 
     public void SetTouchAimAndFire(Vector2 direction)

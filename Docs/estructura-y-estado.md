@@ -19,6 +19,7 @@ El proyecto usa Unity **6000.3.23f1**, Universal Render Pipeline 2D, Input Syste
 - `PlayerActions`: apuntado, selección y disparo de armas, recarga, salud y daño.
 - `CombatProjectile`: barrido de impacto y aplicación de daño a enemigos.
 - `BasicEnemy` y `EnemyHealth`: selección de objetivo, movimiento, ataque, salud, escudo y derrota enemiga.
+- `GameFlowController`: derrota global por salud agotada o llegada de un enemigo a la entrada, bloqueo de controles y opciones para reiniciar o volver al menú.
 - `SelectedCharacterBootstrap` y `CharacterLevelSelectionController`: persistencia y activación del personaje/nivel elegidos.
 - `SelectedLevelEnvironment`: colores del cielo, sprites celestes y grupos de daño ambiental.
 - `CameraFollow2D`: presentación inicial de la oleada en tramo 5, paneo hacia la entrada y seguimiento horizontal del jugador.

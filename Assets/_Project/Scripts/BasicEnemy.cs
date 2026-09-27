@@ -32,6 +32,7 @@ public sealed class BasicEnemy : MonoBehaviour
     private float nextAttack;
     private bool wasShieldBroken;
     private bool hasFixedEntranceTarget;
+    private bool hasReachedEntrance;
     private float fixedEntranceX;
     private float EffectiveAttackRange =>
         attackStyle == AttackStyle.Melee || attackStyle == AttackStyle.ShieldMelee
@@ -66,6 +67,12 @@ public sealed class BasicEnemy : MonoBehaviour
             return;
         }
 
+        if (GameFlowController.IsDefeatActive)
+        {
+            StopForGameOver();
+            return;
+        }
+
         bool shieldBroken = attackStyle == AttackStyle.ShieldMelee && health.IsShieldBroken;
         if (shieldBroken != wasShieldBroken)
         {
@@ -89,6 +96,9 @@ public sealed class BasicEnemy : MonoBehaviour
         if (entranceTarget != null || hasFixedEntranceTarget)
         {
             AdvanceToEntrance();
+            if (GameFlowController.IsDefeatActive)
+                return;
+
             if (target != null && !target.IsDefeated && CanHit(target) && Time.time >= nextAttack)
             {
                 Face(target.transform.position.x - transform.position.x);
@@ -135,6 +145,20 @@ public sealed class BasicEnemy : MonoBehaviour
         position.x = Mathf.MoveTowards(position.x, destinationX, speed * Time.deltaTime);
         animator.SetBool("IsMoving", !Mathf.Approximately(position.x, transform.position.x));
         transform.position = position;
+
+        if (!hasReachedEntrance && Mathf.Abs(position.x - destinationX) <= 0.001f)
+        {
+            hasReachedEntrance = true;
+            GameFlowController.ReportEnemyReachedEntrance();
+        }
+    }
+
+    public void StopForGameOver()
+    {
+        StopAllCoroutines();
+        if (animator != null)
+            animator.SetBool("IsMoving", false);
+        enabled = false;
     }
 
     private void LateUpdate()

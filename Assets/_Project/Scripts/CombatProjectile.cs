@@ -17,7 +17,8 @@ public sealed class CombatProjectile : MonoBehaviour
     public static void Spawn(Vector2 origin, Vector2 direction, int weaponIndex,
         float maxRange, Transform owner)
     {
-        if (activeProjectiles >= MaxActiveProjectiles || direction.sqrMagnitude < 0.0001f)
+        if (GameFlowController.IsDefeatActive || activeProjectiles >= MaxActiveProjectiles ||
+            direction.sqrMagnitude < 0.0001f)
             return;
 
         GameObject shot = new GameObject("Projectile");
@@ -51,6 +52,13 @@ public sealed class CombatProjectile : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (GameFlowController.IsDefeatActive)
+        {
+            spent = true;
+            Destroy(gameObject);
+            return;
+        }
+
         if (spent)
             return;
 

@@ -98,6 +98,10 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
 
         HideLegacyEnemyPreviews();
         List<GameObject> spawnOrder = BuildInterleavedSpawnOrder(prefabs, counts);
+        PlayerActions startingPlayer = FindFirstObjectByType<PlayerActions>();
+        float objectiveX = startingPlayer != null
+            ? startingPlayer.transform.position.x
+            : entranceX;
 
         for (int i = 0; i < spawnOrder.Count; i++)
         {
@@ -108,7 +112,7 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
             enemy.name = $"{prefab.name}_Level_{compositionIndex + 1}_Wave_{i + 1:00}";
 
             BasicEnemy behavior = enemy.GetComponent<BasicEnemy>();
-            behavior.SetEntranceTargetX(entranceX);
+            behavior.SetEntranceTargetX(objectiveX);
             behavior.enabled = false;
             queuedEnemies.Add(behavior);
         }
@@ -132,6 +136,9 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
     {
         for (int i = 0; i < queuedEnemies.Count; i++)
         {
+            if (GameFlowController.IsDefeatActive)
+                yield break;
+
             if (queuedEnemies[i] != null)
                 queuedEnemies[i].enabled = true;
 

@@ -16,8 +16,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetMovementLocked(bool locked)
     {
-        movementLocked = locked;
-        if (!locked)
+        movementLocked = locked || GameFlowController.IsDefeatActive;
+        if (!movementLocked)
             return;
 
         horizontal = 0f;
