@@ -8,23 +8,25 @@ public class PlayerActions : MonoBehaviour
     [Header("Mouse aim")]
     [SerializeField, Min(0.1f)] private float maxAimDistance = 18f;
     [Header("Minimum time between shots")]
-    [SerializeField, Min(0.01f)] private float pistolFireInterval = 0.25f;
+    [SerializeField, Min(0.01f)] private float pistolFireInterval = 0.4f;
     [SerializeField, Min(0.01f)] private float smgFireInterval = 0.12f;
     [SerializeField, Min(0.01f)] private float rpgFireInterval = 1.2f;
+    [Header("Projectile spawn (world units from sprite center)")]
+    [SerializeField, Min(0f)] private float pistolMuzzleDistance = 0.4f;
+    [SerializeField, Min(0f)] private float smgMuzzleDistance = 0.5f;
+    [SerializeField, Min(0f)] private float rpgMuzzleDistance = 0.65f;
+    [SerializeField] private float muzzleHeight = 0.08f;
 
     private Animator animator;
     private PlayerMovement movement;
     private SpriteRenderer spriteRenderer;
     private Camera aimCamera;
-    private LineRenderer shotLine;
-    private Material shotMaterial;
     private Weapon selectedWeapon = Weapon.Pistol;
     private bool hasAimInViewport;
     private bool wasFiringHeld;
     private bool touchAimActive;
     private bool touchFireHeld;
     private bool defeated;
-    private float hideShotTime;
     private float nextShotTime;
 
     public Vector2 AimDirection { get; private set; } = Vector2.right;
@@ -41,15 +43,11 @@ public class PlayerActions : MonoBehaviour
         aimCamera = Camera.main;
         if (animator != null)
             animator.SetBool("IsAiming", false);
-        CreateShotLine();
     }
 
     private void Update()
     {
         UpdateAim();
-
-        if (shotLine != null && shotLine.enabled && Time.time >= hideShotTime)
-            shotLine.enabled = false;
 
         if (animator == null || defeated)
             return;
@@ -74,8 +72,6 @@ public class PlayerActions : MonoBehaviour
                 defeated = true;
                 hasAimInViewport = false;
                 ResetFireTriggers();
-                if (shotLine != null)
-                    shotLine.enabled = false;
                 movement?.StopForDefeat();
                 animator.SetTrigger("Defeat");
                 return;
@@ -92,8 +88,6 @@ public class PlayerActions : MonoBehaviour
         else
         {
             ResetFireTriggers();
-            if (shotLine != null)
-                shotLine.enabled = false;
             if (wasFiringHeld)
                 StopFireAnimation();
         }
@@ -144,8 +138,6 @@ public class PlayerActions : MonoBehaviour
             ResetFireTriggers();
             StopFireAnimation();
         }
-        if (shotLine != null)
-            shotLine.enabled = false;
     }
 
     private void TryReload()
@@ -188,7 +180,18 @@ public class PlayerActions : MonoBehaviour
 
         animator.SetTrigger(triggerName);
         nextShotTime = Time.time + fireInterval;
-        ShowShotDirection();
+        float muzzleDistance = selectedWeapon switch
+        {
+            Weapon.SMG => smgMuzzleDistance,
+            Weapon.RPG => rpgMuzzleDistance,
+            _ => pistolMuzzleDistance
+        };
+        Vector2 spawnPosition = AimOrigin + AimDirection * muzzleDistance + Vector2.up * muzzleHeight;
+        Vector2 shotDirection = AimTarget - spawnPosition;
+        if (shotDirection.sqrMagnitude < 0.0001f)
+            shotDirection = AimDirection;
+        CombatProjectile.Spawn(spawnPosition, shotDirection.normalized, (int)selectedWeapon,
+            maxAimDistance, transform);
     }
 
     private void ResetFireTriggers()
@@ -253,42 +256,6 @@ public class PlayerActions : MonoBehaviour
 
     }
 
-    private void CreateShotLine()
-    {
-        Shader shader = Shader.Find("Sprites/Default");
-        if (shader == null)
-            return;
-
-        GameObject visual = new GameObject("Shot Direction Visual");
-        visual.transform.SetParent(transform, false);
-
-        shotMaterial = new Material(shader);
-        shotLine = visual.AddComponent<LineRenderer>();
-        shotLine.material = shotMaterial;
-        shotLine.useWorldSpace = true;
-        shotLine.positionCount = 2;
-        shotLine.startWidth = 0.045f;
-        shotLine.endWidth = 0.015f;
-        shotLine.startColor = Color.yellow;
-        shotLine.endColor = new Color(1f, 0.3f, 0.1f, 0.65f);
-        shotLine.sortingOrder = 100;
-        shotLine.enabled = false;
-    }
-
-    private void ShowShotDirection()
-    {
-        if (shotLine == null || aimCamera == null)
-            return;
-
-        Vector2 origin = AimOrigin;
-        Vector2 target = origin + AimDirection * maxAimDistance;
-
-        shotLine.SetPosition(0, new Vector3(origin.x, origin.y, 0f));
-        shotLine.SetPosition(1, new Vector3(target.x, target.y, 0f));
-        shotLine.enabled = true;
-        hideShotTime = Time.time + 0.09f;
-    }
-
     private void OnGUI()
     {
         if (defeated || aimCamera == null || !hasAimInViewport || MobileControlsHUD.IsVisible)
@@ -307,12 +274,6 @@ public class PlayerActions : MonoBehaviour
         GUI.DrawTexture(new Rect(x - 10f, y - 1f, 7f, 2f), Texture2D.whiteTexture);
         GUI.DrawTexture(new Rect(x + 3f, y - 1f, 7f, 2f), Texture2D.whiteTexture);
         GUI.color = previousColor;
-    }
-
-    private void OnDestroy()
-    {
-        if (shotMaterial != null)
-            Destroy(shotMaterial);
     }
 
     private bool IsBusy()
