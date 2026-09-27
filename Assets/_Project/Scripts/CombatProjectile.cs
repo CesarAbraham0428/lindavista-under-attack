@@ -81,7 +81,7 @@ public sealed class CombatProjectile : MonoBehaviour
 
         if (nearestCollider != null)
         {
-            nearestCollider.GetComponentInParent<EnemyHealth>()?.TakeDamage(damage);
+            nearestCollider.GetComponentInParent<EnemyHealth>()?.TakeDamage(damage, direction);
             spent = true;
             Destroy(gameObject);
             return;

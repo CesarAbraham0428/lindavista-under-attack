@@ -16,6 +16,9 @@ public class PlayerActions : MonoBehaviour
     [SerializeField, Min(0f)] private float smgMuzzleDistance = 0.5f;
     [SerializeField, Min(0f)] private float rpgMuzzleDistance = 0.65f;
     [SerializeField] private float muzzleHeight = 0.08f;
+    [Header("Player health")]
+    [SerializeField, Min(1)] private int maxHealth = 5;
+    [SerializeField, Min(0f)] private float damageCooldown = 0.75f;
 
     private Animator animator;
     private PlayerMovement movement;
@@ -23,12 +26,14 @@ public class PlayerActions : MonoBehaviour
     private Camera aimCamera;
     private Weapon selectedWeapon = Weapon.Pistol;
     private bool hasAimInViewport;
-    private bool wasFiringHeld;
     private bool touchAimActive;
     private bool touchFireHeld;
     private bool defeated;
+    private int currentHealth;
+    private float nextDamageTime;
     private float nextShotTime;
 
+    public bool IsDefeated => defeated;
     public Vector2 AimDirection { get; private set; } = Vector2.right;
     public Vector2 AimTarget { get; private set; }
     public Vector2 AimOrigin => spriteRenderer != null
@@ -37,6 +42,7 @@ public class PlayerActions : MonoBehaviour
 
     private void Awake()
     {
+        currentHealth = maxHealth;
         animator = GetComponent<Animator>();
         movement = GetComponent<PlayerMovement>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -69,11 +75,7 @@ public class PlayerActions : MonoBehaviour
 
             if (Keyboard.current.eKey.wasPressedThisFrame)
             {
-                defeated = true;
-                hasAimInViewport = false;
-                ResetFireTriggers();
-                movement?.StopForDefeat();
-                animator.SetTrigger("Defeat");
+                Defeat();
                 return;
             }
         }
@@ -88,11 +90,8 @@ public class PlayerActions : MonoBehaviour
         else
         {
             ResetFireTriggers();
-            if (wasFiringHeld)
-                StopFireAnimation();
         }
 
-        wasFiringHeld = firingHeld;
     }
 
     private void LateUpdate()
@@ -117,6 +116,35 @@ public class PlayerActions : MonoBehaviour
         TryReload();
     }
 
+    public void TakeDamage(int amount)
+    {
+        if (defeated || amount <= 0 || Time.time < nextDamageTime)
+            return;
+
+        currentHealth = Mathf.Max(0, currentHealth - amount);
+        nextDamageTime = Time.time + damageCooldown;
+        if (currentHealth == 0)
+            Defeat();
+        else if (animator != null)
+            animator.SetTrigger("TakeDamage");
+    }
+
+    private void Defeat()
+    {
+        if (defeated)
+            return;
+
+        defeated = true;
+        hasAimInViewport = false;
+        touchFireHeld = false;
+        if (animator != null)
+        {
+            ResetFireTriggers();
+            animator.SetTrigger("Defeat");
+        }
+        movement?.StopForDefeat();
+    }
+
     public void SetTouchAimAndFire(Vector2 direction)
     {
         if (defeated)
@@ -136,7 +164,6 @@ public class PlayerActions : MonoBehaviour
         if (animator != null)
         {
             ResetFireTriggers();
-            StopFireAnimation();
         }
     }
 
@@ -157,7 +184,7 @@ public class PlayerActions : MonoBehaviour
 
     private void HoldFire()
     {
-        if (Time.time < nextShotTime || IsBusy())
+        if (Time.time < nextShotTime || IsBusyExceptFire())
             return;
 
         string triggerName;
@@ -199,17 +226,6 @@ public class PlayerActions : MonoBehaviour
         animator.ResetTrigger("FirePistol");
         animator.ResetTrigger("FireSMG");
         animator.ResetTrigger("FireRPG");
-    }
-
-    private void StopFireAnimation()
-    {
-        if (!IsPlaying("Pistol_Fire") && !IsPlaying("SMG_Fire") &&
-            !IsPlaying("RPG_Fire"))
-            return;
-
-        string character = animator.runtimeAnimatorController.name.Contains("Marco")
-            ? "Marco" : "Cesar";
-        animator.Play(character + "_Idle", 0, 0f);
     }
 
     private void UpdateAim()
@@ -282,6 +298,15 @@ public class PlayerActions : MonoBehaviour
                IsPlaying("SMG_Fire") ||
                IsPlaying("RPG_Fire") ||
                IsPlaying("Pistol_Reload") ||
+               IsPlaying("SMG_Reload") ||
+               IsPlaying("RPG_Reload") ||
+               IsPlaying("Damage") ||
+               IsPlaying("Defeat");
+    }
+
+    private bool IsBusyExceptFire()
+    {
+        return IsPlaying("Pistol_Reload") ||
                IsPlaying("SMG_Reload") ||
                IsPlaying("RPG_Reload") ||
                IsPlaying("Damage") ||
