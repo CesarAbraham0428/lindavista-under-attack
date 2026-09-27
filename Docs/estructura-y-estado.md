@@ -19,15 +19,16 @@ El proyecto usa Unity **6000.3.23f1**, Universal Render Pipeline 2D, Input Syste
 - `PlayerActions`: apuntado, selección y disparo de armas, recarga, salud y daño.
 - `CombatProjectile`: barrido de impacto y aplicación de daño a enemigos.
 - `BasicEnemy` y `EnemyHealth`: selección de objetivo, movimiento, ataque, salud, escudo y derrota enemiga.
+- `GameFlowController`: derrota global por salud agotada o llegada de un enemigo a la entrada, bloqueo de controles y opciones para reiniciar o volver al menú.
 - `SelectedCharacterBootstrap` y `CharacterLevelSelectionController`: persistencia y activación del personaje/nivel elegidos.
 - `SelectedLevelEnvironment`: colores del cielo, sprites celestes y grupos de daño ambiental.
-- `CameraFollow2D`: seguimiento horizontal del jugador.
+- `CameraFollow2D`: presentación inicial de la oleada en tramo 5, paneo hacia la entrada y seguimiento horizontal del jugador.
 - `PlayerHealthHUD`: interfaz de vida generada durante Play Mode en `Testing` y `Gameplay`.
 - `MobileControlsHUD` y `TouchControlRegion`: botones y apuntado táctiles; actualmente solo se crean en `Testing`.
 
 ## Estado conocido
 
-1. `Gameplay` todavía no tiene instancias con la IA y vida enemigas; los cuatro enemigos funcionales están en `Testing`.
+1. `Gameplay` presenta la oleada del nivel elegido en el tramo 5 y libera enemigos progresivamente hacia la entrada. Los conteos de los cuatro niveles son ajustables. Falta comprobar la secuencia visualmente en Play Mode; `Testing` conserva cuatro enemigos para probar variantes y animaciones.
 2. El arte de proyectiles no está conectado: el objeto de proyectil es lógico y no tiene sprite/trail. El daño de muro tampoco crea agujeros nuevos.
 3. Los baches, grafitis, impactos y la mayoría del escenario son elementos estáticos precolocados; el avance de cámara los va revelando.
 4. Los horarios son variantes elegidas antes de entrar a `Gameplay`; no hay transición de hora en tiempo real.

@@ -11,6 +11,10 @@
 
 Después de recibir daño, el jugador no acepta otra aplicación de daño durante **0,75 segundos**. La tecla **Q** invoca el mismo método de daño con una unidad en `Testing` y `Gameplay`; sirve para verificar la barra y la animación, no representa un disparo enemigo. La fila del HUD parpadea al recibir daño.
 
+### Derrota de la partida
+
+La partida termina si la salud del personaje llega a cero o si un enemigo que avanza hacia la entrada alcanza la posición inicial del jugador activo. Al activarse la derrota, se bloquean el movimiento, el apuntado, el disparo, el cambio de arma y las acciones de los enemigos. La pantalla de derrota explica el motivo y ofrece **Reintentar** (recarga la escena actual) y **Salir al menú** (abre `MainMenu`).
+
 `PlayerHealthHUD` genera un Canvas con hasta cinco segmentos y el contador numérico. Busca los componentes `PlayerActions` activos y actualiza las filas si cambia el jugador activo. En `Gameplay` se muestra la fila del personaje seleccionado; en `Testing` pueden verse ambos. El HUD y sus filas se construyen en Play Mode, no están guardados como objetos serializados dentro de las escenas.
 
 ## Armas del jugador
@@ -40,8 +44,18 @@ El valor inicial de `EnemyHealth.maxHealth` en el script es 3, pero cada enemigo
 
 Los enemigos pueden atacar a corta distancia o hacer una comprobación instantánea de impacto para sus disparos. El código actual tampoco crea una representación gráfica de los disparos enemigos.
 
+### Oleadas y presentación del nivel
+
+`LevelOneEnemySpawner`, colocado en `Escenario/Escenario_Tramo_5/E5_Enemigos`, prepara en el tramo 5 la composición del nivel elegido. Los enemigos aparecen ahí desde el inicio con su animación, pero con la IA de movimiento detenida. `CameraFollow2D` centra la cámara en la formación, la mantiene visible 1,1 segundos y después hace un paneo de 3,5 segundos hacia la entrada. Al comenzar ese paneo, el spawner activa un enemigo cada 1,65 segundos. El jugador no puede moverse, apuntar, disparar ni cambiar armas hasta que termina la presentación.
+
+Los conteos iniciales, editables en el componente del spawner, son: Nivel 1 (índice 0), seis `Enemy1` y cuatro `Enemy2`; Nivel 2, seis `Enemy1`, cinco `Enemy2` y tres `Enemy3`; Nivel 3, seis `Enemy1`, cinco `Enemy2`, cuatro `Enemy3` y tres `Enemy4`; Nivel 4, ocho `Enemy1`, seis `Enemy2`, cinco `Enemy3` y cinco `Enemy4`. Los tipos se intercalan en la formación. Los valores de los niveles 2–4 son una base ajustable para las oleadas futuras.
+
+La formación empieza en X=93 con 1,2 unidades entre enemigos; la cámara ajusta temporalmente el zoom para encuadrar la fila y vuelve al tamaño normal durante el paneo. Al activarse, cada `BasicEnemy` avanza hacia la posición inicial del jugador activo (X=-6,72 en la escena actual) y conserva su comportamiento de ataque hasta que llega o termina la partida.
+
+Los prefabs reutilizables están en `Assets/_Project/Prefabs/Enemy1_Base.prefab` a `Enemy4_Base.prefab`; mantienen el sprite, el controlador de animación, salud y estilo de ataque de cada enemigo. Los sprites estáticos de muestra bajo `Enemigos` se ocultan para que la composición seleccionada no se duplique.
+
 ## Alcance actual
 
 - `Testing` tiene instancias funcionales de los cuatro enemigos.
-- `Gameplay` no contiene aún componentes `BasicEnemy` o `EnemyHealth`; disparar allí no produce un encuentro hasta integrar enemigos.
+- `Gameplay` tiene una composición inicial configurada para los cuatro niveles. Falta comprobar visualmente la presentación y el ritmo de salida en Play Mode.
 - No hay sistema de munición, recarga con consumo de reservas, respawn, puntos ni progresión de victoria/derrota entre niveles documentado en los scripts actuales.

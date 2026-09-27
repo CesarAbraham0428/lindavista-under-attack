@@ -14,9 +14,26 @@ public class PlayerMovement : MonoBehaviour
 
     public float HorizontalInput => horizontal;
 
+    public void SetMovementLocked(bool locked)
+    {
+        movementLocked = locked || GameFlowController.IsDefeatActive;
+        if (!movementLocked)
+            return;
+
+        horizontal = 0f;
+        touchHorizontal = 0f;
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+        if (animator != null)
+            animator.SetBool("IsMoving", false);
+    }
+
     public void SetTouchHorizontal(float direction)
     {
-        touchHorizontal = Mathf.Clamp(direction, -1f, 1f);
+        touchHorizontal = movementLocked ? 0f : Mathf.Clamp(direction, -1f, 1f);
     }
 
     private void Awake()
@@ -29,7 +46,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (movementLocked)
         {
-            animator.SetBool("IsMoving", false);
+            if (animator != null)
+                animator.SetBool("IsMoving", false);
             return;
         }
 
@@ -88,12 +106,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void StopForDefeat()
     {
-        movementLocked = true;
-        horizontal = 0f;
-        touchHorizontal = 0f;
-        rb.linearVelocity = Vector2.zero;
-        rb.angularVelocity = 0f;
+        SetMovementLocked(true);
         rb.bodyType = RigidbodyType2D.Kinematic;
-        animator.SetBool("IsMoving", false);
     }
 }

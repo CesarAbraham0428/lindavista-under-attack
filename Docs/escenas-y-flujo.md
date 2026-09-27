@@ -32,7 +32,9 @@ Testing es una escena independiente para pruebas.
 - Al cargarla, `SelectedCharacterBootstrap` activa Marco o César según `Lindavista.SelectedCharacter`. Si esa preferencia no existe, se conservan los estados guardados en la escena; el estado por defecto es Marco activo y César inactivo.
 - `SelectedLevelEnvironment` lee `Lindavista.SelectedLevel` al iniciar y configura los elementos visuales de esa variante.
 - El HUD de vida se crea en tiempo de ejecución para el jugador activo.
-- **Estado actual:** no hay componentes `BasicEnemy` ni `EnemyHealth` en esta escena. La IA de enemigos se prueba en `Testing` y aún debe integrarse aquí para que `Gameplay` tenga encuentros funcionales.
+- **Inicio y oleada:** la cámara abre en el tramo 5 para mostrar la formación de enemigos del nivel elegido, luego hace un paneo hacia la entrada. Al empezar el paneo, `E5_Enemigos` activa un enemigo cada 1,65 segundos para que avance hacia la posición inicial del jugador (X=-6,72 en la escena actual). El personaje queda bloqueado durante la presentación. Los conteos y prefabs se configuran en el mismo spawner para los cuatro niveles.
+- **Derrota:** la salud del personaje en cero o la llegada de un enemigo a la posición inicial activan la pantalla de derrota. Se bloquean las acciones y se puede reiniciar `Gameplay` o salir a `MainMenu`.
+- `Testing` conserva las cuatro variantes de enemigo para probar combate y animaciones. La secuencia de inicio en `Gameplay` requiere una comprobación visual en Play Mode.
 
 ### `Testing`
 

@@ -29,12 +29,14 @@ public class PlayerActions : MonoBehaviour
     private bool hasAimInViewport;
     private bool touchAimActive;
     private bool touchFireHeld;
+    private bool inputLocked;
     private bool defeated;
     private int currentHealth;
     private float nextDamageTime;
     private float nextShotTime;
 
     public bool IsDefeated => defeated;
+    public bool IsInputLocked => inputLocked;
     public int CurrentHealth => currentHealth;
     public int MaxHealth => maxHealth;
     public event Action<int, int> HealthChanged;
@@ -43,6 +45,19 @@ public class PlayerActions : MonoBehaviour
     public Vector2 AimOrigin => spriteRenderer != null
         ? (Vector2)spriteRenderer.bounds.center
         : (Vector2)transform.position;
+
+    public void SetInputLocked(bool locked)
+    {
+        inputLocked = locked || defeated || GameFlowController.IsDefeatActive;
+        if (!locked)
+            return;
+
+        hasAimInViewport = false;
+        touchAimActive = false;
+        touchFireHeld = false;
+        if (animator != null)
+            ResetFireTriggers();
+    }
 
     private void Awake()
     {
@@ -57,6 +72,9 @@ public class PlayerActions : MonoBehaviour
 
     private void Update()
     {
+        if (inputLocked)
+            return;
+
         UpdateAim();
 
         if (animator == null || defeated)
@@ -106,7 +124,7 @@ public class PlayerActions : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (defeated || spriteRenderer == null || movement == null)
+        if (inputLocked || defeated || spriteRenderer == null || movement == null)
             return;
 
         // Only movement keys change facing. Keep the last direction when idle.
@@ -117,18 +135,20 @@ public class PlayerActions : MonoBehaviour
 
     public void SelectTouchWeapon(int index)
     {
-        if (!defeated && index >= 0 && index <= 2)
+        if (!inputLocked && !defeated && index >= 0 && index <= 2)
             selectedWeapon = (Weapon)index;
     }
 
     public void ReloadTouchWeapon()
     {
-        TryReload();
+        if (!inputLocked)
+            TryReload();
     }
 
     public void TakeDamage(int amount)
     {
-        if (defeated || amount <= 0 || Time.time < nextDamageTime)
+        if (defeated || GameFlowController.IsDefeatActive ||
+            amount <= 0 || Time.time < nextDamageTime)
             return;
 
         currentHealth = Mathf.Max(0, currentHealth - amount);
@@ -154,11 +174,12 @@ public class PlayerActions : MonoBehaviour
             animator.SetTrigger("Defeat");
         }
         movement?.StopForDefeat();
+        GameFlowController.ReportPlayerDefeat();
     }
 
     public void SetTouchAimAndFire(Vector2 direction)
     {
-        if (defeated)
+        if (inputLocked || defeated)
             return;
 
         touchAimActive = true;
@@ -180,7 +201,7 @@ public class PlayerActions : MonoBehaviour
 
     private void TryReload()
     {
-        if (animator == null || defeated || IsBusy())
+        if (inputLocked || animator == null || defeated || IsBusy())
             return;
 
         ResetFireTriggers();
@@ -195,7 +216,7 @@ public class PlayerActions : MonoBehaviour
 
     private void HoldFire()
     {
-        if (Time.time < nextShotTime || IsBusyExceptFire())
+        if (inputLocked || Time.time < nextShotTime || IsBusyExceptFire())
             return;
 
         string triggerName;
@@ -242,7 +263,7 @@ public class PlayerActions : MonoBehaviour
     private void UpdateAim()
     {
         hasAimInViewport = false;
-        if (defeated)
+        if (inputLocked || defeated)
             return;
 
         if (touchAimActive)
@@ -285,7 +306,7 @@ public class PlayerActions : MonoBehaviour
 
     private void OnGUI()
     {
-        if (defeated || aimCamera == null || !hasAimInViewport || MobileControlsHUD.IsVisible)
+        if (inputLocked || defeated || aimCamera == null || !hasAimInViewport || MobileControlsHUD.IsVisible)
             return;
 
         Vector3 screen = aimCamera.WorldToScreenPoint(AimTarget);

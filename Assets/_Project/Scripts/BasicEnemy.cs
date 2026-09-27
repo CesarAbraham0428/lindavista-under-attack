@@ -31,10 +31,21 @@ public sealed class BasicEnemy : MonoBehaviour
     private float nextTargetSearch;
     private float nextAttack;
     private bool wasShieldBroken;
+    private bool hasFixedEntranceTarget;
+    private bool hasReachedEntrance;
+    private float fixedEntranceX;
     private float EffectiveAttackRange =>
         attackStyle == AttackStyle.Melee || attackStyle == AttackStyle.ShieldMelee
             ? Mathf.Min(attackRange, meleeHitRange)
             : attackRange;
+
+    /// <summary>Sets the fixed world X coordinate the enemy advances toward.</summary>
+    public void SetEntranceTargetX(float worldX)
+    {
+        fixedEntranceX = worldX;
+        hasFixedEntranceTarget = true;
+        entranceTarget = null;
+    }
 
     private void Awake()
     {
@@ -53,6 +64,12 @@ public sealed class BasicEnemy : MonoBehaviour
         if (health.IsDead)
         {
             animator.SetBool("IsMoving", false);
+            return;
+        }
+
+        if (GameFlowController.IsDefeatActive)
+        {
+            StopForGameOver();
             return;
         }
 
@@ -76,9 +93,12 @@ public sealed class BasicEnemy : MonoBehaviour
             nextTargetSearch = Time.time + 0.25f;
         }
 
-        if (entranceTarget != null)
+        if (entranceTarget != null || hasFixedEntranceTarget)
         {
             AdvanceToEntrance();
+            if (GameFlowController.IsDefeatActive)
+                return;
+
             if (target != null && !target.IsDefeated && CanHit(target) && Time.time >= nextAttack)
             {
                 Face(target.transform.position.x - transform.position.x);
@@ -120,11 +140,25 @@ public sealed class BasicEnemy : MonoBehaviour
     private void AdvanceToEntrance()
     {
         Vector3 position = transform.position;
-        float destinationX = entranceTarget.position.x;
+        float destinationX = entranceTarget != null ? entranceTarget.position.x : fixedEntranceX;
         Face(destinationX - position.x);
         position.x = Mathf.MoveTowards(position.x, destinationX, speed * Time.deltaTime);
         animator.SetBool("IsMoving", !Mathf.Approximately(position.x, transform.position.x));
         transform.position = position;
+
+        if (!hasReachedEntrance && Mathf.Abs(position.x - destinationX) <= 0.001f)
+        {
+            hasReachedEntrance = true;
+            GameFlowController.ReportEnemyReachedEntrance();
+        }
+    }
+
+    public void StopForGameOver()
+    {
+        StopAllCoroutines();
+        if (animator != null)
+            animator.SetBool("IsMoving", false);
+        enabled = false;
     }
 
     private void LateUpdate()
