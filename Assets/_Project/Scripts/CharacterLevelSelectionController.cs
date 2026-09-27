@@ -90,7 +90,7 @@ public sealed class CharacterLevelSelectionController : MonoBehaviour
     {
         PlayerPrefs.SetInt(SelectedCharacterKey, selectedCharacter);
         PlayerPrefs.SetInt(SelectedLevelKey, selectedLevel);
-        SceneManager.LoadScene("Testing");
+        SceneManager.LoadScene("Gameplay");
     }
 
     private static void UpdateOutlines(Outline[] outlines, int selectedIndex)

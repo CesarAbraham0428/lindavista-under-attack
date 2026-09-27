@@ -744,7 +744,7 @@ MonoBehaviour:
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 46
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -2079,7 +2079,7 @@ MonoBehaviour:
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 46
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -2399,7 +2399,7 @@ MonoBehaviour:
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 42
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -2494,7 +2494,7 @@ MonoBehaviour:
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 46
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -2739,7 +2739,7 @@ MonoBehaviour:
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 42
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -2940,7 +2940,7 @@ MonoBehaviour:
   - {fileID: 498642008}
   - {fileID: 986201403}
   - {fileID: 1780870416}
-  levelUnlocked: 01000000
+  levelUnlocked: 01010101
   levelLockIcons:
   - {fileID: 0}
   - {fileID: 1227188200}
@@ -3206,7 +3206,7 @@ MonoBehaviour:
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 46
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
