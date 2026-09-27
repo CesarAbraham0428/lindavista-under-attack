@@ -9,7 +9,15 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private float horizontal;
+    private float touchHorizontal;
     private bool movementLocked;
+
+    public float HorizontalInput => horizontal;
+
+    public void SetTouchHorizontal(float direction)
+    {
+        touchHorizontal = Mathf.Clamp(direction, -1f, 1f);
+    }
 
     private void Awake()
     {
@@ -25,18 +33,20 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        horizontal = 0f;
+        float keyboardHorizontal = 0f;
 
         if (Keyboard.current != null)
         {
             if (Keyboard.current.aKey.isPressed ||
                 Keyboard.current.leftArrowKey.isPressed)
-                horizontal = -1f;
+                keyboardHorizontal = -1f;
 
             if (Keyboard.current.dKey.isPressed ||
                 Keyboard.current.rightArrowKey.isPressed)
-                horizontal = 1f;
+                keyboardHorizontal = 1f;
         }
+
+        horizontal = keyboardHorizontal != 0f ? keyboardHorizontal : touchHorizontal;
 
         if (horizontal > 0f && rb.position.x >= maxHorizontalPosition)
             horizontal = 0f;
@@ -80,6 +90,7 @@ public class PlayerMovement : MonoBehaviour
     {
         movementLocked = true;
         horizontal = 0f;
+        touchHorizontal = 0f;
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
         rb.bodyType = RigidbodyType2D.Kinematic;

@@ -21,6 +21,8 @@ public class PlayerActions : MonoBehaviour
     private Weapon selectedWeapon = Weapon.Pistol;
     private bool hasAimInViewport;
     private bool wasFiringHeld;
+    private bool touchAimActive;
+    private bool touchFireHeld;
     private bool defeated;
     private float hideShotTime;
     private float nextShotTime;
@@ -61,17 +63,8 @@ public class PlayerActions : MonoBehaviour
             else if (Keyboard.current.digit3Key.wasPressedThisFrame)
                 selectedWeapon = Weapon.RPG;
 
-            if (Keyboard.current.rKey.wasPressedThisFrame && !IsBusy())
-            {
-                ResetFireTriggers();
-                animator.SetTrigger(selectedWeapon switch
-                {
-                    Weapon.Pistol => "ReloadPistol",
-                    Weapon.SMG => "ReloadSMG",
-                    _ => "ReloadRPG"
-                });
-                nextShotTime = Mathf.Max(nextShotTime, Time.time + 0.15f);
-            }
+            if (Keyboard.current.rKey.wasPressedThisFrame)
+                TryReload();
 
             if (Keyboard.current.qKey.wasPressedThisFrame)
                 animator.SetTrigger("TakeDamage");
@@ -89,8 +82,11 @@ public class PlayerActions : MonoBehaviour
             }
         }
 
-        bool firingHeld = Mouse.current != null &&
-                          Mouse.current.leftButton.isPressed && hasAimInViewport;
+        bool mouseFireHeld = !Application.isMobilePlatform &&
+                             !MobileControlsHUD.IsVisible &&
+                             Mouse.current != null &&
+                             Mouse.current.leftButton.isPressed && hasAimInViewport;
+        bool firingHeld = touchFireHeld || mouseFireHeld;
         if (firingHeld)
             HoldFire();
         else
@@ -107,16 +103,64 @@ public class PlayerActions : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (defeated || spriteRenderer == null || Keyboard.current == null)
+        if (defeated || spriteRenderer == null || movement == null)
             return;
 
         // Only movement keys change facing. Keep the last direction when idle.
-        bool left = Keyboard.current.aKey.isPressed ||
-                    Keyboard.current.leftArrowKey.isPressed;
-        bool right = Keyboard.current.dKey.isPressed ||
-                     Keyboard.current.rightArrowKey.isPressed;
-        if (left != right)
-            spriteRenderer.flipX = left;
+        float direction = movement.HorizontalInput;
+        if (direction != 0f)
+            spriteRenderer.flipX = direction < 0f;
+    }
+
+    public void SelectTouchWeapon(int index)
+    {
+        if (!defeated && index >= 0 && index <= 2)
+            selectedWeapon = (Weapon)index;
+    }
+
+    public void ReloadTouchWeapon()
+    {
+        TryReload();
+    }
+
+    public void SetTouchAimAndFire(Vector2 direction)
+    {
+        if (defeated)
+            return;
+
+        touchAimActive = true;
+        touchFireHeld = true;
+        if (direction.sqrMagnitude > 0.0025f)
+            AimDirection = direction.normalized;
+        AimTarget = AimOrigin + AimDirection * maxAimDistance;
+    }
+
+    public void StopTouchAimAndFire()
+    {
+        touchAimActive = false;
+        touchFireHeld = false;
+        if (animator != null)
+        {
+            ResetFireTriggers();
+            StopFireAnimation();
+        }
+        if (shotLine != null)
+            shotLine.enabled = false;
+    }
+
+    private void TryReload()
+    {
+        if (animator == null || defeated || IsBusy())
+            return;
+
+        ResetFireTriggers();
+        animator.SetTrigger(selectedWeapon switch
+        {
+            Weapon.Pistol => "ReloadPistol",
+            Weapon.SMG => "ReloadSMG",
+            _ => "ReloadRPG"
+        });
+        nextShotTime = Mathf.Max(nextShotTime, Time.time + 0.15f);
     }
 
     private void HoldFire()
@@ -168,7 +212,16 @@ public class PlayerActions : MonoBehaviour
     private void UpdateAim()
     {
         hasAimInViewport = false;
-        if (defeated || Mouse.current == null)
+        if (defeated)
+            return;
+
+        if (touchAimActive)
+        {
+            AimTarget = AimOrigin + AimDirection * maxAimDistance;
+            return;
+        }
+
+        if (Application.isMobilePlatform || MobileControlsHUD.IsVisible || Mouse.current == null)
             return;
 
         if (aimCamera == null)
@@ -238,7 +291,7 @@ public class PlayerActions : MonoBehaviour
 
     private void OnGUI()
     {
-        if (defeated || aimCamera == null || !hasAimInViewport)
+        if (defeated || aimCamera == null || !hasAimInViewport || MobileControlsHUD.IsVisible)
             return;
 
         Vector3 screen = aimCamera.WorldToScreenPoint(AimTarget);
