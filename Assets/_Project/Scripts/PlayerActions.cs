@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -34,6 +35,9 @@ public class PlayerActions : MonoBehaviour
     private float nextShotTime;
 
     public bool IsDefeated => defeated;
+    public int CurrentHealth => currentHealth;
+    public int MaxHealth => maxHealth;
+    public event Action<int, int> HealthChanged;
     public Vector2 AimDirection { get; private set; } = Vector2.right;
     public Vector2 AimTarget { get; private set; }
     public Vector2 AimOrigin => spriteRenderer != null
@@ -71,7 +75,13 @@ public class PlayerActions : MonoBehaviour
                 TryReload();
 
             if (Keyboard.current.qKey.wasPressedThisFrame)
-                animator.SetTrigger("TakeDamage");
+            {
+                string sceneName = gameObject.scene.name;
+                if (sceneName == "Testing" || sceneName == "Gameplay")
+                    TakeDamage(1);
+                else
+                    animator.SetTrigger("TakeDamage");
+            }
 
             if (Keyboard.current.eKey.wasPressedThisFrame)
             {
@@ -123,6 +133,7 @@ public class PlayerActions : MonoBehaviour
 
         currentHealth = Mathf.Max(0, currentHealth - amount);
         nextDamageTime = Time.time + damageCooldown;
+        HealthChanged?.Invoke(currentHealth, maxHealth);
         if (currentHealth == 0)
             Defeat();
         else if (animator != null)
