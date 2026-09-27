@@ -20,10 +20,15 @@ public class CameraFollow2D : MonoBehaviour
         startCameraX = initialPosition.x;
         fixedY = initialPosition.y;
         fixedZ = initialPosition.z;
+
+        FindActivePlayer();
     }
 
     private void LateUpdate()
     {
+        if (target == null || !target.gameObject.activeInHierarchy)
+            FindActivePlayer();
+
         if (target == null)
             return;
 
@@ -50,5 +55,15 @@ public class CameraFollow2D : MonoBehaviour
 
         nextX = Mathf.Clamp(nextX, startCameraX, maximumCameraX);
         transform.position = new Vector3(nextX, fixedY, fixedZ);
+    }
+
+    private void FindActivePlayer()
+    {
+        GameObject player = GameObject.Find("Player_Marco");
+
+        if (player == null)
+            player = GameObject.Find("Player_Cesar");
+
+        target = player != null ? player.transform : null;
     }
 }
