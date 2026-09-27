@@ -14,11 +14,19 @@ public static class SelectedCharacterBootstrap
 
     private static void ApplySelection(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name != "Testing" || !PlayerPrefs.HasKey(SelectedCharacterKey))
+        if (scene.name != "Gameplay" || !PlayerPrefs.HasKey(SelectedCharacterKey))
             return;
 
-        GameObject marco = GameObject.Find("Player_Marco");
-        GameObject cesar = GameObject.Find("Player_Cesar");
+        GameObject marco = null;
+        GameObject cesar = null;
+        foreach (GameObject rootObject in scene.GetRootGameObjects())
+        {
+            if (rootObject.name == "Player_Marco")
+                marco = rootObject;
+            else if (rootObject.name == "Player_Cesar")
+                cesar = rootObject;
+        }
+
         bool selectMarco = PlayerPrefs.GetInt(SelectedCharacterKey, 0) == 0;
 
         if (marco != null)
