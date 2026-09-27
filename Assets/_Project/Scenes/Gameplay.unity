@@ -6725,7 +6725,11 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::SelectedLevelEnvironment
   sunsetSunSprite: {fileID: 3729200777042963002, guid: eae53a802b76d3d42998175e40a9fece, type: 3}
+  nightMoonSprite: {fileID: 2039199997175570130, guid: 29ac6d5778af04b47b984d3b8d09cfd2, type: 3}
+  threeAmMoonSprite: {fileID: 1738045062547311973, guid: bfe53f0a2d6c17b4091b1973ba91401b, type: 3}
   sunsetSkyColor: {r: 0.16, g: 0.27, b: 0.43, a: 1}
+  nightSkyColor: {r: 0.02, g: 0.028, b: 0.095, a: 1}
+  threeAmSkyColor: {r: 0.0008, g: 0.0015, b: 0.01, a: 1}
 --- !u!1 &992800464
 GameObject:
   m_ObjectHideFlags: 0
