@@ -22,7 +22,7 @@ Esta documentación describe lo que está implementado hoy en las escenas y scri
 
 ## Estado resumido
 
-- La escena `Gameplay` contiene al jugador seleccionado y el escenario. Actualmente no tiene componentes de inteligencia/enemigo (`BasicEnemy` o `EnemyHealth`) conectados a enemigos.
+- `Gameplay` abre con una vista de la oleada en el tramo 5 y desplaza la cámara hacia la entrada; los enemigos avanzan paulatinamente hacia el jugador. El nivel elegido define los tipos y cantidades mediante prefabs reutilizables.
 - `Testing` contiene las cuatro variantes de enemigo y permite probar daño al jugador.
 - El HUD de vida se construye durante Play Mode en `Gameplay` y `Testing`. El daño de prueba se activa con **Q**.
 - Baches, grafitis, muros agrietados y marcas de impactos forman parte del arte colocado en la escena. No se generan al disparar ni se mueven por el nivel.

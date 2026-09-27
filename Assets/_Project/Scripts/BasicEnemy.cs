@@ -31,10 +31,20 @@ public sealed class BasicEnemy : MonoBehaviour
     private float nextTargetSearch;
     private float nextAttack;
     private bool wasShieldBroken;
+    private bool hasFixedEntranceTarget;
+    private float fixedEntranceX;
     private float EffectiveAttackRange =>
         attackStyle == AttackStyle.Melee || attackStyle == AttackStyle.ShieldMelee
             ? Mathf.Min(attackRange, meleeHitRange)
             : attackRange;
+
+    /// <summary>Sets the fixed world X coordinate the enemy advances toward.</summary>
+    public void SetEntranceTargetX(float worldX)
+    {
+        fixedEntranceX = worldX;
+        hasFixedEntranceTarget = true;
+        entranceTarget = null;
+    }
 
     private void Awake()
     {
@@ -76,7 +86,7 @@ public sealed class BasicEnemy : MonoBehaviour
             nextTargetSearch = Time.time + 0.25f;
         }
 
-        if (entranceTarget != null)
+        if (entranceTarget != null || hasFixedEntranceTarget)
         {
             AdvanceToEntrance();
             if (target != null && !target.IsDefeated && CanHit(target) && Time.time >= nextAttack)
@@ -120,7 +130,7 @@ public sealed class BasicEnemy : MonoBehaviour
     private void AdvanceToEntrance()
     {
         Vector3 position = transform.position;
-        float destinationX = entranceTarget.position.x;
+        float destinationX = entranceTarget != null ? entranceTarget.position.x : fixedEntranceX;
         Face(destinationX - position.x);
         position.x = Mathf.MoveTowards(position.x, destinationX, speed * Time.deltaTime);
         animator.SetBool("IsMoving", !Mathf.Approximately(position.x, transform.position.x));

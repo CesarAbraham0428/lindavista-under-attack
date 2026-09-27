@@ -19,6 +19,8 @@ Los degradados de los niveles 2, 3 y 4 se generan en memoria al entrar en la esc
 
 La escena también contiene seis objetos de bache (`bache1` a `bache6`), arte de muro agrietado y objetos de muro con impactos. El jugador puede descubrir las partes del escenario al avanzar, pero esos objetos ya están ubicados en la escena. No se encontró código que los haga aparecer por distancia, cambie un bache, o añada un impacto al disparar.
 
+Al entrar a `Gameplay`, la cámara presenta primero la composición de enemigos del tramo 5 y luego recorre el escenario hacia la entrada del jugador. El spawner libera a los enemigos de uno en uno mientras la cámara vuelve; todos avanzan automáticamente hacia X=-6,72. Las cantidades por nivel se configuran en `E5_Enemigos`, y los niveles posteriores agregan tipos de enemigo y aumentan la oleada.
+
 ## Marcas de daño en muros
 
 Hay dos tipos de contenido visual:
