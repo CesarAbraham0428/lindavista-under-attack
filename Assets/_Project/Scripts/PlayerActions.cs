@@ -1,67 +1,279 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 
 public class PlayerActions : MonoBehaviour
 {
+    private enum Weapon { Pistol, SMG, RPG }
+
+    [Header("Mouse aim")]
+    [SerializeField, Min(0.1f)] private float maxAimDistance = 18f;
+    [Header("Minimum time between shots")]
+    [SerializeField, Min(0.01f)] private float pistolFireInterval = 0.4f;
+    [SerializeField, Min(0.01f)] private float smgFireInterval = 0.12f;
+    [SerializeField, Min(0.01f)] private float rpgFireInterval = 1.2f;
+    [Header("Projectile spawn (world units from sprite center)")]
+    [SerializeField, Min(0f)] private float pistolMuzzleDistance = 0.4f;
+    [SerializeField, Min(0f)] private float smgMuzzleDistance = 0.5f;
+    [SerializeField, Min(0f)] private float rpgMuzzleDistance = 0.65f;
+    [SerializeField] private float muzzleHeight = 0.08f;
+
     private Animator animator;
     private PlayerMovement movement;
-    private bool isAiming;
+    private SpriteRenderer spriteRenderer;
+    private Camera aimCamera;
+    private Weapon selectedWeapon = Weapon.Pistol;
+    private bool hasAimInViewport;
+    private bool wasFiringHeld;
+    private bool touchAimActive;
+    private bool touchFireHeld;
     private bool defeated;
+    private float nextShotTime;
+
+    public Vector2 AimDirection { get; private set; } = Vector2.right;
+    public Vector2 AimTarget { get; private set; }
+    public Vector2 AimOrigin => spriteRenderer != null
+        ? (Vector2)spriteRenderer.bounds.center
+        : (Vector2)transform.position;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         movement = GetComponent<PlayerMovement>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        aimCamera = Camera.main;
+        if (animator != null)
+            animator.SetBool("IsAiming", false);
     }
 
     private void Update()
     {
-        if (Keyboard.current == null || animator == null || defeated)
+        UpdateAim();
+
+        if (animator == null || defeated)
             return;
 
-        // Las armas de fuego se repiten mientras se mantenga presionada la tecla.
-        // No reiniciamos la animación mientras todavía está reproduciéndose.
-        HoldFire(Keyboard.current.digit1Key, "FirePistol");
-        HoldFire(Keyboard.current.digit3Key, "FireSMG");
-        HoldFire(Keyboard.current.digit5Key, "FireRPG");
-
-        if (Keyboard.current.digit2Key.wasPressedThisFrame)
-            TriggerIfNotPlaying("ReloadPistol");
-
-        if (Keyboard.current.digit4Key.wasPressedThisFrame)
-            TriggerIfNotPlaying("ReloadSMG");
-
-        if (Keyboard.current.digit6Key.wasPressedThisFrame)
-            TriggerIfNotPlaying("ReloadRPG");
-
-        if (Keyboard.current.qKey.wasPressedThisFrame)
-            animator.SetTrigger("TakeDamage");
-
-        if (Keyboard.current.eKey.wasPressedThisFrame)
+        if (Keyboard.current != null)
         {
-            defeated = true;
-            movement?.StopForDefeat();
-            animator.SetTrigger("Defeat");
+            if (Keyboard.current.digit1Key.wasPressedThisFrame)
+                selectedWeapon = Weapon.Pistol;
+            else if (Keyboard.current.digit2Key.wasPressedThisFrame)
+                selectedWeapon = Weapon.SMG;
+            else if (Keyboard.current.digit3Key.wasPressedThisFrame)
+                selectedWeapon = Weapon.RPG;
+
+            if (Keyboard.current.rKey.wasPressedThisFrame)
+                TryReload();
+
+            if (Keyboard.current.qKey.wasPressedThisFrame)
+                animator.SetTrigger("TakeDamage");
+
+            if (Keyboard.current.eKey.wasPressedThisFrame)
+            {
+                defeated = true;
+                hasAimInViewport = false;
+                ResetFireTriggers();
+                movement?.StopForDefeat();
+                animator.SetTrigger("Defeat");
+                return;
+            }
         }
 
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        bool mouseFireHeld = !Application.isMobilePlatform &&
+                             !MobileControlsHUD.IsVisible &&
+                             Mouse.current != null &&
+                             Mouse.current.leftButton.isPressed && hasAimInViewport;
+        bool firingHeld = touchFireHeld || mouseFireHeld;
+        if (firingHeld)
+            HoldFire();
+        else
         {
-            isAiming = !isAiming;
-            animator.SetBool("IsAiming", isAiming);
+            ResetFireTriggers();
+            if (wasFiringHeld)
+                StopFireAnimation();
+        }
+
+        wasFiringHeld = firingHeld;
+    }
+
+    private void LateUpdate()
+    {
+        if (defeated || spriteRenderer == null || movement == null)
+            return;
+
+        // Only movement keys change facing. Keep the last direction when idle.
+        float direction = movement.HorizontalInput;
+        if (direction != 0f)
+            spriteRenderer.flipX = direction < 0f;
+    }
+
+    public void SelectTouchWeapon(int index)
+    {
+        if (!defeated && index >= 0 && index <= 2)
+            selectedWeapon = (Weapon)index;
+    }
+
+    public void ReloadTouchWeapon()
+    {
+        TryReload();
+    }
+
+    public void SetTouchAimAndFire(Vector2 direction)
+    {
+        if (defeated)
+            return;
+
+        touchAimActive = true;
+        touchFireHeld = true;
+        if (direction.sqrMagnitude > 0.0025f)
+            AimDirection = direction.normalized;
+        AimTarget = AimOrigin + AimDirection * maxAimDistance;
+    }
+
+    public void StopTouchAimAndFire()
+    {
+        touchAimActive = false;
+        touchFireHeld = false;
+        if (animator != null)
+        {
+            ResetFireTriggers();
+            StopFireAnimation();
         }
     }
 
-    private void HoldFire(KeyControl key, string triggerName)
+    private void TryReload()
     {
-        if (key.isPressed && !IsBusy())
-            animator.SetTrigger(triggerName);
+        if (animator == null || defeated || IsBusy())
+            return;
+
+        ResetFireTriggers();
+        animator.SetTrigger(selectedWeapon switch
+        {
+            Weapon.Pistol => "ReloadPistol",
+            Weapon.SMG => "ReloadSMG",
+            _ => "ReloadRPG"
+        });
+        nextShotTime = Mathf.Max(nextShotTime, Time.time + 0.15f);
     }
 
-    private void TriggerIfNotPlaying(string triggerName)
+    private void HoldFire()
     {
-        if (!IsBusy())
-            animator.SetTrigger(triggerName);
+        if (Time.time < nextShotTime || IsBusy())
+            return;
+
+        string triggerName;
+        float fireInterval;
+        switch (selectedWeapon)
+        {
+            case Weapon.SMG:
+                triggerName = "FireSMG";
+                fireInterval = smgFireInterval;
+                break;
+            case Weapon.RPG:
+                triggerName = "FireRPG";
+                fireInterval = rpgFireInterval;
+                break;
+            default:
+                triggerName = "FirePistol";
+                fireInterval = pistolFireInterval;
+                break;
+        }
+
+        animator.SetTrigger(triggerName);
+        nextShotTime = Time.time + fireInterval;
+        float muzzleDistance = selectedWeapon switch
+        {
+            Weapon.SMG => smgMuzzleDistance,
+            Weapon.RPG => rpgMuzzleDistance,
+            _ => pistolMuzzleDistance
+        };
+        Vector2 spawnPosition = AimOrigin + AimDirection * muzzleDistance + Vector2.up * muzzleHeight;
+        Vector2 shotDirection = AimTarget - spawnPosition;
+        if (shotDirection.sqrMagnitude < 0.0001f)
+            shotDirection = AimDirection;
+        CombatProjectile.Spawn(spawnPosition, shotDirection.normalized, (int)selectedWeapon,
+            maxAimDistance, transform);
+    }
+
+    private void ResetFireTriggers()
+    {
+        animator.ResetTrigger("FirePistol");
+        animator.ResetTrigger("FireSMG");
+        animator.ResetTrigger("FireRPG");
+    }
+
+    private void StopFireAnimation()
+    {
+        if (!IsPlaying("Pistol_Fire") && !IsPlaying("SMG_Fire") &&
+            !IsPlaying("RPG_Fire"))
+            return;
+
+        string character = animator.runtimeAnimatorController.name.Contains("Marco")
+            ? "Marco" : "Cesar";
+        animator.Play(character + "_Idle", 0, 0f);
+    }
+
+    private void UpdateAim()
+    {
+        hasAimInViewport = false;
+        if (defeated)
+            return;
+
+        if (touchAimActive)
+        {
+            AimTarget = AimOrigin + AimDirection * maxAimDistance;
+            return;
+        }
+
+        if (Application.isMobilePlatform || MobileControlsHUD.IsVisible || Mouse.current == null)
+            return;
+
+        if (aimCamera == null)
+            aimCamera = Camera.main;
+
+        if (aimCamera == null)
+            return;
+
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+        Rect playableView = aimCamera.pixelRect;
+
+        // Outside the Game view, keep the last valid aim instead of generating
+        // a direction towards the Inspector, toolbar, or an invalid screen point.
+        if (!playableView.Contains(mousePosition))
+            return;
+
+        hasAimInViewport = true;
+
+        float distanceFromCamera = Mathf.Abs(transform.position.z - aimCamera.transform.position.z);
+        Vector3 mouseWorld = aimCamera.ScreenToWorldPoint(
+            new Vector3(mousePosition.x, mousePosition.y, distanceFromCamera));
+
+        Vector2 fromPlayer = (Vector2)mouseWorld - AimOrigin;
+        if (fromPlayer.sqrMagnitude < 0.0001f)
+            return;
+
+        AimDirection = fromPlayer.normalized;
+        AimTarget = AimOrigin + Vector2.ClampMagnitude(fromPlayer, maxAimDistance);
+
+    }
+
+    private void OnGUI()
+    {
+        if (defeated || aimCamera == null || !hasAimInViewport || MobileControlsHUD.IsVisible)
+            return;
+
+        Vector3 screen = aimCamera.WorldToScreenPoint(AimTarget);
+        if (screen.z <= 0f)
+            return;
+
+        float x = screen.x;
+        float y = Screen.height - screen.y;
+        Color previousColor = GUI.color;
+        GUI.color = Color.yellow;
+        GUI.DrawTexture(new Rect(x - 1f, y - 10f, 2f, 7f), Texture2D.whiteTexture);
+        GUI.DrawTexture(new Rect(x - 1f, y + 3f, 2f, 7f), Texture2D.whiteTexture);
+        GUI.DrawTexture(new Rect(x - 10f, y - 1f, 7f, 2f), Texture2D.whiteTexture);
+        GUI.DrawTexture(new Rect(x + 3f, y - 1f, 7f, 2f), Texture2D.whiteTexture);
+        GUI.color = previousColor;
     }
 
     private bool IsBusy()
