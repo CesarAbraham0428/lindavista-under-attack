@@ -1,37 +1,43 @@
 fileFormatVersion: 2
-guid: baf58ec1c6cc10441823dcfb80ae81cc
+guid: f52a4488111ad8749b46f1d0394d7d78
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -157070615521379618
-    second: Cesar_Pistol_Reload_8f_0
+      213: -4788606053466592823
+    second: Enemy1_Walk_8f_0
   - first:
-      213: -7362054706979556975
-    second: Cesar_Pistol_Reload_8f_1
+      213: -83591537420378241
+    second: Enemy1_Walk_8f_1
   - first:
-      213: 576002762252160595
-    second: Cesar_Pistol_Reload_8f_2
+      213: -4975138082344468078
+    second: Enemy1_Walk_8f_2
   - first:
-      213: 459673020842054656
-    second: Cesar_Pistol_Reload_8f_3
+      213: 5680928119978544789
+    second: Enemy1_Walk_8f_3
   - first:
-      213: -8243766425971818383
-    second: Cesar_Pistol_Reload_8f_4
+      213: -7287425075598296365
+    second: Enemy1_Walk_8f_4
   - first:
-      213: 598709228803332644
-    second: Cesar_Pistol_Reload_8f_5
+      213: -2227593147103194825
+    second: Enemy1_Walk_8f_5
   - first:
-      213: -3601510475368377637
-    second: Cesar_Pistol_Reload_8f_6
+      213: -6760406593687962769
+    second: Enemy1_Walk_8f_6
   - first:
-      213: 4331532601574740108
-    second: Cesar_Pistol_Reload_8f_7
+      213: -782694852470468042
+    second: Enemy1_Walk_8f_7
   - first:
-      213: -8428336107663351696
-    second: Cesar_Pistol_Reload_8f_8
+      213: 7081891746997199030
+    second: Enemy1_Walk_8f_8
   - first:
-      213: -3588382576117586266
-    second: Cesar_Pistol_Reload_8f_9
+      213: -6056500470973416886
+    second: Enemy1_Walk_8f_9
+  - first:
+      213: -1705564229249500479
+    second: Enemy1_Walk_8f_10
+  - first:
+      213: 2742375555795226231
+    second: Enemy1_Walk_8f_11
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -78,7 +84,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 82.5263
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -127,177 +133,177 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cesar_Pistol_Reload_8f_0
+      name: Enemy1_Walk_8f_0
       rect:
         serializedVersion: 2
         x: 0
         y: 512
-        width: 384
+        width: 412
         height: 512
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5317738, y: 0.47802734}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eda323d7b19f1ddf0800000000000000
-      internalID: -157070615521379618
+      spriteID: 9c9a6dd5a247b8db0800000000000000
+      internalID: -4788606053466592823
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Pistol_Reload_8f_1
+      name: Enemy1_Walk_8f_1
       rect:
         serializedVersion: 2
-        x: 384
+        x: 412
         y: 512
-        width: 384
+        width: 392
         height: 512
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.49768063, y: 0.4741211}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 191bd75ff3ab4d990800000000000000
-      internalID: -7362054706979556975
+      spriteID: f7f54d980f507def0800000000000000
+      internalID: -83591537420378241
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Pistol_Reload_8f_2
+      name: Enemy1_Walk_8f_2
       rect:
         serializedVersion: 2
-        x: 768
+        x: 804
         y: 512
-        width: 384
+        width: 337
         height: 512
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.525492, y: 0.4741211}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 35e0fa1e57f5ef700800000000000000
-      internalID: 576002762252160595
+      spriteID: 29107550642c4fab0800000000000000
+      internalID: -4975138082344468078
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Pistol_Reload_8f_3
+      name: Enemy1_Walk_8f_3
       rect:
         serializedVersion: 2
-        x: 1152
+        x: 1141
         y: 512
-        width: 384
+        width: 395
         height: 512
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5470654, y: 0.47607422}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0041f105d26116600800000000000000
-      internalID: 459673020842054656
+      spriteID: 59e49d9b606b6de40800000000000000
+      internalID: 5680928119978544789
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Pistol_Reload_8f_4
+      name: Enemy1_Walk_8f_4
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 384
+        width: 412
         height: 512
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.54512334, y: 0.5151367}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 17088a8ec12489d80800000000000000
-      internalID: -8243766425971818383
+      spriteID: 3da70b1118dddda90800000000000000
+      internalID: -7287425075598296365
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Pistol_Reload_8f_5
+      name: Enemy1_Walk_8f_5
       rect:
         serializedVersion: 2
-        x: 384
+        x: 412
         y: 0
-        width: 384
+        width: 356
         height: 512
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.51008654, y: 0.51708984}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 42a129a1fda0f4800800000000000000
-      internalID: 598709228803332644
+      spriteID: 731d1d2c5dff511e0800000000000000
+      internalID: -2227593147103194825
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Pistol_Reload_8f_6
+      name: Enemy1_Walk_8f_6
       rect:
         serializedVersion: 2
         x: 768
         y: 0
-        width: 384
+        width: 402
         height: 512
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.53878313, y: 0.51904297}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bd2d1d4ed4dd40ec0800000000000000
-      internalID: -3601510475368377637
+      spriteID: f6b350e65063e22a0800000000000000
+      internalID: -6760406593687962769
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Pistol_Reload_8f_7
+      name: Enemy1_Walk_8f_7
       rect:
         serializedVersion: 2
-        x: 1152
+        x: 1170
         y: 0
-        width: 384
+        width: 366
         height: 512
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.53576726, y: 0.51123047}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c80d2e1a3f1bc1c30800000000000000
-      internalID: 4331532601574740108
+      spriteID: 63298f6bd2f4325f0800000000000000
+      internalID: -782694852470468042
       vertices: []
       indices: 
       edges: []
@@ -306,7 +312,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a1291041ee0e5bf44ae51b7c09ae40c3
+    spriteID: 5ff04b0a87a38fa48b31be0b2bc64b0b
     internalID: 0
     vertices: []
     indices: 
@@ -315,17 +321,19 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries:
+      - key: SpriteEditor.SliceOnImport
+        value: False
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":2.0},"gridSpriteSize":{"x":384.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Cesar_Pistol_Reload_8f_0: -157070615521379618
-      Cesar_Pistol_Reload_8f_1: -7362054706979556975
-      Cesar_Pistol_Reload_8f_2: 576002762252160595
-      Cesar_Pistol_Reload_8f_3: 459673020842054656
-      Cesar_Pistol_Reload_8f_4: -8243766425971818383
-      Cesar_Pistol_Reload_8f_5: 598709228803332644
-      Cesar_Pistol_Reload_8f_6: -3601510475368377637
-      Cesar_Pistol_Reload_8f_7: 4331532601574740108
+      Enemy1_Walk_8f_0: -4788606053466592823
+      Enemy1_Walk_8f_1: -83591537420378241
+      Enemy1_Walk_8f_2: -4975138082344468078
+      Enemy1_Walk_8f_3: 5680928119978544789
+      Enemy1_Walk_8f_4: -7287425075598296365
+      Enemy1_Walk_8f_5: -2227593147103194825
+      Enemy1_Walk_8f_6: -6760406593687962769
+      Enemy1_Walk_8f_7: -782694852470468042
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
