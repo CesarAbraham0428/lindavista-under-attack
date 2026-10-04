@@ -1,0 +1,9 @@
+# Sprites frontales de la tienda
+
+Generados con la herramienta integrada de imágenes de ChatGPT. Referencias: Marco_RPG_Aim.png y Cesar_RPG_Aim.png del proyecto. Los archivos originales se conservan.
+
+Prompt Marco: Create a production game UI character sprite based on the supplied reference character MARCO. Preserve his exact identity, black parted tousled hair, tan skin, small black ear stud, black jacket over light gray hoodie and white shirt, dog tag, olive cargo trousers, black white sneakers and cartoon ink outlines/cel shading. Change pose to STRICTLY FRONT FACING full body standing relaxed confidently, symmetrical torso, face looking directly at viewer, arms relaxed at sides hands empty. Absolutely NO weapon, NO gun, NO rocket, NO backpack weapon. Same youthful cartoon proportions, clean crisp illustrative game art. Entire body including shoes fully visible, centered, tight useful framing with small transparent margins. Transparent background, one character only, no text, no UI.
+
+Prompt César: Create production game UI sprite CESAR from reference 1, using reference 2 solely for exact front-facing relaxed pose and clean cartoon game illustration treatment. Preserve CESAR identity brown tousled hair, black rectangular glasses, tan skin, olive jacket over gray hoodie and black shirt, dark charcoal cargo pants, olive white sneakers, watch. STRICTLY front-facing full body, looking at viewer, empty relaxed hands at sides. NO weapon or backpack, no text, one character centered with small margins, transparent background. Match reference2 scale proportions outlines and cel shading.
+
+La UI usa Lilita One (SIL Open Font License), con su licencia en Assets/_Project/Resources/UI/LilitaOne-LICENSE.txt. Los carteles utilizan el arte de madera ya existente, sin texto horneado, y los botones/marcos se dibujan con sprites nativos generados por CartoonUI.

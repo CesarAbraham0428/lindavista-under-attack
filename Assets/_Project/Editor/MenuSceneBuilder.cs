@@ -79,6 +79,7 @@ public static class MenuSceneBuilder
         SetObjectReference(controller, "masterVolumeSlider", volumeSlider);
 
         CreateEventSystem();
+        CartoonMenuStyle.Apply(canvas.transform);
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
     }

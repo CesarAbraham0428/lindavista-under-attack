@@ -10,11 +10,15 @@ public sealed class ProgressionProfile
     public int coins;
     public int pistolUpgrade;
     public int completedLevelsMask;
+    public int healthUpgrade;
+    public int[] weaponUpgrades = { 0, 0, 0 };
+    public int[] ammunition = { 48, 90, 6 };
     public string[] ownedWeapons = { "pistol" };
 
     public ProgressionProfile Copy() => new ProgressionProfile
     {
-        coins = coins, pistolUpgrade = pistolUpgrade,
+        coins = coins, pistolUpgrade = pistolUpgrade, healthUpgrade = healthUpgrade,
+        weaponUpgrades = (int[])weaponUpgrades.Clone(), ammunition = (int[])ammunition.Clone(),
         completedLevelsMask = completedLevelsMask,
         ownedWeapons = (string[])ownedWeapons.Clone()
     };
@@ -59,6 +63,12 @@ public sealed class ProgressionRepository
                 data.coins < 0 || data.pistolUpgrade < 0 || data.pistolUpgrade > WeaponDefinition.Pistol.MaxUpgrade ||
                 data.completedLevelsMask < 0 || data.completedLevelsMask > 15 || data.ownedWeapons == null ||
                 data.ownedWeapons.Length != 1 || data.ownedWeapons[0] != "pistol") return null;
+            if (!json.Contains("\"ammunition\"")) data.ammunition = new[] { 48, 90, 6 };
+            if (!json.Contains("\"weaponUpgrades\"")) data.weaponUpgrades = new[] { data.pistolUpgrade, 0, 0 };
+            if (data.ammunition == null || data.ammunition.Length != 3 || data.weaponUpgrades == null || data.weaponUpgrades.Length != 3 || data.healthUpgrade < 0 || data.healthUpgrade > ShopBalance.MaxHealthUpgrade) return null;
+            for (int i = 0; i < 3; i++)
+                if (data.ammunition[i] < 0 || data.ammunition[i] > ShopBalance.Capacity[i] || data.weaponUpgrades[i] < 0 || data.weaponUpgrades[i] > WeaponDefinition.At(i).MaxUpgrade) return null;
+            data.weaponUpgrades[0] = data.pistolUpgrade;
             return data;
         }
         catch (Exception) { return null; }
@@ -72,14 +82,39 @@ public sealed class ProgressionRepository
         return Commit(next);
     }
 
-    public bool TryUpgradePistol()
+    public bool TryUpgradePistol() => TryUpgradeWeapon(0);
+    public bool TryUpgradeWeapon(int index)
     {
-        int cost = WeaponDefinition.Pistol.UpgradeCost(profile.pistolUpgrade);
-        if (cost == 0) { LastError = "La pistola ya tiene la mejora máxima."; return false; }
+        if (index < 0 || index > 2) return false;
+        int cost = WeaponDefinition.At(index).UpgradeCost(profile.weaponUpgrades[index]);
+        if (cost == 0) { LastError = "Mejora máxima alcanzada."; return false; }
         if (profile.coins < cost) { LastError = "No tienes suficientes monedas."; return false; }
         var next = profile.Copy();
         next.coins -= cost;
-        next.pistolUpgrade++;
+        next.weaponUpgrades[index]++;
+        next.pistolUpgrade = next.weaponUpgrades[0];
+        return Commit(next);
+    }
+    public bool TryUpgradeHealth()
+    {
+        int cost = ShopBalance.HealthCost(profile.healthUpgrade);
+        if (cost == 0 || profile.coins < cost) { LastError = "Mejora máxima o monedas insuficientes."; return false; }
+        var next = profile.Copy(); next.coins -= cost; next.healthUpgrade++;
+        return Commit(next);
+    }
+    public bool TryBuyAmmo(int index)
+    {
+        if (index < 0 || index > 2) return false;
+        if (profile.ammunition[index] + ShopBalance.Pack[index] > ShopBalance.Capacity[index])
+        { LastError = "No cabe un cargador completo."; return false; }
+        if (profile.coins < ShopBalance.AmmoCost[index]) { LastError = "No tienes suficientes monedas."; return false; }
+        var next = profile.Copy(); next.coins -= ShopBalance.AmmoCost[index]; next.ammunition[index] += ShopBalance.Pack[index];
+        return Commit(next);
+    }
+    public bool TryConsumeAmmo(int index)
+    {
+        if (index < 0 || index > 2 || profile.ammunition[index] <= 0) return false;
+        var next = profile.Copy(); next.ammunition[index]--;
         return Commit(next);
     }
 

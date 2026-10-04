@@ -199,7 +199,7 @@ public class PlayerActions : MonoBehaviour
             return;
 
         ResetFireTriggers();
-        if (animator != null) animator.SetTrigger("ReloadPistol");
+        if (animator != null) animator.SetTrigger(weapons.EquippedWeapon == 0 ? "ReloadPistol" : weapons.EquippedWeapon == 1 ? "ReloadSMG" : "ReloadRPG");
     }
 
     private void HoldFire()
@@ -213,7 +213,7 @@ public class PlayerActions : MonoBehaviour
         if (shotDirection.sqrMagnitude < 0.0001f)
             shotDirection = AimDirection;
         if (weapons.TryFire(spawnPosition, shotDirection.normalized, transform) && animator != null)
-            animator.SetTrigger("FirePistol");
+            animator.SetTrigger(weapons.EquippedWeapon == 0 ? "FirePistol" : weapons.EquippedWeapon == 1 ? "FireSMG" : "FireRPG");
     }
 
     private void ResetFireTriggers()
