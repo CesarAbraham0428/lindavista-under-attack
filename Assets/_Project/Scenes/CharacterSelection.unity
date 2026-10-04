@@ -2940,7 +2940,6 @@ MonoBehaviour:
   - {fileID: 498642008}
   - {fileID: 986201403}
   - {fileID: 1780870416}
-  levelUnlocked: 01010101
   levelLockIcons:
   - {fileID: 0}
   - {fileID: 1227188200}

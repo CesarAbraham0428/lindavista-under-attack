@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>Damage receiver for an enemy sprite and its defeat animation.</summary>
@@ -19,6 +20,10 @@ public sealed class EnemyHealth : MonoBehaviour
     private float shieldBrokenUntil;
 
     public bool IsDead { get; private set; }
+    public int CurrentHealth => Mathf.Max(0, currentHealth);
+    public int MaxHealth => maxHealth;
+    public event Action<int, int> HealthChanged;
+    public event Action<EnemyHealth> Died;
     public bool IsShieldBroken => shieldBlocksFront && !IsDead && Time.time < shieldBrokenUntil;
 
     private void Awake()
@@ -45,7 +50,7 @@ public sealed class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(int amount, Vector2 shotDirection)
     {
-        if (IsDead || amount <= 0)
+        if (IsDead || amount <= 0 || GameFlowController.IsMatchEnded)
             return;
 
         if (shieldBlocksFront && !IsShieldBroken && spriteRenderer != null &&
@@ -81,10 +86,10 @@ public sealed class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        if (IsDead || amount <= 0)
+        if (IsDead || amount <= 0 || GameFlowController.IsMatchEnded)
             return;
 
-        currentHealth -= amount;
+        currentHealth = Mathf.Max(0, currentHealth - amount);
         if (currentHealth <= 0)
         {
             IsDead = true;
@@ -95,10 +100,13 @@ public sealed class EnemyHealth : MonoBehaviour
                 animator.SetTrigger("Defeat");
             }
             Destroy(gameObject, defeatDespawnDelay);
+            HealthChanged?.Invoke(currentHealth, maxHealth);
+            Died?.Invoke(this);
         }
         else if (animator != null)
         {
             animator.SetTrigger("TakeDamage");
         }
+        if (!IsDead) HealthChanged?.Invoke(currentHealth, maxHealth);
     }
 }

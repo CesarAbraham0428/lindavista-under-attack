@@ -53,8 +53,9 @@ public sealed class MainMenuController : MonoBehaviour
 
     public void OpenStore()
     {
-        SetPanelState(storePanel, true);
+        SetPanelState(storePanel, false);
         SetPanelState(settingsPanel, false);
+        PistolUpgradeShop.Open();
     }
 
     public void OpenSettings()

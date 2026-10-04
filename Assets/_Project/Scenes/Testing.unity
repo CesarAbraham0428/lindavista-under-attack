@@ -763,6 +763,7 @@ GameObject:
   - component: {fileID: 128393467}
   - component: {fileID: 128393470}
   - component: {fileID: 128393471}
+  - component: {fileID: 128393472}
   m_Layer: 0
   m_Name: Enemy1
   m_TagString: Untagged
@@ -908,6 +909,20 @@ MonoBehaviour:
   timeBetweenShots: 0.15
   entranceTarget: {fileID: 1563053346}
   exposedSprite: {fileID: 0}
+--- !u!114 &128393472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128393466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e83c52609a342fe4080ba88efff40969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyLootDrop
+  coinValue: 5
+  coinPrefab: {fileID: 1000794032613621786, guid: 9fec02da960de064fa9e59736ac3709b, type: 3}
 --- !u!1 &140175164
 GameObject:
   m_ObjectHideFlags: 0
@@ -1467,6 +1482,8 @@ GameObject:
   - component: {fileID: 184105905}
   - component: {fileID: 184105907}
   - component: {fileID: 184105908}
+  - component: {fileID: 184105910}
+  - component: {fileID: 184105909}
   m_Layer: 0
   m_Name: Player_Cesar
   m_TagString: Untagged
@@ -1661,13 +1678,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerActions
   maxAimDistance: 18
-  pistolFireInterval: 0.4
-  smgFireInterval: 0.12
-  rpgFireInterval: 1.2
   pistolMuzzleDistance: 0.4
-  smgMuzzleDistance: 0.5
-  rpgMuzzleDistance: 0.65
   muzzleHeight: 0.08
+--- !u!114 &184105909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184105901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9609020d1fa4ceb4c8db6a5af0198434, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponController
+  definition: {fileID: 11400000, guid: 483fdfb62e6483747b70d47444fef9d3, type: 2}
+--- !u!114 &184105910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184105901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed5d6d39a7f173b4d9e2276d7fba8c71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 5
   damageCooldown: 0.75
 --- !u!1 &185149004
@@ -2229,6 +2266,7 @@ GameObject:
   - component: {fileID: 244367203}
   - component: {fileID: 244367204}
   - component: {fileID: 244367205}
+  - component: {fileID: 244367206}
   m_Layer: 0
   m_Name: Enemy3
   m_TagString: Untagged
@@ -2374,6 +2412,20 @@ MonoBehaviour:
   timeBetweenShots: 0.15
   entranceTarget: {fileID: 1563053346}
   exposedSprite: {fileID: 909496970199998171, guid: f71e1ddd13591784fb96a86eb6a1267c, type: 3}
+--- !u!114 &244367206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244367200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e83c52609a342fe4080ba88efff40969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyLootDrop
+  coinValue: 15
+  coinPrefab: {fileID: 1000794032613621786, guid: 9fec02da960de064fa9e59736ac3709b, type: 3}
 --- !u!1 &282983415
 GameObject:
   m_ObjectHideFlags: 0
@@ -4184,6 +4236,9 @@ MonoBehaviour:
   horizontalOffset: 2
   maximumCameraX: 115
   smoothTime: 0.3
+  lineupHoldDuration: 1.1
+  returnPanDuration: 3.5
+  lineupCameraPadding: 3
 --- !u!1 &523926354
 GameObject:
   m_ObjectHideFlags: 0
@@ -5814,6 +5869,7 @@ GameObject:
   - component: {fileID: 815206765}
   - component: {fileID: 815206766}
   - component: {fileID: 815206767}
+  - component: {fileID: 815206768}
   m_Layer: 0
   m_Name: Enemy2
   m_TagString: Untagged
@@ -5952,12 +6008,27 @@ MonoBehaviour:
   sizeMultiplier: 1
   attackStyle: 1
   attackRange: 6
+  meleeHitRange: 1.5
   attackCooldown: 1.8
   attackWindup: 0.3
   shotsPerAttack: 1
   timeBetweenShots: 0.15
   entranceTarget: {fileID: 1563053346}
   exposedSprite: {fileID: 0}
+--- !u!114 &815206768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815206762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e83c52609a342fe4080ba88efff40969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyLootDrop
+  coinValue: 10
+  coinPrefab: {fileID: 1000794032613621786, guid: 9fec02da960de064fa9e59736ac3709b, type: 3}
 --- !u!1 &869317201
 GameObject:
   m_ObjectHideFlags: 0
@@ -6736,6 +6807,7 @@ GameObject:
   - component: {fileID: 937136089}
   - component: {fileID: 937136090}
   - component: {fileID: 937136091}
+  - component: {fileID: 937136092}
   m_Layer: 0
   m_Name: Enemy4
   m_TagString: Untagged
@@ -6874,12 +6946,27 @@ MonoBehaviour:
   sizeMultiplier: 1
   attackStyle: 3
   attackRange: 6.5
+  meleeHitRange: 1.5
   attackCooldown: 2
   attackWindup: 0.2
   shotsPerAttack: 3
   timeBetweenShots: 0.16
   entranceTarget: {fileID: 1563053346}
   exposedSprite: {fileID: 0}
+--- !u!114 &937136092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937136086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e83c52609a342fe4080ba88efff40969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyLootDrop
+  coinValue: 20
+  coinPrefab: {fileID: 1000794032613621786, guid: 9fec02da960de064fa9e59736ac3709b, type: 3}
 --- !u!1 &947946220
 GameObject:
   m_ObjectHideFlags: 0
@@ -8430,7 +8517,7 @@ SpriteRenderer:
   m_Size: {x: 8.77, y: 14.53}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1174325361
 GameObject:
@@ -10622,6 +10709,8 @@ GameObject:
   - component: {fileID: 1517596040}
   - component: {fileID: 1517596039}
   - component: {fileID: 1517596045}
+  - component: {fileID: 1517596047}
+  - component: {fileID: 1517596046}
   m_Layer: 0
   m_Name: Player_Marco
   m_TagString: Untagged
@@ -10816,13 +10905,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerActions
   maxAimDistance: 18
-  pistolFireInterval: 0.4
-  smgFireInterval: 0.12
-  rpgFireInterval: 1.2
   pistolMuzzleDistance: 0.4
-  smgMuzzleDistance: 0.5
-  rpgMuzzleDistance: 0.65
   muzzleHeight: 0.08
+--- !u!114 &1517596046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517596038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9609020d1fa4ceb4c8db6a5af0198434, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponController
+  definition: {fileID: 11400000, guid: 483fdfb62e6483747b70d47444fef9d3, type: 2}
+--- !u!114 &1517596047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517596038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed5d6d39a7f173b4d9e2276d7fba8c71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 5
   damageCooldown: 0.75
 --- !u!1 &1535414333
@@ -12444,7 +12553,7 @@ SpriteRenderer:
   m_Size: {x: 8.77, y: 14.53}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1760103155
 GameObject:
@@ -13281,7 +13390,7 @@ SpriteRenderer:
   m_Size: {x: 12.54, y: 12.54}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1919524084
 Transform:

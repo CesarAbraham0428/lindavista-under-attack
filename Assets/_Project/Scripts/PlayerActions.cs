@@ -1,45 +1,32 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerActions : MonoBehaviour
 {
-    private enum Weapon { Pistol, SMG, RPG }
-
     [Header("Mouse aim")]
     [SerializeField, Min(0.1f)] private float maxAimDistance = 18f;
-    [Header("Minimum time between shots")]
-    [SerializeField, Min(0.01f)] private float pistolFireInterval = 0.4f;
-    [SerializeField, Min(0.01f)] private float smgFireInterval = 0.12f;
-    [SerializeField, Min(0.01f)] private float rpgFireInterval = 1.2f;
     [Header("Projectile spawn (world units from sprite center)")]
     [SerializeField, Min(0f)] private float pistolMuzzleDistance = 0.4f;
-    [SerializeField, Min(0f)] private float smgMuzzleDistance = 0.5f;
-    [SerializeField, Min(0f)] private float rpgMuzzleDistance = 0.65f;
     [SerializeField] private float muzzleHeight = 0.08f;
-    [Header("Player health")]
-    [SerializeField, Min(1)] private int maxHealth = 5;
-    [SerializeField, Min(0f)] private float damageCooldown = 0.75f;
 
     private Animator animator;
     private PlayerMovement movement;
     private SpriteRenderer spriteRenderer;
     private Camera aimCamera;
-    private Weapon selectedWeapon = Weapon.Pistol;
+    private PlayerHealth health;
+    private PlayerWeaponController weapons;
     private bool hasAimInViewport;
     private bool touchAimActive;
     private bool touchFireHeld;
     private bool inputLocked;
     private bool defeated;
-    private int currentHealth;
-    private float nextDamageTime;
-    private float nextShotTime;
 
     public bool IsDefeated => defeated;
     public bool IsInputLocked => inputLocked;
-    public int CurrentHealth => currentHealth;
-    public int MaxHealth => maxHealth;
-    public event Action<int, int> HealthChanged;
+    public int CurrentHealth => health != null ? health.CurrentHealth : 0;
+    public int MaxHealth => health != null ? health.MaxHealth : 5;
+    public PlayerHealth Health => health;
+    public PlayerWeaponController Weapons => weapons;
     public Vector2 AimDirection { get; private set; } = Vector2.right;
     public Vector2 AimTarget { get; private set; }
     public Vector2 AimOrigin => spriteRenderer != null
@@ -55,13 +42,20 @@ public class PlayerActions : MonoBehaviour
         hasAimInViewport = false;
         touchAimActive = false;
         touchFireHeld = false;
+        weapons?.CancelReload();
         if (animator != null)
             ResetFireTriggers();
     }
 
     private void Awake()
     {
-        currentHealth = maxHealth;
+        health = GetComponent<PlayerHealth>();
+        if (health == null) health = gameObject.AddComponent<PlayerHealth>();
+        weapons = GetComponent<PlayerWeaponController>();
+        if (weapons == null) weapons = gameObject.AddComponent<PlayerWeaponController>();
+        health.Damaged += OnDamaged;
+        health.Died += Defeat;
+        maxAimDistance = weapons.Definition.Range;
         animator = GetComponent<Animator>();
         movement = GetComponent<PlayerMovement>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -72,38 +66,32 @@ public class PlayerActions : MonoBehaviour
 
     private void Update()
     {
-        if (inputLocked)
+        if (inputLocked || PistolUpgradeShop.IsOpen)
             return;
 
         UpdateAim();
 
-        if (animator == null || defeated)
+        if (defeated)
             return;
 
         if (Keyboard.current != null)
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame)
-                selectedWeapon = Weapon.Pistol;
+                weapons.TryEquip(0);
             else if (Keyboard.current.digit2Key.wasPressedThisFrame)
-                selectedWeapon = Weapon.SMG;
+                weapons.TryEquip(1);
             else if (Keyboard.current.digit3Key.wasPressedThisFrame)
-                selectedWeapon = Weapon.RPG;
+                weapons.TryEquip(2);
 
             if (Keyboard.current.rKey.wasPressedThisFrame)
                 TryReload();
 
-            if (Keyboard.current.qKey.wasPressedThisFrame)
-            {
-                string sceneName = gameObject.scene.name;
-                if (sceneName == "Testing" || sceneName == "Gameplay")
-                    TakeDamage(1);
-                else
-                    animator.SetTrigger("TakeDamage");
-            }
+            if (gameObject.scene.name == "Testing" && Keyboard.current.qKey.wasPressedThisFrame)
+                TakeDamage(1);
 
-            if (Keyboard.current.eKey.wasPressedThisFrame)
+            if (gameObject.scene.name == "Testing" && Keyboard.current.eKey.wasPressedThisFrame)
             {
-                Defeat();
+                TakeDamage(MaxHealth);
                 return;
             }
         }
@@ -111,6 +99,8 @@ public class PlayerActions : MonoBehaviour
         bool mouseFireHeld = !Application.isMobilePlatform &&
                              !MobileControlsHUD.IsVisible &&
                              Mouse.current != null &&
+                             !(UnityEngine.EventSystems.EventSystem.current != null &&
+                               UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) &&
                              Mouse.current.leftButton.isPressed && hasAimInViewport;
         bool firingHeld = touchFireHeld || mouseFireHeld;
         if (firingHeld)
@@ -136,7 +126,7 @@ public class PlayerActions : MonoBehaviour
     public void SelectTouchWeapon(int index)
     {
         if (!inputLocked && !defeated && index >= 0 && index <= 2)
-            selectedWeapon = (Weapon)index;
+            weapons.TryEquip(index);
     }
 
     public void ReloadTouchWeapon()
@@ -147,17 +137,20 @@ public class PlayerActions : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        if (defeated || GameFlowController.IsDefeatActive ||
-            amount <= 0 || Time.time < nextDamageTime)
-            return;
+        health?.TakeDamage(amount);
+    }
 
-        currentHealth = Mathf.Max(0, currentHealth - amount);
-        nextDamageTime = Time.time + damageCooldown;
-        HealthChanged?.Invoke(currentHealth, maxHealth);
-        if (currentHealth == 0)
-            Defeat();
-        else if (animator != null)
-            animator.SetTrigger("TakeDamage");
+    private void OnDamaged()
+    {
+        weapons?.CancelReload();
+        if (animator != null) animator.SetTrigger("TakeDamage");
+    }
+
+    private void OnDestroy()
+    {
+        if (health == null) return;
+        health.Damaged -= OnDamaged;
+        health.Died -= Defeat;
     }
 
     private void Defeat()
@@ -168,6 +161,7 @@ public class PlayerActions : MonoBehaviour
         defeated = true;
         hasAimInViewport = false;
         touchFireHeld = false;
+        weapons?.CancelReload();
         if (animator != null)
         {
             ResetFireTriggers();
@@ -201,60 +195,30 @@ public class PlayerActions : MonoBehaviour
 
     private void TryReload()
     {
-        if (inputLocked || animator == null || defeated || IsBusy())
+        if (inputLocked || defeated || IsBusyExceptFire() || !weapons.TryReload())
             return;
 
         ResetFireTriggers();
-        animator.SetTrigger(selectedWeapon switch
-        {
-            Weapon.Pistol => "ReloadPistol",
-            Weapon.SMG => "ReloadSMG",
-            _ => "ReloadRPG"
-        });
-        nextShotTime = Mathf.Max(nextShotTime, Time.time + 0.15f);
+        if (animator != null) animator.SetTrigger("ReloadPistol");
     }
 
     private void HoldFire()
     {
-        if (inputLocked || Time.time < nextShotTime || IsBusyExceptFire())
+        if (inputLocked || IsBusyExceptFire())
             return;
 
-        string triggerName;
-        float fireInterval;
-        switch (selectedWeapon)
-        {
-            case Weapon.SMG:
-                triggerName = "FireSMG";
-                fireInterval = smgFireInterval;
-                break;
-            case Weapon.RPG:
-                triggerName = "FireRPG";
-                fireInterval = rpgFireInterval;
-                break;
-            default:
-                triggerName = "FirePistol";
-                fireInterval = pistolFireInterval;
-                break;
-        }
-
-        animator.SetTrigger(triggerName);
-        nextShotTime = Time.time + fireInterval;
-        float muzzleDistance = selectedWeapon switch
-        {
-            Weapon.SMG => smgMuzzleDistance,
-            Weapon.RPG => rpgMuzzleDistance,
-            _ => pistolMuzzleDistance
-        };
-        Vector2 spawnPosition = AimOrigin + AimDirection * muzzleDistance + Vector2.up * muzzleHeight;
+        if (weapons.Magazine == 0) { TryReload(); return; }
+        Vector2 spawnPosition = AimOrigin + AimDirection * pistolMuzzleDistance + Vector2.up * muzzleHeight;
         Vector2 shotDirection = AimTarget - spawnPosition;
         if (shotDirection.sqrMagnitude < 0.0001f)
             shotDirection = AimDirection;
-        CombatProjectile.Spawn(spawnPosition, shotDirection.normalized, (int)selectedWeapon,
-            maxAimDistance, transform);
+        if (weapons.TryFire(spawnPosition, shotDirection.normalized, transform) && animator != null)
+            animator.SetTrigger("FirePistol");
     }
 
     private void ResetFireTriggers()
     {
+        if (animator == null) return;
         animator.ResetTrigger("FirePistol");
         animator.ResetTrigger("FireSMG");
         animator.ResetTrigger("FireRPG");
@@ -324,18 +288,6 @@ public class PlayerActions : MonoBehaviour
         GUI.color = previousColor;
     }
 
-    private bool IsBusy()
-    {
-        return IsPlaying("Pistol_Fire") ||
-               IsPlaying("SMG_Fire") ||
-               IsPlaying("RPG_Fire") ||
-               IsPlaying("Pistol_Reload") ||
-               IsPlaying("SMG_Reload") ||
-               IsPlaying("RPG_Reload") ||
-               IsPlaying("Damage") ||
-               IsPlaying("Defeat");
-    }
-
     private bool IsBusyExceptFire()
     {
         return IsPlaying("Pistol_Reload") ||
@@ -347,6 +299,7 @@ public class PlayerActions : MonoBehaviour
 
     private bool IsPlaying(string stateSuffix)
     {
+        if (animator == null) return false;
         AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
         return state.IsName($"Cesar_{stateSuffix}") ||
                state.IsName($"Marco_{stateSuffix}");

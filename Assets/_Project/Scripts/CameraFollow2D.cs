@@ -6,8 +6,8 @@ public class CameraFollow2D : MonoBehaviour
     private const string SelectedLevelKey = "Lindavista.SelectedLevel";
 
     [SerializeField] private Transform target;
-    [SerializeField] private float startFollowingAtX = 3f;
-    [SerializeField] private float horizontalOffset = 2f;
+    [SerializeField] private float startFollowingAtX = 0f;
+    [SerializeField] private float horizontalOffset = 0f;
     [SerializeField] private float maximumCameraX = 115f;
     [SerializeField] private float smoothTime = 0.3f;
 

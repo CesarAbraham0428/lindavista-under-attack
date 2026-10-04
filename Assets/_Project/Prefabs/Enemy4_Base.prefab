@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4157692672435808559}
   - component: {fileID: 3455100839004680247}
   - component: {fileID: 2102759351119158374}
+  - component: {fileID: 2941409578650522931}
   m_Layer: 0
   m_Name: Enemy4_Base
   m_TagString: Untagged
@@ -158,3 +159,17 @@ MonoBehaviour:
   timeBetweenShots: 0.16
   entranceTarget: {fileID: 0}
   exposedSprite: {fileID: 0}
+--- !u!114 &2941409578650522931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8332502759669343063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e83c52609a342fe4080ba88efff40969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyLootDrop
+  coinValue: 20
+  coinPrefab: {fileID: 1000794032613621786, guid: 9fec02da960de064fa9e59736ac3709b, type: 3}

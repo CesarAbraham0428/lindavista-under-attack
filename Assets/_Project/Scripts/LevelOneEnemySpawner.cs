@@ -45,6 +45,12 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
     private readonly List<BasicEnemy> queuedEnemies = new();
     private bool prepared;
     private bool waveStarted;
+    private bool releaseFinished;
+    private readonly HashSet<EnemyHealth> livingEnemies = new();
+    public int SelectedLevel { get; private set; }
+    public int TotalEnemies { get; private set; }
+    public int PendingEnemies { get; private set; }
+    public int AliveEnemies => livingEnemies.Count;
 
     /// <summary>Camera X that centers the visible lineup on stage 5.</summary>
     public float IntroCameraX { get; private set; }
@@ -59,7 +65,9 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
             return queuedEnemies.Count > 0;
 
         EnsureCompositionDefaults();
-        int compositionIndex = Mathf.Clamp(selectedLevel, 0, levelCompositions.Length - 1);
+        int compositionIndex = ProgressionService.IsLevelUnlocked(selectedLevel)
+            ? Mathf.Clamp(selectedLevel, 0, levelCompositions.Length - 1) : 0;
+        SelectedLevel = compositionIndex;
         WaveComposition composition = levelCompositions[compositionIndex];
         int[] counts =
         {
@@ -97,6 +105,8 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
         }
 
         HideLegacyEnemyPreviews();
+        TotalEnemies = total;
+        PendingEnemies = total;
         List<GameObject> spawnOrder = BuildInterleavedSpawnOrder(prefabs, counts);
         PlayerActions startingPlayer = FindFirstObjectByType<PlayerActions>();
         float objectiveX = startingPlayer != null
@@ -112,6 +122,9 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
             enemy.name = $"{prefab.name}_Level_{compositionIndex + 1}_Wave_{i + 1:00}";
 
             BasicEnemy behavior = enemy.GetComponent<BasicEnemy>();
+            EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+            livingEnemies.Add(enemyHealth);
+            enemyHealth.Died += OnEnemyDied;
             behavior.SetEntranceTargetX(objectiveX);
             behavior.enabled = false;
             queuedEnemies.Add(behavior);
@@ -141,10 +154,33 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
 
             if (queuedEnemies[i] != null)
                 queuedEnemies[i].enabled = true;
+            PendingEnemies--;
 
             if (i + 1 < queuedEnemies.Count && delayBetweenSpawns > 0f)
                 yield return new WaitForSeconds(delayBetweenSpawns);
         }
+        releaseFinished = true;
+        CheckWaveComplete();
+    }
+
+    private void OnEnemyDied(EnemyHealth enemy)
+    {
+        if (!livingEnemies.Remove(enemy)) return;
+        enemy.Died -= OnEnemyDied;
+        GameFlowController.ReportEnemyKilled();
+        CheckWaveComplete();
+    }
+
+    private void CheckWaveComplete()
+    {
+        if (prepared && waveStarted && releaseFinished && PendingEnemies == 0 && livingEnemies.Count == 0)
+            GameFlowController.ReportWaveCleared(SelectedLevel);
+    }
+
+    private void OnDestroy()
+    {
+        foreach (EnemyHealth enemy in livingEnemies)
+            if (enemy != null) enemy.Died -= OnEnemyDied;
     }
 
     private List<GameObject> BuildInterleavedSpawnOrder(GameObject[] prefabs, int[] counts)

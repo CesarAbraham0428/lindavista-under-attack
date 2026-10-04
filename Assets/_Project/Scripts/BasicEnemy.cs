@@ -239,6 +239,9 @@ public sealed class BasicEnemy : MonoBehaviour
         {
             if (hit.collider == null || hit.collider.GetComponentInParent<EnemyHealth>() != null)
                 continue;
+            if (hit.collider.GetComponentInParent<CoinPickup>() != null ||
+                (hit.collider.isTrigger && hit.collider.GetComponentInParent<PlayerHealth>() == null))
+                continue;
             if (hit.distance < nearestDistance)
             {
                 nearestDistance = hit.distance;

@@ -3192,6 +3192,8 @@ GameObject:
   - component: {fileID: 576606887}
   - component: {fileID: 576606886}
   - component: {fileID: 576606885}
+  - component: {fileID: 576606893}
+  - component: {fileID: 576606892}
   m_Layer: 0
   m_Name: Player_Marco
   m_TagString: Untagged
@@ -3212,15 +3214,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerActions
   maxAimDistance: 18
-  pistolFireInterval: 0.4
-  smgFireInterval: 0.12
-  rpgFireInterval: 1.2
   pistolMuzzleDistance: 0.4
-  smgMuzzleDistance: 0.5
-  rpgMuzzleDistance: 0.65
   muzzleHeight: 0.08
-  maxHealth: 5
-  damageCooldown: 0.75
 --- !u!114 &576606886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3395,6 +3390,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &576606892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 576606884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9609020d1fa4ceb4c8db6a5af0198434, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponController
+  definition: {fileID: 11400000, guid: 483fdfb62e6483747b70d47444fef9d3, type: 2}
+--- !u!114 &576606893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 576606884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed5d6d39a7f173b4d9e2276d7fba8c71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 5
+  damageCooldown: 0.75
 --- !u!1 &583160448
 GameObject:
   m_ObjectHideFlags: 0
@@ -9132,8 +9154,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow2D
   target: {fileID: 0}
-  startFollowingAtX: 3
-  horizontalOffset: 2
+  startFollowingAtX: 0
+  horizontalOffset: 0
   maximumCameraX: 115
   smoothTime: 0.3
   lineupHoldDuration: 1.1
@@ -9191,6 +9213,8 @@ GameObject:
   - component: {fileID: 1325104749}
   - component: {fileID: 1325104748}
   - component: {fileID: 1325104747}
+  - component: {fileID: 1325104755}
+  - component: {fileID: 1325104754}
   m_Layer: 0
   m_Name: Player_Cesar
   m_TagString: Untagged
@@ -9211,15 +9235,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerActions
   maxAimDistance: 18
-  pistolFireInterval: 0.4
-  smgFireInterval: 0.12
-  rpgFireInterval: 1.2
   pistolMuzzleDistance: 0.4
-  smgMuzzleDistance: 0.5
-  rpgMuzzleDistance: 0.65
   muzzleHeight: 0.08
-  maxHealth: 5
-  damageCooldown: 0.75
 --- !u!114 &1325104748
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9394,6 +9411,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1325104754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325104746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9609020d1fa4ceb4c8db6a5af0198434, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponController
+  definition: {fileID: 11400000, guid: 483fdfb62e6483747b70d47444fef9d3, type: 2}
+--- !u!114 &1325104755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325104746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed5d6d39a7f173b4d9e2276d7fba8c71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 5
+  damageCooldown: 0.75
 --- !u!1 &1332142701
 GameObject:
   m_ObjectHideFlags: 0

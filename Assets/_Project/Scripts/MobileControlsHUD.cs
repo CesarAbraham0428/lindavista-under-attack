@@ -40,7 +40,8 @@ public sealed class MobileControlsHUD : MonoBehaviour
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name != "Testing" || (!Application.isMobilePlatform && !Application.isEditor))
+        if ((scene.name != "Testing" && scene.name != "Gameplay") ||
+            (!Application.isMobilePlatform && !Application.isEditor))
             return;
 
         if (active == null)
@@ -52,6 +53,8 @@ public sealed class MobileControlsHUD : MonoBehaviour
         active = this;
         EnsureEventSystem();
         BuildHUD();
+        for (int i = 1; i < weaponRegions.Length; i++)
+            if (weaponRegions[i] != null) weaponRegions[i].gameObject.SetActive(false);
         SetVisible(Application.isMobilePlatform);
     }
 
@@ -134,6 +137,7 @@ public sealed class MobileControlsHUD : MonoBehaviour
 
     private void SelectWeapon(int index)
     {
+        if (!ProgressionService.OwnsWeapon(index)) return;
         selectedWeapon = index;
         if (actions != null)
             actions.SelectTouchWeapon(index);

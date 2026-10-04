@@ -16,7 +16,7 @@ El proyecto usa Unity **6000.3.23f1**, Universal Render Pipeline 2D, Input Syste
 ## Scripts clave
 
 - `PlayerMovement`: entrada horizontal, velocidad, límite del jugador y bloqueo al ser derrotado.
-- `PlayerActions`: apuntado, selección y disparo de armas, recarga, salud y daño.
+- `PlayerActions`: entrada, apuntado y animaciones; `PlayerHealth`: vida; `PlayerWeaponController`: disparo, daño y cargador.
 - `CombatProjectile`: barrido de impacto y aplicación de daño a enemigos.
 - `BasicEnemy` y `EnemyHealth`: selección de objetivo, movimiento, ataque, salud, escudo y derrota enemiga.
 - `GameFlowController`: derrota global por salud agotada o llegada de un enemigo a la entrada, bloqueo de controles y opciones para reiniciar o volver al menú.
@@ -24,16 +24,17 @@ El proyecto usa Unity **6000.3.23f1**, Universal Render Pipeline 2D, Input Syste
 - `SelectedLevelEnvironment`: colores del cielo, sprites celestes y grupos de daño ambiental.
 - `CameraFollow2D`: presentación inicial de la oleada en tramo 5, paneo hacia la entrada y seguimiento horizontal del jugador.
 - `PlayerHealthHUD`: interfaz de vida generada durante Play Mode en `Testing` y `Gameplay`.
-- `MobileControlsHUD` y `TouchControlRegion`: botones y apuntado táctiles; actualmente solo se crean en `Testing`.
+- `MobileControlsHUD` y `TouchControlRegion`: botones y apuntado táctiles en `Testing` y `Gameplay`.
+- `ProgressionService`, `ProgressionRepository`, `CoinPickup`, `EnemyLootDrop`, `ProgressionHUD` y `PistolUpgradeShop`: recompensas físicas, perfil guardado e interfaz de progresión. Ver [detalle](progresion-nivel-1.md).
 
 ## Estado conocido
 
-1. `Gameplay` presenta la oleada del nivel elegido en el tramo 5 y libera enemigos progresivamente hacia la entrada. Los conteos de los cuatro niveles son ajustables. Falta comprobar la secuencia visualmente en Play Mode; `Testing` conserva cuatro enemigos para probar variantes y animaciones.
-2. El arte de proyectiles no está conectado: el objeto de proyectil es lógico y no tiene sprite/trail. El daño de muro tampoco crea agujeros nuevos.
+1. `Gameplay` presenta la oleada del nivel elegido en el tramo 5 y libera enemigos progresivamente hacia la entrada. Se comprobó la secuencia y el flujo de victoria del nivel 1 en Play Mode; el ritmo y la dificultad requieren ajuste jugando. `Testing` conserva cuatro enemigos para probar variantes y animaciones.
+2. Los proyectiles de pistola tienen un sprite sencillo. El daño de muro no crea agujeros nuevos.
 3. Los baches, grafitis, impactos y la mayoría del escenario son elementos estáticos precolocados; el avance de cámara los va revelando.
 4. Los horarios son variantes elegidas antes de entrar a `Gameplay`; no hay transición de hora en tiempo real.
-5. El HUD táctil de `MobileControlsHUD` se genera únicamente en `Testing`, aunque hay código para mostrarlo en Android y previsualizarlo en Editor con **F9**.
-6. **Q** y **E** son teclas de prueba que también se procesan en `Gameplay` actualmente.
+5. El HUD táctil se genera en `Testing` y `Gameplay`; se puede previsualizar en Editor con **F9**.
+6. **Q** y **E** son teclas de prueba limitadas a `Testing`.
 7. `Testing` está habilitada en `ProjectSettings/EditorBuildSettings.asset`, por lo que hoy forma parte de la lista de escenas de build.
 
 ## Rutina recomendada

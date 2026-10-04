@@ -2,20 +2,20 @@
 
 ## Salud del jugador
 
-`PlayerActions` inicializa la salud en **5 de 5** al activar el personaje. La vida no se guarda entre escenas. Un impacto válido:
+`PlayerHealth` inicializa la salud en **5 de 5** al activar el personaje. `PlayerActions` conecta sus eventos con las animaciones. La vida no se guarda entre escenas. Un impacto válido:
 
 1. Resta salud hasta un mínimo de cero.
 2. Notifica al HUD con el evento `HealthChanged`.
 3. Reproduce `TakeDamage` si el jugador sigue con vida.
 4. Al llegar a cero, activa `Defeat` y detiene el movimiento.
 
-Después de recibir daño, el jugador no acepta otra aplicación de daño durante **0,75 segundos**. La tecla **Q** invoca el mismo método de daño con una unidad en `Testing` y `Gameplay`; sirve para verificar la barra y la animación, no representa un disparo enemigo. La fila del HUD parpadea al recibir daño.
+Después de recibir daño, el jugador no acepta otra aplicación de daño durante **0,75 segundos**. La tecla **Q** invoca el mismo método de daño con una unidad solo en `Testing`; sirve para verificar la barra y la animación. La fila del HUD parpadea al recibir daño.
 
 ### Derrota de la partida
 
 La partida termina si la salud del personaje llega a cero o si un enemigo que avanza hacia la entrada alcanza la posición inicial del jugador activo. Al activarse la derrota, se bloquean el movimiento, el apuntado, el disparo, el cambio de arma y las acciones de los enemigos. La pantalla de derrota explica el motivo y ofrece **Reintentar** (recarga la escena actual) y **Salir al menú** (abre `MainMenu`).
 
-`PlayerHealthHUD` genera un Canvas con hasta cinco segmentos y el contador numérico. Busca los componentes `PlayerActions` activos y actualiza las filas si cambia el jugador activo. En `Gameplay` se muestra la fila del personaje seleccionado; en `Testing` pueden verse ambos. El HUD y sus filas se construyen en Play Mode, no están guardados como objetos serializados dentro de las escenas.
+`PlayerHealthHUD` genera un Canvas con cinco segmentos y el contador numérico, sin nombre de personaje. Busca los componentes `PlayerHealth` activos y actualiza las filas si cambia el jugador activo. En `Gameplay` se muestra la fila del personaje seleccionado; en `Testing` pueden verse ambos. Los HUD se construyen en Play Mode.
 
 ## Armas del jugador
 
@@ -23,11 +23,9 @@ El disparo se procesa con un barrido `CircleCast` en física 2D. El primer colli
 
 | Arma | Daño | Velocidad | Intervalo mínimo | Radio de impacto |
 | --- | ---: | ---: | ---: | ---: |
-| Pistola | 1 | 22 | 0,40 s | 0,07 |
-| SMG | 1 | 28 | 0,12 s | 0,055 |
-| RPG | 3 | 12 | 1,20 s | 0,14 |
+| Pistola | 2; mejorable a 3 y 4 | 22 | 0,40 s | 0,07 |
 
-Las tres armas comparten el alcance máximo de apuntado configurado en el jugador (18 unidades por defecto). Aunque se crea un objeto lógico `Projectile`, el script no le añade un sprite, estela ni efecto visual. Los impactos en muros tampoco crean marcas: las marcas visibles existentes son parte del escenario.
+Solo está disponible la pistola. Su alcance es 18 unidades, tiene cargador de 12 balas y recarga real de 1,20 s con reserva ilimitada. El proyectil tiene un sprite sencillo y conserva el daño que tenía al dispararse. Las monedas y los triggers de decoración no bloquean los disparos. Los impactos en muros no crean marcas: las marcas visibles existentes son parte del escenario. El balance se edita en `Resources/PistolDefinition.asset`.
 
 ## Enemigos
 
@@ -40,7 +38,7 @@ Las tres armas comparten el alcance máximo de apuntado configurado en el jugado
 | `Enemy3` | Melee con escudo | 30 | 2 de daño; seis impactos frontales dentro de 1,5 s rompen el escudo por 1,5 s. |
 | `Enemy4` | SMG | 50 | 1 de daño por disparo; hasta tres disparos separados por 0,16 s por ataque; alcance 6,5. |
 
-El valor inicial de `EnemyHealth.maxHealth` en el script es 3, pero cada enemigo de `Testing` lo sobrescribe con los valores de la tabla. Al agotarse la salud, el enemigo desactiva el collider, activa `Defeat` y desaparece después de 1,2 segundos. El escudo también se abre durante la animación de golpe pesado.
+El valor inicial de `EnemyHealth.maxHealth` en el script es 3, pero cada enemigo de `Testing` y los prefabs lo sobrescriben con los valores de la tabla. Al agotarse la salud, el enemigo desactiva el collider, activa `Defeat`, emite una única muerte y desaparece después de 1,2 segundos. `EnemyLootDrop` crea una moneda recogible por un jugador vivo. El escudo también se abre durante la animación de golpe pesado.
 
 Los enemigos pueden atacar a corta distancia o hacer una comprobación instantánea de impacto para sus disparos. El código actual tampoco crea una representación gráfica de los disparos enemigos.
 
@@ -57,5 +55,6 @@ Los prefabs reutilizables están en `Assets/_Project/Prefabs/Enemy1_Base.prefab`
 ## Alcance actual
 
 - `Testing` tiene instancias funcionales de los cuatro enemigos.
-- `Gameplay` tiene una composición inicial configurada para los cuatro niveles. Falta comprobar visualmente la presentación y el ritmo de salida en Play Mode.
-- No hay sistema de munición, recarga con consumo de reservas, respawn, puntos ni progresión de victoria/derrota entre niveles documentado en los scripts actuales.
+- `Gameplay` tiene composiciones para cuatro niveles y desbloqueo secuencial al guardar una victoria.
+- La oleada del nivel 1 tiene 10 enemigos y 70 monedas en total. Tras eliminarla se permite recoger el dinero antes de finalizar.
+- El cargador, las mejoras, el monedero y el guardado están conectados. Consulta [Progresión del nivel 1](progresion-nivel-1.md). La compra de munición y otras armas queda para la siguiente etapa.

@@ -53,7 +53,7 @@ public static class MenuSceneBuilder
         GameObject storePanel = CreateOverlayPanel(canvas.transform, "Store Panel");
         AddImage(storePanel.transform, "Store Heading", LoadMenuSprite("cartel_tienda.png"),
             new Vector2(0f, 158f), new Vector2(540f, 180f));
-        AddText(storePanel.transform, "Store Message", "PRÓXIMAMENTE", 46,
+        AddText(storePanel.transform, "Store Message", "MEJORAS DE PISTOLA", 46,
             new Vector2(0f, 0f), new Vector2(720f, 90f), new Color(1f, 0.91f, 0.72f));
         Button closeStoreButton = AddButton(storePanel.transform, "Back Button", LoadMenuSprite("carte_flecha_hacia_atras.png"),
             new Vector2(0f, -180f), new Vector2(150f, 112f));
@@ -164,7 +164,6 @@ public static class MenuSceneBuilder
         SetObjectArray(controller, "characterOutlines", characterOutlines);
         SetObjectArray(controller, "levelButtons", levelButtons);
         SetObjectArray(controller, "levelOutlines", levelOutlines);
-        SetBoolArray(controller, "levelUnlocked", new[] { true, false, false, false });
         SetObjectArray(controller, "levelLockIcons", levelLockIcons);
         SetObjectReference(controller, "backButton", backButton);
         SetObjectReference(controller, "startButton", startButton);
@@ -447,17 +446,4 @@ public static class MenuSceneBuilder
         serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 
-    private static void SetBoolArray(UnityEngine.Object target, string propertyName, bool[] values)
-    {
-        SerializedObject serialized = new SerializedObject(target);
-        SerializedProperty property = serialized.FindProperty(propertyName);
-        if (property == null)
-            throw new InvalidOperationException("Serialized field not found: " + propertyName);
-
-        property.arraySize = values.Length;
-        for (int i = 0; i < values.Length; i++)
-            property.GetArrayElementAtIndex(i).boolValue = values[i];
-
-        serialized.ApplyModifiedPropertiesWithoutUndo();
-    }
 }

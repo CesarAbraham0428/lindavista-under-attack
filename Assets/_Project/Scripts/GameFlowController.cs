@@ -17,14 +17,28 @@ public sealed class GameFlowController : MonoBehaviour
     private static readonly Color TextColor = new Color(0.96f, 0.93f, 0.85f, 1f);
 
     private bool defeatActive;
+    private bool victoryActive;
+    private bool collectionPhase;
+    private int clearedLevel;
+    private int enemiesKilled;
+    private int coinsCollected;
     private string restartSceneName;
     private Font font;
+    private Text resultBody;
+    private string resultMessage;
 
-    public static bool IsDefeatActive => active != null && active.defeatActive;
+    // Compatibility for existing terminal checks in movement and enemy AI.
+    public static bool IsDefeatActive => IsMatchEnded;
+    public static bool IsMatchEnded => active != null && (active.defeatActive || active.victoryActive);
+    public static bool IsCollectionPhase => active != null && active.collectionPhase;
+    public static bool IsVictoryActive => active != null && active.victoryActive;
+    public static int EnemiesKilled => active != null ? active.enemiesKilled : 0;
+    public static int CoinsCollected => active != null ? active.coinsCollected : 0;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void RegisterSceneCallback()
     {
+        active = null;
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -43,10 +57,12 @@ public sealed class GameFlowController : MonoBehaviour
         active = this;
         restartSceneName = gameObject.scene.name;
         font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        ProgressionService.Changed += RefreshResult;
     }
 
     private void OnDestroy()
     {
+        ProgressionService.Changed -= RefreshResult;
         if (active == this)
             active = null;
     }
@@ -74,12 +90,49 @@ public sealed class GameFlowController : MonoBehaviour
         return new GameObject("Game Flow Controller").AddComponent<GameFlowController>();
     }
 
+    public static void ReportEnemyKilled()
+    {
+        var controller = EnsureActiveController();
+        if (controller != null && !IsMatchEnded) controller.enemiesKilled++;
+    }
+
+    public static void ReportCoinsCollected(int amount)
+    {
+        var controller = EnsureActiveController();
+        if (controller != null && !IsMatchEnded) controller.coinsCollected += amount;
+    }
+
+    public static void ReportWaveCleared(int level)
+    {
+        var controller = EnsureActiveController();
+        if (controller == null || IsMatchEnded || controller.collectionPhase) return;
+        controller.clearedLevel = level;
+        controller.collectionPhase = true;
+    }
+
+    public static void FinishLevel()
+    {
+        if (active == null || IsMatchEnded || !active.collectionPhase) return;
+        if (!ProgressionService.TryCompleteLevel(active.clearedLevel)) return;
+        active.collectionPhase = false;
+        active.victoryActive = true;
+        active.LockActors();
+        active.BuildDefeatUI("Nivel " + (active.clearedLevel + 1) + " completado.");
+    }
+
     private void ShowDefeat(string message)
     {
-        if (defeatActive)
+        if (IsMatchEnded)
             return;
 
         defeatActive = true;
+        collectionPhase = false;
+        LockActors();
+        BuildDefeatUI(message);
+    }
+
+    private void LockActors()
+    {
 
         foreach (PlayerActions actions in FindObjectsByType<PlayerActions>(
                      FindObjectsInactive.Include, FindObjectsSortMode.None))
@@ -93,7 +146,6 @@ public sealed class GameFlowController : MonoBehaviour
                      FindObjectsInactive.Include, FindObjectsSortMode.None))
             enemy.StopForGameOver();
 
-        BuildDefeatUI(message);
     }
 
     private void BuildDefeatUI(string message)
@@ -130,14 +182,25 @@ public sealed class GameFlowController : MonoBehaviour
         accentRect.anchoredPosition = Vector2.zero;
         accentRect.sizeDelta = new Vector2(0f, 12f);
 
-        Text title = CreateText("Title", panel, "DERROTA", 116, FontStyle.Bold);
+        Text title = CreateText("Title", panel, victoryActive ? "VICTORIA" : "DERROTA", 116, FontStyle.Bold);
         SetCentered(title.rectTransform, new Vector2(0f, 188f), new Vector2(1100f, 160f));
 
-        Text body = CreateText("Message", panel, message, 50, FontStyle.Normal);
-        SetCentered(body.rectTransform, new Vector2(0f, 24f), new Vector2(1120f, 112f));
+        resultMessage = message;
+        resultBody = CreateText("Message", panel, "", 38, FontStyle.Normal);
+        RefreshResult();
+        SetCentered(resultBody.rectTransform, new Vector2(0f, 24f), new Vector2(1120f, 160f));
 
-        CreateButton(panel, "REINTENTAR", new Vector2(-260f, -188f), RestartCurrentScene);
-        CreateButton(panel, "SALIR AL MENÚ", new Vector2(260f, -188f), ReturnToMenu);
+        CreateButton(panel, victoryActive ? "REPETIR" : "REINTENTAR", new Vector2(-365f, -188f), RestartCurrentScene);
+        CreateButton(panel, "MEJORAR PISTOLA", new Vector2(0f, -188f), PistolUpgradeShop.Open);
+        CreateButton(panel, "SALIR AL MENÚ", new Vector2(365f, -188f), ReturnToMenu);
+    }
+
+    private void RefreshResult()
+    {
+        if (resultBody == null) return;
+        resultBody.text = resultMessage + "\nEnemigos eliminados: " + enemiesKilled +
+            " · Monedas recogidas: " + coinsCollected + "\nSaldo: " + ProgressionService.Coins +
+            " monedas. Tus monedas y mejoras se conservan.";
     }
 
     private void CreateButton(Transform parent, string label, Vector2 position,
@@ -148,7 +211,7 @@ public sealed class GameFlowController : MonoBehaviour
         buttonObject.transform.SetParent(parent, false);
 
         RectTransform buttonRect = buttonObject.GetComponent<RectTransform>();
-        SetCentered(buttonRect, position, new Vector2(470f, 126f));
+        SetCentered(buttonRect, position, new Vector2(340f, 112f));
 
         Image image = buttonObject.GetComponent<Image>();
         image.color = ButtonColor;
@@ -163,7 +226,7 @@ public sealed class GameFlowController : MonoBehaviour
         button.colors = colors;
         button.onClick.AddListener(onClick);
 
-        Text buttonText = CreateText("Label", buttonRect, label, 38, FontStyle.Bold);
+        Text buttonText = CreateText("Label", buttonRect, label, 30, FontStyle.Bold);
         StretchToParent(buttonText.rectTransform);
     }
 
