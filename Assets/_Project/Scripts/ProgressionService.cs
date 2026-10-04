@@ -13,7 +13,14 @@ public static class ProgressionService
     public static int PistolUpgrade => Repository.Snapshot.pistolUpgrade;
     public static string LastError => Repository.LastError;
     public static bool CanSave => Repository.CanSave;
-    public static bool OwnsWeapon(int index) => index == 0;
+    public static bool OwnsWeapon(int index) => index >= 0 && index < 3;
+    public static int HealthUpgrade => Repository.Snapshot.healthUpgrade;
+    public static int WeaponUpgrade(int index) => Repository.Snapshot.weaponUpgrades[index];
+    public static int Ammo(int index) => Repository.Snapshot.ammunition[index];
+    public static bool TryUpgradeWeapon(int index) => Publish(Repository.TryUpgradeWeapon(index));
+    public static bool TryUpgradeHealth() => Publish(Repository.TryUpgradeHealth());
+    public static bool TryBuyAmmo(int index) => Publish(Repository.TryBuyAmmo(index));
+    public static bool TryConsumeAmmo(int index) => Publish(Repository.TryConsumeAmmo(index));
     public static bool IsLevelUnlocked(int level) => Repository.IsLevelUnlocked(level);
     public static bool TryCredit(int amount) => Publish(Repository.TryCredit(amount));
     public static bool TryUpgradePistol() => Publish(Repository.TryUpgradePistol());

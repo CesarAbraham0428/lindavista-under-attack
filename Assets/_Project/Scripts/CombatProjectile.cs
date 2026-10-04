@@ -23,6 +23,9 @@ public sealed class CombatProjectile : MonoBehaviour
             direction.sqrMagnitude < 0.0001f)
             return false;
 
+        var weapon = owner != null ? owner.GetComponent<PlayerWeaponController>() : null;
+        if (weapon != null && !ProgressionService.TryConsumeAmmo(weapon.EquippedWeapon)) return false;
+
         GameObject shot = new GameObject("Projectile");
         shot.transform.position = new Vector3(origin.x, origin.y, 0f);
         CombatProjectile projectile = shot.AddComponent<CombatProjectile>();

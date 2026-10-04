@@ -20,6 +20,7 @@ public sealed class MainMenuController : MonoBehaviour
 
     private void Awake()
     {
+        CartoonMenuStyle.Apply(transform);
         if (playButton != null)
             playButton.onClick.AddListener(OpenCharacterSelection);
 
@@ -43,6 +44,12 @@ public sealed class MainMenuController : MonoBehaviour
             masterVolumeSlider.onValueChanged.AddListener(SetMasterVolume);
         }
 
+        if (settingsPanel != null)
+        {
+            var shop = ProgressionUI.Button(settingsPanel.transform, "TIENDA · VIDA Y ARMAS", PistolUpgradeShop.Open);
+            CartoonUI.ButtonStyle(shop);
+            ProgressionUI.Percent((RectTransform)shop.transform, 0.3f, 0.37f, 0.7f, 0.45f);
+        }
         ClosePanels();
     }
 

@@ -31,6 +31,23 @@ public sealed class WeaponDefinition : ScriptableObject
         }
     }
 
+    private static WeaponDefinition smg, rpg;
+    public static WeaponDefinition At(int index)
+    {
+        if (index == 0) return Pistol;
+        if (index == 1 && smg != null) return smg;
+        if (index == 2 && rpg != null) return rpg;
+        var value = CreateInstance<WeaponDefinition>();
+        value.hideFlags = HideFlags.DontSave;
+        value.baseDamage = index == 1 ? 1 : 10;
+        value.fireInterval = index == 1 ? 0.12f : 1f;
+        value.magazineSize = ShopBalance.Pack[index];
+        value.projectileRadius = index == 1 ? 0.07f : 0.2f;
+        value.upgradeCosts = index == 1 ? new[] { 40, 90, 150, 220, 300 } : new[] { 60, 120, 200, 300, 450 };
+        if (index == 1) smg = value; else rpg = value;
+        return value;
+    }
+
     public float FireInterval => fireInterval;
     public float ProjectileSpeed => projectileSpeed;
     public float Range => range;
