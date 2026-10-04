@@ -8,7 +8,6 @@ public sealed class CharacterLevelSelectionController : MonoBehaviour
     [SerializeField] private Outline[] characterOutlines;
     [SerializeField] private Button[] levelButtons;
     [SerializeField] private Outline[] levelOutlines;
-    [SerializeField] private bool[] levelUnlocked;
     [SerializeField] private Image[] levelLockIcons;
     [SerializeField] private Button backButton;
     [SerializeField] private Button startButton;
@@ -36,7 +35,7 @@ public sealed class CharacterLevelSelectionController : MonoBehaviour
             for (int i = 0; i < levelButtons.Length; i++)
             {
                 int index = i;
-                bool isUnlocked = levelUnlocked == null || index >= levelUnlocked.Length || levelUnlocked[index];
+                bool isUnlocked = ProgressionService.IsLevelUnlocked(index);
                 if (levelButtons[i] != null)
                 {
                     levelButtons[i].interactable = isUnlocked;
@@ -74,7 +73,7 @@ public sealed class CharacterLevelSelectionController : MonoBehaviour
         if (levelButtons == null || index < 0 || index >= levelButtons.Length)
             return;
 
-        if (levelUnlocked != null && index < levelUnlocked.Length && !levelUnlocked[index])
+        if (!ProgressionService.IsLevelUnlocked(index))
             return;
 
         selectedLevel = index;
@@ -88,8 +87,10 @@ public sealed class CharacterLevelSelectionController : MonoBehaviour
 
     public void StartGame()
     {
+        if (!ProgressionService.IsLevelUnlocked(selectedLevel)) return;
         PlayerPrefs.SetInt(SelectedCharacterKey, selectedCharacter);
         PlayerPrefs.SetInt(SelectedLevelKey, selectedLevel);
+        PlayerPrefs.Save();
         SceneManager.LoadScene("Gameplay");
     }
 

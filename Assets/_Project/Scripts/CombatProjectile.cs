@@ -14,12 +14,14 @@ public sealed class CombatProjectile : MonoBehaviour
     private int damage;
     private bool spent;
 
-    public static void Spawn(Vector2 origin, Vector2 direction, int weaponIndex,
-        float maxRange, Transform owner)
+    public int Damage => damage;
+
+    public static bool TrySpawn(Vector2 origin, Vector2 direction, int shotDamage,
+        float shotSpeed, float shotRadius, float maxRange, Transform owner)
     {
         if (GameFlowController.IsDefeatActive || activeProjectiles >= MaxActiveProjectiles ||
             direction.sqrMagnitude < 0.0001f)
-            return;
+            return false;
 
         GameObject shot = new GameObject("Projectile");
         shot.transform.position = new Vector3(origin.x, origin.y, 0f);
@@ -28,26 +30,16 @@ public sealed class CombatProjectile : MonoBehaviour
         projectile.owner = owner;
         projectile.remainingRange = Mathf.Max(0.1f, maxRange);
 
-        switch (weaponIndex)
-        {
-            case 1: // SMG
-                projectile.speed = 28f;
-                projectile.damage = 1;
-                projectile.radius = 0.055f;
-                break;
-            case 2: // RPG
-                projectile.speed = 12f;
-                projectile.damage = 3;
-                projectile.radius = 0.14f;
-                break;
-            default: // Pistol
-                projectile.speed = 22f;
-                projectile.damage = 1;
-                projectile.radius = 0.07f;
-                break;
-        }
+        projectile.speed = Mathf.Max(0.1f, shotSpeed);
+        projectile.damage = Mathf.Max(1, shotDamage);
+        projectile.radius = Mathf.Max(0.01f, shotRadius);
+        SpriteRenderer visual = shot.AddComponent<SpriteRenderer>();
+        visual.sprite = ProgressionVisuals.Projectile;
+        visual.sortingOrder = 30;
+        shot.transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
 
         activeProjectiles++;
+        return true;
     }
 
     private void FixedUpdate()
@@ -77,6 +69,8 @@ public sealed class CombatProjectile : MonoBehaviour
                 continue;
 
             EnemyHealth enemy = collider.GetComponentInParent<EnemyHealth>();
+            if (collider.GetComponentInParent<CoinPickup>() != null || (collider.isTrigger && enemy == null))
+                continue;
             if (enemy != null && enemy.IsDead)
                 continue;
 

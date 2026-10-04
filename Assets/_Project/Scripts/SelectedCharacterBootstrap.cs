@@ -14,8 +14,12 @@ public static class SelectedCharacterBootstrap
 
     private static void ApplySelection(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name != "Gameplay" || !PlayerPrefs.HasKey(SelectedCharacterKey))
+        if (scene.name != "Gameplay")
             return;
+
+        int selectedLevel = PlayerPrefs.GetInt("Lindavista.SelectedLevel", 0);
+        if (!ProgressionService.IsLevelUnlocked(selectedLevel))
+            PlayerPrefs.SetInt("Lindavista.SelectedLevel", 0);
 
         GameObject marco = null;
         GameObject cesar = null;

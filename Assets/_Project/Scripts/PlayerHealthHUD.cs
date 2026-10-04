@@ -109,7 +109,7 @@ public sealed class PlayerHealthHUD : MonoBehaviour
 
     private void RefreshPlayers()
     {
-        PlayerActions[] players = FindObjectsByType<PlayerActions>(FindObjectsSortMode.None);
+        PlayerHealth[] players = FindObjectsByType<PlayerHealth>(FindObjectsSortMode.None);
         Array.Sort(players, (left, right) => string.CompareOrdinal(left.name, right.name));
 
         if (PlayersMatch(players))
@@ -117,13 +117,13 @@ public sealed class PlayerHealthHUD : MonoBehaviour
 
         ClearRows();
         if (title != null)
-            title.text = players.Length == 0 ? "VIDA · SIN PERSONAJE" : "VIDA";
+            title.text = "VIDA";
 
         for (int i = 0; i < players.Length; i++)
             CreatePlayerRow(players[i], i);
     }
 
-    private bool PlayersMatch(PlayerActions[] players)
+    private bool PlayersMatch(PlayerHealth[] players)
     {
         if (players.Length != rows.Count)
             return false;
@@ -137,7 +137,7 @@ public sealed class PlayerHealthHUD : MonoBehaviour
         return true;
     }
 
-    private void CreatePlayerRow(PlayerActions player, int index)
+    private void CreatePlayerRow(PlayerHealth player, int index)
     {
         GameObject rowObject = CreateImage("Health " + player.name, safeAreaRoot, RowColor);
         RectTransform rowRect = rowObject.GetComponent<RectTransform>();
@@ -151,16 +151,11 @@ public sealed class PlayerHealthHUD : MonoBehaviour
             segments = new Image[CellCount]
         };
 
-        string displayName = player.gameObject.name.Replace("Player_", string.Empty).ToUpperInvariant();
-        Text nameText = CreateText("Character", rowRect, displayName, 24,
-            FontStyle.Bold, TextAnchor.MiddleLeft);
-        SetTopLeft(nameText.rectTransform, new Vector2(12f, 0f), new Vector2(96f, 38f));
-
         for (int i = 0; i < CellCount; i++)
         {
             GameObject segment = CreateImage("Health " + (i + 1), rowRect, EmptyHealthColor);
             RectTransform segmentRect = segment.GetComponent<RectTransform>();
-            SetTopLeft(segmentRect, new Vector2(112f + i * 43f, -7f), new Vector2(36f, 23f));
+            SetTopLeft(segmentRect, new Vector2(12f + i * 62f, -7f), new Vector2(54f, 23f));
             row.segments[i] = segment.GetComponent<Image>();
         }
 
@@ -179,7 +174,8 @@ public sealed class PlayerHealthHUD : MonoBehaviour
         current = Mathf.Clamp(current, 0, maximum);
         row.value.text = current + "/" + maximum;
         for (int i = 0; i < row.segments.Length; i++)
-            row.segments[i].color = i < current ? FullHealthColor : EmptyHealthColor;
+            row.segments[i].color = (float)current / Mathf.Max(1, maximum) > (float)i / CellCount
+                ? FullHealthColor : EmptyHealthColor;
 
         if (showDamageFeedback && isActiveAndEnabled)
         {
@@ -270,7 +266,7 @@ public sealed class PlayerHealthHUD : MonoBehaviour
 
     private sealed class PlayerRow
     {
-        public PlayerActions player;
+        public PlayerHealth player;
         public GameObject root;
         public Image background;
         public Image[] segments;

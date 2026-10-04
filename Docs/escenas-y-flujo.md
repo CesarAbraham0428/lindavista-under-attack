@@ -15,26 +15,27 @@ Testing es una escena independiente para pruebas.
 ### `MainMenu`
 
 - El botón **Jugar** abre `CharacterSelection`.
-- **Tienda** abre un panel cuyo mensaje actual es “PRÓXIMAMENTE”.
+- **Tienda** abre las mejoras de daño de la pistola usando el saldo guardado.
 - **Ajustes** muestra el control de volumen general. El valor se aplica a `AudioListener.volume` y se guarda con PlayerPrefs bajo `Lindavista.MasterVolume`.
 - Los botones de regreso cierran los paneles; desde la selección se vuelve a `MainMenu`.
 
 ### `CharacterSelection`
 
 - Presenta las tarjetas de Marco y César y cuatro tarjetas de nivel.
-- La configuración serializada `levelUnlocked` decide qué tarjetas se pueden seleccionar y cuándo se muestra el candado.
+- El perfil de `ProgressionService` decide los niveles seleccionables y los candados. Un perfil nuevo tiene únicamente el nivel 1 desbloqueado.
 - Al iniciar, guarda los índices elegidos en `Lindavista.SelectedCharacter` y `Lindavista.SelectedLevel`, y carga `Gameplay`.
 - El código inicia la selección en el índice 0 para personaje y nivel. La escena asigna los botones y tarjetas a esos índices.
 
 ### `Gameplay`
 
 - Es la escena principal del juego: tiene la cámara con seguimiento, el escenario urbano y los objetos raíz `Player_Marco` y `Player_Cesar`.
-- Al cargarla, `SelectedCharacterBootstrap` activa Marco o César según `Lindavista.SelectedCharacter`. Si esa preferencia no existe, se conservan los estados guardados en la escena; el estado por defecto es Marco activo y César inactivo.
+- Al cargarla, `SelectedCharacterBootstrap` activa Marco o César según `Lindavista.SelectedCharacter`; sin preferencia, activa a Marco. Una selección de nivel bloqueado se corrige al nivel 1.
 - `SelectedLevelEnvironment` lee `Lindavista.SelectedLevel` al iniciar y configura los elementos visuales de esa variante.
-- El HUD de vida se crea en tiempo de ejecución para el jugador activo.
+- Los HUD de vida, saldo y pistola se crean en tiempo de ejecución para el jugador activo.
 - **Inicio y oleada:** la cámara abre en el tramo 5 para mostrar la formación de enemigos del nivel elegido, luego hace un paneo hacia la entrada. Al empezar el paneo, `E5_Enemigos` activa un enemigo cada 1,65 segundos para que avance hacia la posición inicial del jugador (X=-6,72 en la escena actual). El personaje queda bloqueado durante la presentación. Los conteos y prefabs se configuran en el mismo spawner para los cuatro niveles.
 - **Derrota:** la salud del personaje en cero o la llegada de un enemigo a la posición inicial activan la pantalla de derrota. Se bloquean las acciones y se puede reiniciar `Gameplay` o salir a `MainMenu`.
-- `Testing` conserva las cuatro variantes de enemigo para probar combate y animaciones. La secuencia de inicio en `Gameplay` requiere una comprobación visual en Play Mode.
+- **Victoria:** tras la última muerte y la liberación completa de la oleada se permite recoger monedas; **FINALIZAR NIVEL** guarda la finalización y desbloquea el siguiente nivel. Los resultados incluyen acceso a las mejoras de pistola.
+- `Testing` conserva las cuatro variantes de enemigo para probar combate y animaciones. Consulta [Progresión](progresion-nivel-1.md) para el guardado y las recompensas.
 
 ### `Testing`
 

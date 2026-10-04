@@ -11,7 +11,6 @@ public sealed class MobileControlsHUD : MonoBehaviour
     private static MobileControlsHUD active;
 
     private readonly List<TouchControlRegion> regions = new List<TouchControlRegion>();
-    private readonly TouchControlRegion[] weaponRegions = new TouchControlRegion[3];
     private Canvas canvas;
     private RectTransform safeAreaRoot;
     private PlayerMovement movement;
@@ -19,13 +18,11 @@ public sealed class MobileControlsHUD : MonoBehaviour
     private Font font;
     private bool leftHeld;
     private bool rightHeld;
-    private int selectedWeapon;
     private int screenWidth;
     private int screenHeight;
     private Rect lastSafeArea;
 
     private static readonly Color ButtonColor = new Color(0.08f, 0.15f, 0.22f, 0.70f);
-    private static readonly Color SelectedColor = new Color(0.08f, 0.45f, 0.57f, 0.88f);
     private static readonly Color AimColor = new Color(0.07f, 0.19f, 0.24f, 0.48f);
 
     public static bool IsVisible => active != null && active.canvas != null &&
@@ -40,7 +37,8 @@ public sealed class MobileControlsHUD : MonoBehaviour
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name != "Testing" || (!Application.isMobilePlatform && !Application.isEditor))
+        if ((scene.name != "Testing" && scene.name != "Gameplay") ||
+            (!Application.isMobilePlatform && !Application.isEditor))
             return;
 
         if (active == null)
@@ -112,7 +110,7 @@ public sealed class MobileControlsHUD : MonoBehaviour
             case TouchControlKind.SMG:
             case TouchControlKind.RPG:
                 if (pressed)
-                    SelectWeapon((int)kind - (int)TouchControlKind.Pistol);
+                    WeaponSelectionHUD.Select((int)kind - (int)TouchControlKind.Pistol);
                 break;
             case TouchControlKind.Reload:
                 if (pressed && actions != null)
@@ -132,20 +130,6 @@ public sealed class MobileControlsHUD : MonoBehaviour
             actions.StopTouchAimAndFire();
     }
 
-    private void SelectWeapon(int index)
-    {
-        selectedWeapon = index;
-        if (actions != null)
-            actions.SelectTouchWeapon(index);
-
-        for (int i = 0; i < weaponRegions.Length; i++)
-        {
-            if (weaponRegions[i] != null)
-                weaponRegions[i].SetRestingColor(i == selectedWeapon
-                    ? SelectedColor : ButtonColor);
-        }
-    }
-
     private void ApplyMovement()
     {
         if (movement != null)
@@ -161,8 +145,6 @@ public sealed class MobileControlsHUD : MonoBehaviour
         movement = player != null ? player.GetComponent<PlayerMovement>() : null;
         actions = player != null ? player.GetComponent<PlayerActions>() : null;
         ApplyMovement();
-        if (actions != null)
-            actions.SelectTouchWeapon(selectedWeapon);
     }
 
     private void ClearTouches()
@@ -240,16 +222,6 @@ public sealed class MobileControlsHUD : MonoBehaviour
         CreateControl("Move Right", ">", TouchControlKind.MoveRight,
             Vector2.zero, new Vector2(310f, 135f), new Vector2(150f, 145f),
             ButtonColor, 72);
-
-        weaponRegions[0] = CreateControl("Pistol", "1  P", TouchControlKind.Pistol,
-            new Vector2(1f, 0f), new Vector2(-95f, 405f), new Vector2(112f, 86f),
-            SelectedColor, 30);
-        weaponRegions[1] = CreateControl("SMG", "2  SMG", TouchControlKind.SMG,
-            new Vector2(1f, 0f), new Vector2(-225f, 405f), new Vector2(112f, 86f),
-            ButtonColor, 25);
-        weaponRegions[2] = CreateControl("RPG", "3  RPG", TouchControlKind.RPG,
-            new Vector2(1f, 0f), new Vector2(-355f, 405f), new Vector2(112f, 86f),
-            ButtonColor, 25);
 
         CreateControl("Reload", "REC", TouchControlKind.Reload,
             new Vector2(1f, 0f), new Vector2(-465f, 145f),

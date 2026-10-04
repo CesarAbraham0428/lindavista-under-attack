@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4436431473236494385}
   - component: {fileID: 4504667376355173225}
   - component: {fileID: 1810893841011641103}
+  - component: {fileID: 1518937008538563518}
   m_Layer: 0
   m_Name: Enemy3_Base
   m_TagString: Untagged
@@ -158,3 +159,17 @@ MonoBehaviour:
   timeBetweenShots: 0.15
   entranceTarget: {fileID: 0}
   exposedSprite: {fileID: 909496970199998171, guid: f71e1ddd13591784fb96a86eb6a1267c, type: 3}
+--- !u!114 &1518937008538563518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9170529911225356927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e83c52609a342fe4080ba88efff40969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyLootDrop
+  coinValue: 15
+  coinPrefab: {fileID: 1000794032613621786, guid: 9fec02da960de064fa9e59736ac3709b, type: 3}
