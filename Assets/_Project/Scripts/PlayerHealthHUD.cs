@@ -8,20 +8,26 @@ using UnityEngine.UI;
 /// <summary>Builds the player health HUD in the Testing and Gameplay scenes.</summary>
 public sealed class PlayerHealthHUD : MonoBehaviour
 {
-    private const int CellCount = 5;
+    private const float Margin = 24f;
+    private const float RowHeight = 64f;
+    private const float RowSpacing = 76f;
     private static PlayerHealthHUD active;
 
+    // All three HUDs share the same vertical rhythm, including two-player Testing.
+    public static float SecondaryTop => Margin +
+        Mathf.Max(1, active != null ? active.rows.Count : 1) * RowSpacing + 12f;
+
     private static readonly Color PanelColor = new Color(0.07f, 0.08f, 0.09f, 0.94f);
-    private static readonly Color RowColor = new Color(0.18f, 0.16f, 0.15f, 0.98f);
+    private static readonly Color RowColor = new Color(0.33f, 0.28f, 0.21f, 1f);
     private static readonly Color DamageFlashColor = new Color(0.55f, 0.12f, 0.08f, 1f);
     private static readonly Color FullHealthColor = new Color(0.88f, 0.19f, 0.10f, 1f);
-    private static readonly Color EmptyHealthColor = new Color(0.29f, 0.17f, 0.16f, 1f);
+    private static readonly Color EmptyHealthColor = new Color(0.19f, 0.10f, 0.09f, 1f);
     private static readonly Color TextColor = new Color(0.96f, 0.90f, 0.79f, 1f);
 
     private readonly List<PlayerRow> rows = new List<PlayerRow>();
     private RectTransform safeAreaRoot;
-    private Text title;
     private Font font;
+    private bool hasDisplayFont;
     private int screenWidth;
     private int screenHeight;
     private Rect lastSafeArea;
@@ -30,6 +36,7 @@ public sealed class PlayerHealthHUD : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void RegisterSceneCallback()
     {
+        active = null;
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -45,7 +52,10 @@ public sealed class PlayerHealthHUD : MonoBehaviour
     private void Awake()
     {
         active = this;
-        font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        font = Resources.Load<Font>("UI/LilitaOne");
+        hasDisplayFont = font != null;
+        if (font == null)
+            font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         BuildCanvas();
     }
 
@@ -94,17 +104,6 @@ public sealed class PlayerHealthHUD : MonoBehaviour
         safeAreaObject.transform.SetParent(canvasObject.transform, false);
         safeAreaRoot = safeAreaObject.GetComponent<RectTransform>();
         UpdateSafeArea();
-
-        GameObject panelObject = CreateImage("Player Health Panel", safeAreaRoot, PanelColor);
-        RectTransform panel = panelObject.GetComponent<RectTransform>();
-        SetTopLeft(panel, new Vector2(24f, -24f), new Vector2(440f, 146f));
-
-        GameObject accentObject = CreateImage("Accent", panel, FullHealthColor);
-        RectTransform accent = accentObject.GetComponent<RectTransform>();
-        SetTopLeft(accent, new Vector2(0f, 0f), new Vector2(5f, 146f));
-
-        title = CreateText("Title", panel, "VIDA", 24, FontStyle.Bold, TextAnchor.MiddleLeft);
-        SetTopLeft(title.rectTransform, new Vector2(16f, -7f), new Vector2(390f, 32f));
     }
 
     private void RefreshPlayers()
@@ -116,11 +115,9 @@ public sealed class PlayerHealthHUD : MonoBehaviour
             return;
 
         ClearRows();
-        if (title != null)
-            title.text = "VIDA";
 
         for (int i = 0; i < players.Length; i++)
-            CreatePlayerRow(players[i], i);
+            CreatePlayerRow(players[i], i, players.Length > 1);
     }
 
     private bool PlayersMatch(PlayerHealth[] players)
@@ -137,31 +134,52 @@ public sealed class PlayerHealthHUD : MonoBehaviour
         return true;
     }
 
-    private void CreatePlayerRow(PlayerHealth player, int index)
+    private void CreatePlayerRow(PlayerHealth player, int index, bool multiplayer)
     {
-        GameObject rowObject = CreateImage("Health " + player.name, safeAreaRoot, RowColor);
+        GameObject rowObject = CreateImage("Health " + player.name, safeAreaRoot, PanelColor);
         RectTransform rowRect = rowObject.GetComponent<RectTransform>();
-        SetTopLeft(rowRect, new Vector2(40f, -64f - index * 42f), new Vector2(398f, 38f));
+        rowRect.anchorMin = new Vector2(0f, 1f);
+        rowRect.anchorMax = new Vector2(1f / 3f, 1f);
+        rowRect.pivot = new Vector2(0f, 1f);
+        rowRect.sizeDelta = new Vector2(-Margin * 2f, RowHeight);
+        rowRect.anchoredPosition = new Vector2(Margin, -Margin - index * RowSpacing);
+
+        Text label = CreateText("Health Label", rowRect, "VIDA", 26,
+            FontStyle.Bold, TextAnchor.MiddleLeft);
+        float labelWidth = multiplayer ? 180f : 88f;
+        if (multiplayer)
+            label.text = player.name.Replace("Player_", string.Empty).ToUpperInvariant();
+        SetTopLeft(label.rectTransform, new Vector2(16f, 0f), new Vector2(labelWidth, RowHeight));
+
+        Image frame = CreateImage("Health Frame", rowRect, RowColor).GetComponent<Image>();
+        Stretch(frame.rectTransform, new Vector2(labelWidth + 24f, 12f), new Vector2(110f, 12f));
+        Image track = CreateImage("Health Track", frame.transform, EmptyHealthColor).GetComponent<Image>();
+        Stretch(track.rectTransform, Vector2.one * 4f, Vector2.one * 4f);
+        Image fill = CreateImage("Health Fill", track.transform, FullHealthColor).GetComponent<Image>();
+        Stretch(fill.rectTransform, Vector2.zero, Vector2.zero);
+        Image shine = CreateImage("Health Highlight", fill.transform,
+            new Color(1f, 0.44f, 0.33f, 0.55f)).GetComponent<Image>();
+        shine.rectTransform.anchorMin = new Vector2(0f, 1f);
+        shine.rectTransform.anchorMax = Vector2.one;
+        shine.rectTransform.pivot = new Vector2(0.5f, 1f);
+        shine.rectTransform.sizeDelta = new Vector2(0f, 6f);
+        shine.rectTransform.anchoredPosition = Vector2.zero;
 
         PlayerRow row = new PlayerRow
         {
             player = player,
             root = rowObject,
-            background = rowObject.GetComponent<Image>(),
-            segments = new Image[CellCount]
+            background = track,
+            fill = fill.rectTransform,
+            current = player.CurrentHealth
         };
 
-        for (int i = 0; i < CellCount; i++)
-        {
-            GameObject segment = CreateImage("Health " + (i + 1), rowRect, EmptyHealthColor);
-            RectTransform segmentRect = segment.GetComponent<RectTransform>();
-            SetTopLeft(segmentRect, new Vector2(12f + i * 62f, -7f), new Vector2(54f, 23f));
-            row.segments[i] = segment.GetComponent<Image>();
-        }
-
-        row.value = CreateText("Health Value", rowRect, "5/5", 22,
+        row.value = CreateText("Health Value", rowRect, "", 28,
             FontStyle.Bold, TextAnchor.MiddleRight);
-        SetTopLeft(row.value.rectTransform, new Vector2(326f, 0f), new Vector2(60f, 38f));
+        row.value.rectTransform.anchorMin = row.value.rectTransform.anchorMax = new Vector2(1f, 1f);
+        row.value.rectTransform.pivot = new Vector2(1f, 1f);
+        row.value.rectTransform.anchoredPosition = new Vector2(-16f, 0f);
+        row.value.rectTransform.sizeDelta = new Vector2(80f, RowHeight);
 
         row.healthChanged = (current, maximum) => SetHealth(row, current, maximum, true);
         player.HealthChanged += row.healthChanged;
@@ -171,13 +189,14 @@ public sealed class PlayerHealthHUD : MonoBehaviour
 
     private void SetHealth(PlayerRow row, int current, int maximum, bool showDamageFeedback)
     {
+        maximum = Mathf.Max(1, maximum);
         current = Mathf.Clamp(current, 0, maximum);
-        row.value.text = current + "/" + maximum;
-        for (int i = 0; i < row.segments.Length; i++)
-            row.segments[i].color = (float)current / Mathf.Max(1, maximum) > (float)i / CellCount
-                ? FullHealthColor : EmptyHealthColor;
+        bool lostHealth = current < row.current;
+        row.current = current;
+        row.value.text = current + " / " + maximum;
+        row.fill.anchorMax = new Vector2((float)current / maximum, 1f);
 
-        if (showDamageFeedback && isActiveAndEnabled)
+        if (showDamageFeedback && lostHealth && isActiveAndEnabled)
         {
             if (row.flash != null)
                 StopCoroutine(row.flash);
@@ -190,7 +209,7 @@ public sealed class PlayerHealthHUD : MonoBehaviour
         row.background.color = DamageFlashColor;
         yield return new WaitForSecondsRealtime(0.16f);
         if (row.background != null)
-            row.background.color = RowColor;
+            row.background.color = EmptyHealthColor;
         row.flash = null;
     }
 
@@ -246,7 +265,7 @@ public sealed class PlayerHealthHUD : MonoBehaviour
         text.font = font;
         text.text = value;
         text.fontSize = fontSize;
-        text.fontStyle = fontStyle;
+        text.fontStyle = hasDisplayFont ? FontStyle.Normal : fontStyle;
         text.alignment = alignment;
         text.color = TextColor;
         text.resizeTextForBestFit = true;
@@ -264,12 +283,21 @@ public sealed class PlayerHealthHUD : MonoBehaviour
         rect.sizeDelta = size;
     }
 
+    private static void Stretch(RectTransform rect, Vector2 insetMin, Vector2 insetMax)
+    {
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = insetMin;
+        rect.offsetMax = -insetMax;
+    }
+
     private sealed class PlayerRow
     {
         public PlayerHealth player;
         public GameObject root;
         public Image background;
-        public Image[] segments;
+        public RectTransform fill;
+        public int current;
         public Text value;
         public Action<int, int> healthChanged;
         public Coroutine flash;
