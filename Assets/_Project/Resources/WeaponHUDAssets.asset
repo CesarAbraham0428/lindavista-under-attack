@@ -15,7 +15,7 @@ MonoBehaviour:
   pistol: {fileID: 21300000, guid: 7fbb7d1e353847b1ab663589ddeed4ae, type: 3}
   smg: {fileID: 21300000, guid: 58900a0e5a5e4609a102b5b55bb0e917, type: 3}
   rpg: {fileID: 21300000, guid: 27fb74debf4a4ad0a418afcad1eee8af, type: 3}
-  pistolAmmo: {fileID: 21300000, guid: c8dc5c20209041bdb1fac00d5a258654, type: 3}
-  smgAmmo: {fileID: 21300000, guid: 804a87fb5fbd45ae97514b5b08ef0218, type: 3}
+  pistolAmmo: {fileID: 21300000, guid: ef9dd6e5cda94a6fbc5fe1cfb3ba0217, type: 3}
+  smgAmmo: {fileID: 21300000, guid: 43a28b3d7be64c849baf30a91847b01c, type: 3}
   rpgAmmo: {fileID: 21300000, guid: 95af9cce908f44fa9733327a8f089d50, type: 3}
   coin: {fileID: 7675826601332790545, guid: 3a0c723c22831f34e9bce70ea288e5c1, type: 3}
