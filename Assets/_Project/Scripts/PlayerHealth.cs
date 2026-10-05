@@ -6,6 +6,7 @@ public sealed class PlayerHealth : MonoBehaviour
     [SerializeField, Min(1)] private int maxHealth = 5;
     [SerializeField, Min(0f)] private float damageCooldown = 0.75f;
     private float nextDamageTime;
+    private int appliedUpgrade;
     public int CurrentHealth { get; private set; }
     public int MaxHealth => maxHealth;
     public bool IsDead { get; private set; }
@@ -13,7 +14,18 @@ public sealed class PlayerHealth : MonoBehaviour
     public event Action Damaged;
     public event Action Died;
 
-    private void Awake() { Initialize(maxHealth, damageCooldown); }
+    private void Awake() { appliedUpgrade = ProgressionService.HealthUpgrade; Initialize(maxHealth + appliedUpgrade, damageCooldown); }
+    private void OnEnable() { ProgressionService.Changed += ApplyUpgrade; ApplyUpgrade(); }
+    private void OnDisable() { ProgressionService.Changed -= ApplyUpgrade; }
+    private void ApplyUpgrade()
+    {
+        int difference = ProgressionService.HealthUpgrade - appliedUpgrade;
+        if (difference == 0) return;
+        appliedUpgrade = ProgressionService.HealthUpgrade;
+        maxHealth = Mathf.Max(1, maxHealth + difference);
+        if (!IsDead) CurrentHealth = Mathf.Clamp(CurrentHealth + difference, 0, maxHealth);
+        HealthChanged?.Invoke(CurrentHealth, maxHealth);
+    }
 
     public void Initialize(int maximum, float cooldown)
     {

@@ -135,7 +135,19 @@ public static class ProgressionChecks
             var blocked = new ProgressionRepository(path);
             Check(!blocked.CanSave && !blocked.TryCredit(1), "corrupt files never silently overwritten");
             Check(WeaponDefinition.Pistol.DamageAt(0) == 2 && WeaponDefinition.Pistol.DamageAt(2) == 4, "pistol damage tiers");
-            Check(ProgressionService.OwnsWeapon(0) && !ProgressionService.OwnsWeapon(1) && !ProgressionService.OwnsWeapon(2), "pistol-only inventory");
+            Check(ProgressionService.OwnsWeapon(0) && ProgressionService.OwnsWeapon(1) && ProgressionService.OwnsWeapon(2), "test inventory unlocked");
+            var shop = new ProgressionRepository(Path.Combine(directory, "shop.json"));
+            Check(!shop.TryBuyAmmo(0) && shop.Snapshot.ammunition[0] == 48, "unaffordable pack leaves ammo unchanged");
+            Check(shop.TryCredit(1000), "shop funds");
+            Check(shop.TryBuyAmmo(0) && shop.Snapshot.ammunition[0] == 60 && shop.Snapshot.coins == 990, "whole pistol pack reaches cap");
+            Check(!shop.TryBuyAmmo(0) && shop.Snapshot.coins == 990, "full inventory never charged");
+            Check(shop.TryConsumeAmmo(0) && !shop.TryBuyAmmo(0) && shop.Snapshot.ammunition[0] == 59, "reject partial pack");
+            Check(shop.TryBuyAmmo(1) && shop.Snapshot.ammunition[1] == 120, "smg pack");
+            Check(shop.TryBuyAmmo(2) && shop.Snapshot.ammunition[2] == 8, "rocket pack");
+            Check(shop.TryUpgradeHealth() && shop.TryUpgradeWeapon(1) && shop.TryUpgradeWeapon(2), "all upgrade transactions");
+            var shopReloaded = new ProgressionRepository(Path.Combine(directory, "shop.json"));
+            Check(shopReloaded.Snapshot.healthUpgrade == 1 && shopReloaded.Snapshot.weaponUpgrades[1] == 1 && shopReloaded.Snapshot.weaponUpgrades[2] == 1 && shopReloaded.Snapshot.ammunition[0] == 59, "shop purchases survive reload");
+            Check(!shop.TryBuyAmmo(-1) && !shop.TryUpgradeWeapon(3), "invalid weapon rejected");
             Debug.Log("Progression storage checks passed: " + assertions + " assertions.");
         }
         finally { Directory.Delete(directory, true); }
@@ -184,7 +196,7 @@ public static class ProgressionChecks
                 Check(ProgressionService.Coins == 5, "physical pickup credits wallet");
 
                 var weapon = proxy.GetComponent<PlayerWeaponController>();
-                Check(!weapon.TryEquip(1) && !weapon.TryEquip(2) && weapon.TryEquip(0), "locked weapons");
+                Check(weapon.TryEquip(1) && weapon.TryEquip(2) && weapon.TryEquip(0), "test weapons equip");
                 Check(weapon.TryFire(new Vector2(1002, 0), Vector2.right, proxy.transform), "pistol fires");
                 Check(weapon.Magazine == 11 && !weapon.TryFire(new Vector2(1002, 0), Vector2.right, proxy.transform), "ammo consumption and cadence");
                 var projectile = UnityEngine.Object.FindObjectsByType<CombatProjectile>(FindObjectsSortMode.None).First(p => p.transform.position.x > 900);

@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: d419d58638a6caf4f89249c0d296b800
+guid: 71f5d1bed11fe2a4f8455b06130aa5d9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6270130152512885797
-    second: portada_1_pm_0
+      213: -7666085835850479376
+    second: MarcoFront_0
+  - first:
+      213: 738058793760839675
+    second: MarcoFront_1
+  - first:
+      213: 1873216498296641914
+    second: MarcoFront_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -88,7 +94,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -101,7 +107,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -114,7 +120,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -126,13 +132,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: portada_1_pm_0
+      name: MarcoFront_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 7
-        width: 1057
-        height: 1441
+        x: 48
+        y: 440
+        width: 8
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +147,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5241ff3372af30750800000000000000
-      internalID: 6270130152512885797
+      spriteID: 0f88a788c879c9590800000000000000
+      internalID: -7666085835850479376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MarcoFront_1
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 17
+        width: 790
+        height: 1492
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf7d771009c1e3a00800000000000000
+      internalID: 738058793760839675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MarcoFront_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 38
+        width: 47
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a795f500b700ff910800000000000000
+      internalID: 1873216498296641914
       vertices: []
       indices: 
       edges: []
@@ -151,7 +201,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +211,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      portada_1_pm_0: 6270130152512885797
+      MarcoFront_0: -7666085835850479376
+      MarcoFront_1: 738058793760839675
+      MarcoFront_2: 1873216498296641914
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

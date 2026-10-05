@@ -79,11 +79,13 @@ public static class MenuSceneBuilder
         SetObjectReference(controller, "masterVolumeSlider", volumeSlider);
 
         CreateEventSystem();
+        CartoonMenuStyle.Apply(canvas.transform);
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
     }
 
-    private static void BuildCharacterSelection()
+    [MenuItem("Tools/Lindavista/Build character selection screen")]
+    public static void BuildCharacterSelection()
     {
         Scene scene = EditorSceneManager.OpenScene(ScenePath + "CharacterSelection.unity", OpenSceneMode.Single);
         RemoveExistingMenuObjects(scene);
@@ -94,30 +96,30 @@ public static class MenuSceneBuilder
         Button backButton = AddButton(canvas.transform, "Back Button", LoadMenuSprite("carte_flecha_hacia_atras.png"),
             new Vector2(-842f, 452f), new Vector2(142f, 106f));
         AddImage(canvas.transform, "Character Heading", LoadMenuSprite("cartel_seleccionar_personaje.png"),
-            new Vector2(-610f, 424f), new Vector2(510f, 170f));
+            new Vector2(-680f, 325f), new Vector2(510f, 170f));
         AddImage(canvas.transform, "Level Heading", LoadMenuSprite("cartel_seleccionar_nivel.png"),
-            new Vector2(320f, 424f), new Vector2(510f, 170f));
+            new Vector2(280f, 424f), new Vector2(510f, 170f));
 
         Button[] characterButtons = new Button[2];
         Outline[] characterOutlines = new Outline[2];
         Sprite[] characterSprites =
         {
-            LoadSprite("Assets/_Project/Art/Characters/Players/Marco_Walk_8f.png"),
-            LoadSprite("Assets/_Project/Art/Characters/Players/Cesar_Walk_8f.png")
+            LoadSprite("Assets/_Project/Art/UI/Polished/MarcoFront.png"),
+            LoadSprite("Assets/_Project/Art/UI/Polished/CesarFront.png")
         };
         string[] characterNames = { "MARCO", "CÉSAR" };
-        float[] characterX = { -754f, -466f };
+        float[] characterX = { -805f, -565f };
 
         for (int i = 0; i < characterButtons.Length; i++)
         {
             characterButtons[i] = AddButton(canvas.transform, characterNames[i] + " Character Card",
-                null, new Vector2(characterX[i], -28f), new Vector2(286f, 626f));
+                null, new Vector2(characterX[i], -28f), new Vector2(220f, 626f));
             characterButtons[i].GetComponent<Image>().color = new Color(0.045f, 0.055f, 0.07f, 0.88f);
             characterOutlines[i] = characterButtons[i].GetComponent<Outline>();
             AddImage(characterButtons[i].transform, characterNames[i] + " Portrait", characterSprites[i],
-                new Vector2(0f, 38f), new Vector2(248f, 430f));
+                new Vector2(0f, 38f), new Vector2(208f, 490f));
             AddText(characterButtons[i].transform, characterNames[i] + " Label", characterNames[i], 42,
-                new Vector2(0f, -263f), new Vector2(250f, 70f), Color.white);
+                new Vector2(0f, -263f), new Vector2(210f, 70f), Color.white);
         }
 
         string[] levelFiles =
@@ -129,35 +131,35 @@ public static class MenuSceneBuilder
         Image[] levelLockIcons = new Image[levelFiles.Length];
         Vector2[] levelPositions =
         {
-            new Vector2(-150f, 42f), new Vector2(134f, 42f),
-            new Vector2(418f, 42f), new Vector2(702f, 42f)
+            new Vector2(-200f, 20f), new Vector2(120f, 20f),
+            new Vector2(440f, 20f), new Vector2(760f, 20f)
         };
 
         for (int i = 0; i < levelFiles.Length; i++)
         {
             levelButtons[i] = AddButton(canvas.transform, "Level " + (i + 1) + " Card", null,
-                levelPositions[i], new Vector2(260f, 406f));
+                levelPositions[i], new Vector2(306f, 480f));
             levelButtons[i].GetComponent<Image>().color = new Color(0.06f, 0.055f, 0.07f, 0.92f);
             levelOutlines[i] = levelButtons[i].GetComponent<Outline>();
             AddImage(levelButtons[i].transform, "Level " + (i + 1) + " Artwork", LoadMenuSprite(levelFiles[i]),
-                new Vector2(0f, 0f), new Vector2(244f, 366f));
+                new Vector2(0f, 0f), new Vector2(302f, 452f));
 
             Image numberBoard = AddImage(canvas.transform, "Level " + (i + 1) + " Number Board",
-                LoadMenuSprite("cartel_vacio.png"), new Vector2(levelPositions[i].x, -202f), new Vector2(164f, 74f));
+                LoadMenuSprite("cartel_vacio.png"), new Vector2(levelPositions[i].x, -286f), new Vector2(164f, 74f));
             numberBoard.raycastTarget = false;
             AddText(canvas.transform, "Level " + (i + 1) + " Number", (i + 1).ToString(), 46,
-                new Vector2(levelPositions[i].x, -202f), new Vector2(120f, 62f), Color.white);
+                new Vector2(levelPositions[i].x, -286f), new Vector2(120f, 62f), Color.white);
 
             if (i > 0)
             {
                 levelLockIcons[i] = AddImage(canvas.transform, "Level " + (i + 1) + " Lock",
-                    LoadMenuSprite("candado.png"), new Vector2(levelPositions[i].x, -133f), new Vector2(70f, 82f));
+                    LoadMenuSprite("candado.png"), new Vector2(levelPositions[i].x, -228f), new Vector2(70f, 82f));
                 levelLockIcons[i].raycastTarget = false;
             }
         }
 
         Button startButton = AddButton(canvas.transform, "Start Game Button", LoadMenuSprite("cartel_jugar.png"),
-            new Vector2(320f, -360f), new Vector2(390f, 132f));
+            new Vector2(280f, -405f), new Vector2(390f, 132f));
 
         CharacterLevelSelectionController controller = canvas.gameObject.AddComponent<CharacterLevelSelectionController>();
         SetObjectArray(controller, "characterButtons", characterButtons);

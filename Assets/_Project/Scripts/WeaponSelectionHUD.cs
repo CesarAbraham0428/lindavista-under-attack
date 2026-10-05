@@ -123,6 +123,7 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
     public static void Select(int index)
     {
         if (active == null || index < 0 || index >= 3 || !active.CanSelect()) return;
+        if (active.weapons == null || !active.weapons.TryEquip(index)) return;
         active.selected = index;
         active.RefreshSelection();
     }
@@ -159,8 +160,7 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
         if (ammoStatus == null) return;
         string[] names = { "PISTOLA", "METRALLETA", "RPG" };
         for (int i = 0; i < ammoCounts.Length; i++)
-            ammoCounts[i].text = weapons != null && weapons.EquippedWeapon == i
-                ? weapons.Magazine.ToString() : "—";
+            ammoCounts[i].text = weapons != null ? ProgressionService.Ammo(i).ToString() : "—";
 
         bool available = weapons != null && weapons.EquippedWeapon == selected;
         int capacity = available ? weapons.Definition.MagazineSize : 1;
