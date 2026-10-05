@@ -15,7 +15,13 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
     private Image[] cartridges = new Image[0];
     private readonly HUDSpriteVariants[] ammoArtwork = new HUDSpriteVariants[3];
     private RectTransform ammoStrip;
+    private RectTransform ammoPanel;
+    private Text ammoValue;
     private Text ammoStatus;
+    private const float AmmoWidth = 360f;
+    private const float AmmoHeight = 96f;
+    private const float AmmoLeft = 24f + ProgressionHUD.WalletWidth + 16f;
+    private const float WeaponTopGap = AmmoHeight + 24f;
     private PlayerWeaponController weapons;
     private RectTransform safeArea;
     private Sprite circle;
@@ -62,7 +68,7 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
             // Keep the hit area circular, including where the weapon overhangs the rim.
             rims[i].alphaHitTestMinimumThreshold = 0.5f;
             ProgressionUI.Top(rims[i].rectTransform, new Vector2(0, 1),
-                new Vector2(32, -220 - i * 164), new Vector2(132, 132));
+                new Vector2(32, -PlayerHealthHUD.SecondaryTop - WeaponTopGap - i * 164), new Vector2(132, 132));
             buttons[i] = rims[i].gameObject.AddComponent<Button>();
             buttons[i].targetGraphic = rims[i];
             buttons[i].transition = Selectable.Transition.None;
@@ -79,30 +85,42 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
             Center(icons[i].rectTransform, sizes[i]);
             ammoCounts[i] = ProgressionUI.Text(rims[i].transform, "Ammo Count", "—", 44,
                 TextAnchor.MiddleRight);
+            UseDisplayFont(ammoCounts[i]);
             ProgressionUI.Top(ammoCounts[i].rectTransform, new Vector2(0, 1),
                 new Vector2(38, -94), new Vector2(98, 50));
             var outline = ammoCounts[i].gameObject.AddComponent<Outline>();
             outline.effectColor = new Color(0, 0, 0, 0.95f);
             outline.effectDistance = new Vector2(2, -2);
         }
-        var ammoPanel = ProgressionUI.Image(safeArea, "Selected Weapon Ammo", Color.clear);
-        ProgressionUI.Top(ammoPanel.rectTransform, new Vector2(0, 1),
-            new Vector2(190, -114), new Vector2(248, 76));
+        ammoPanel = ProgressionUI.Image(safeArea, "Selected Weapon Ammo",
+            new Color(0.07f, 0.08f, 0.07f, 0.94f)).rectTransform;
+        ProgressionUI.Top(ammoPanel, new Vector2(0, 1),
+            new Vector2(AmmoLeft, -PlayerHealthHUD.SecondaryTop), new Vector2(AmmoWidth + 32, AmmoHeight));
+        var trim = ProgressionUI.Image(ammoPanel, "Ammo Trim", new Color(0.52f, 0.43f, 0.28f));
+        ProgressionUI.Top(trim.rectTransform, new Vector2(0, 1),
+            Vector2.zero, new Vector2(AmmoWidth + 32, 2));
         ammoStrip = new GameObject("Cartridges", typeof(RectTransform)).GetComponent<RectTransform>();
-        ammoStrip.SetParent(ammoPanel.transform, false);
-        ProgressionUI.Top(ammoStrip, new Vector2(0, 1), new Vector2(0, 0), new Vector2(248, 46));
-        ammoStatus = ProgressionUI.Text(ammoPanel.transform, "Ammo Status", "", 20);
+        ammoStrip.SetParent(ammoPanel, false);
+        ProgressionUI.Top(ammoStrip, new Vector2(0, 1), new Vector2(16, -40), new Vector2(AmmoWidth, 44));
+        ammoStatus = ProgressionUI.Text(ammoPanel, "Ammo Status", "", 24);
+        UseDisplayFont(ammoStatus);
         ProgressionUI.Top(ammoStatus.rectTransform, new Vector2(0, 1),
-            new Vector2(0, -47), new Vector2(248, 29));
-        var statusOutline = ammoStatus.gameObject.AddComponent<Outline>();
-        statusOutline.effectColor = Color.black;
-        statusOutline.effectDistance = new Vector2(1, -1);
+            new Vector2(16, -6), new Vector2(AmmoWidth - 120, 30));
+        ammoValue = ProgressionUI.Text(ammoPanel, "Magazine Value", "", 28, TextAnchor.MiddleRight);
+        UseDisplayFont(ammoValue);
+        ProgressionUI.Top(ammoValue.rectTransform, new Vector2(1, 1),
+            new Vector2(-16, -6), new Vector2(112, 30));
+        ammoValue.color = ProgressionUI.Gold;
         RefreshSelection();
     }
 
     private void Update()
     {
         UpdateSafeArea();
+        ammoPanel.anchoredPosition = new Vector2(AmmoLeft, -PlayerHealthHUD.SecondaryTop);
+        for (int i = 0; i < rims.Length; i++)
+            rims[i].rectTransform.anchoredPosition = new Vector2(32,
+                -PlayerHealthHUD.SecondaryTop - WeaponTopGap - i * 164);
         if (Time.unscaledTime >= nextPlayerRefresh)
         {
             if (player == null || !player.gameObject.activeInHierarchy)
@@ -163,33 +181,41 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
             ammoCounts[i].text = weapons != null ? ProgressionService.Ammo(i).ToString() : "—";
 
         bool available = weapons != null && weapons.EquippedWeapon == selected;
-        int capacity = available ? weapons.Definition.MagazineSize : 1;
+        int capacity = available ? Mathf.Max(1, weapons.Definition.MagazineSize) : 0;
         if (cartridges.Length != capacity) BuildCartridges(capacity);
         int remaining = available ? weapons.Magazine : 0;
         for (int i = 0; i < cartridges.Length; i++)
         {
-            bool filled = i < remaining;
+            bool filled = i >= capacity - remaining;
             cartridges[i].sprite = filled ? ammoArtwork[selected].ColorSprite : ammoArtwork[selected].GraySprite;
-            cartridges[i].color = filled ? Color.white : new Color(0.65f, 0.65f, 0.65f);
+            cartridges[i].color = filled ? Color.white : new Color(0.54f, 0.51f, 0.46f);
+            // Missing artwork still leaves a readable magazine counter.
+            cartridges[i].enabled = cartridges[i].sprite != null;
         }
-        ammoStatus.text = names[selected] + (available
-            ? "  " + remaining + "/" + capacity + (weapons.IsReloading ? " · RECARGANDO…" : "")
-            : " · NO DISPONIBLE");
+        ammoStatus.text = !available ? names[selected] + " · NO DISPONIBLE" :
+            weapons.IsReloading ? "RECARGANDO…" : remaining == 0 ? "SIN BALAS · RECARGA" : names[selected];
+        ammoStatus.color = available && (weapons.IsReloading || remaining == 0)
+            ? ProgressionUI.Gold : new Color(0.96f, 0.93f, 0.85f);
+        ammoValue.text = available ? remaining + " / " + capacity : "—";
     }
 
     private void BuildCartridges(int capacity)
     {
-        foreach (Transform child in ammoStrip) Destroy(child.gameObject);
+        foreach (Transform child in ammoStrip)
+        {
+            child.gameObject.SetActive(false);
+            Destroy(child.gameObject);
+        }
         cartridges = new Image[capacity];
         if (capacity == 0) return;
-        float step = Mathf.Min(28f, 248f / capacity);
+        float step = Mathf.Min(34f, AmmoWidth / capacity);
         float gap = Mathf.Min(3f, step * 0.15f);
         for (int i = 0; i < capacity; i++)
         {
             cartridges[i] = ProgressionUI.Image(ammoStrip, "Cartridge " + (i + 1), Color.white);
             cartridges[i].preserveAspect = true;
             ProgressionUI.Top(cartridges[i].rectTransform, new Vector2(0, 1),
-                new Vector2(i * step, 0), new Vector2(step - gap, 46));
+                new Vector2(i * step, 0), new Vector2(step - gap, 44));
         }
     }
 
@@ -207,6 +233,14 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
         rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0.5f);
         rect.anchoredPosition = Vector2.zero;
         rect.sizeDelta = size;
+    }
+
+    private static void UseDisplayFont(Text text)
+    {
+        Font displayFont = Resources.Load<Font>("UI/LilitaOne");
+        if (displayFont == null) return;
+        text.font = displayFont;
+        text.fontStyle = FontStyle.Normal;
     }
 
     private static Sprite MakeCircle()

@@ -4,10 +4,12 @@ using UnityEngine.UI;
 
 public sealed class ProgressionHUD : MonoBehaviour
 {
+    public const float WalletWidth = 184f;
     private static ProgressionHUD active;
     private RectTransform safeArea;
     private Text wallet, notice;
     private Image coinIcon;
+    private RectTransform walletPanel;
     private HUDSpriteVariants coinArtwork;
     private GameObject collection;
     private float refreshAt;
@@ -30,17 +32,24 @@ public sealed class ProgressionHUD : MonoBehaviour
         var canvas = ProgressionUI.Canvas(transform, "Progression Canvas", 115);
         safeArea = new GameObject("Safe Area", typeof(RectTransform)).GetComponent<RectTransform>();
         safeArea.SetParent(canvas.transform, false);
+        walletPanel = ProgressionUI.Image(safeArea, "Wallet Panel",
+            new Color(0.07f, 0.08f, 0.07f, 0.94f)).rectTransform;
+        ProgressionUI.Top(walletPanel, new Vector2(0, 1),
+            new Vector2(24, -PlayerHealthHUD.SecondaryTop), new Vector2(WalletWidth, 64));
         var artwork = Resources.Load<WeaponHUDAssets>("WeaponHUDAssets");
         coinArtwork = new HUDSpriteVariants(artwork != null && artwork.Coin != null ? artwork.Coin : ProgressionVisuals.Coin);
-        coinIcon = ProgressionUI.Image(safeArea, "Coin Icon", Color.white);
+        coinIcon = ProgressionUI.Image(walletPanel, "Coin Icon", Color.white);
         coinIcon.preserveAspect = true;
-        ProgressionUI.Top(coinIcon.rectTransform, new Vector2(0, 1), new Vector2(32, -114), new Vector2(60, 60));
-        wallet = ProgressionUI.Text(safeArea, "Coins", "", 44);
+        ProgressionUI.Top(coinIcon.rectTransform, new Vector2(0, 1), new Vector2(8, -8), new Vector2(48, 48));
+        wallet = ProgressionUI.Text(walletPanel, "Coins", "", 40);
+        Font displayFont = Resources.Load<Font>("UI/LilitaOne");
+        if (displayFont != null)
+        {
+            wallet.font = displayFont;
+            wallet.fontStyle = FontStyle.Normal;
+        }
         wallet.color = ProgressionUI.Gold;
-        ProgressionUI.Top(wallet.rectTransform, new Vector2(0, 1), new Vector2(100, -114), new Vector2(82, 60));
-        var outline = wallet.gameObject.AddComponent<Outline>();
-        outline.effectColor = Color.black;
-        outline.effectDistance = new Vector2(2, -2);
+        ProgressionUI.Top(wallet.rectTransform, new Vector2(0, 1), new Vector2(68, -4), new Vector2(WalletWidth - 84f, 56));
         var finish = ProgressionUI.Button(safeArea, "FINALIZAR NIVEL", GameFlowController.FinishLevel);
         ProgressionUI.Percent((RectTransform)finish.transform, 0.34f, 0.03f, 0.66f, 0.13f);
         collection = finish.gameObject;
@@ -52,6 +61,7 @@ public sealed class ProgressionHUD : MonoBehaviour
     }
     private void Update()
     {
+        walletPanel.anchoredPosition = new Vector2(24, -PlayerHealthHUD.SecondaryTop);
         if (Screen.width > 0 && Screen.height > 0)
         {
             Rect area = Screen.safeArea;
