@@ -2,16 +2,19 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>One blurred snapshot of the lost match, behind the readable result UI.</summary>
+/// <summary>One blurred snapshot of the ended match, behind the readable result UI.</summary>
 public sealed class DefeatBackdrop : MonoBehaviour
 {
     private Canvas resultCanvas;
     private RawImage background;
     private Texture2D blurred;
 
-    public void Initialize(Canvas canvas)
+    private bool subtle;
+
+    public void Initialize(Canvas canvas, bool subtleBlur = false)
     {
         resultCanvas = canvas;
+        subtle = subtleBlur;
         var imageObject = new GameObject("Blurred Background", typeof(RectTransform),
             typeof(CanvasRenderer), typeof(RawImage));
         imageObject.transform.SetParent(canvas.transform, false);
@@ -36,7 +39,7 @@ public sealed class DefeatBackdrop : MonoBehaviour
         {
             snapshot = ScreenCapture.CaptureScreenshotAsTexture();
             if (snapshot == null || snapshot.width < 1 || snapshot.height < 1) yield break;
-            int width = Mathf.Min(320, snapshot.width);
+            int width = Mathf.Min(subtle ? 640 : 320, snapshot.width);
             int height = Mathf.Max(1, Mathf.RoundToInt(width * snapshot.height / (float)snapshot.width));
             Color32[] source = snapshot.GetPixels32();
             Color32[] pixels = new Color32[width * height];
@@ -50,14 +53,14 @@ public sealed class DefeatBackdrop : MonoBehaviour
                     pixels[y * width + x] = source[sourceY * snapshot.width + sourceX];
                 }
             }
-            for (int pass = 0; pass < 2; pass++)
+            for (int pass = 0; pass < (subtle ? 1 : 2); pass++)
             {
-                Blur(pixels, scratch, width, height, true);
-                Blur(scratch, pixels, width, height, false);
+                Blur(pixels, scratch, width, height, true, subtle ? 2 : 5);
+                Blur(scratch, pixels, width, height, false, subtle ? 2 : 5);
             }
             blurred = new Texture2D(width, height, TextureFormat.RGBA32, false)
             {
-                name = "Defeat Background Snapshot",
+                name = "Result Background Snapshot",
                 filterMode = FilterMode.Bilinear,
                 wrapMode = TextureWrapMode.Clamp
             };
@@ -73,10 +76,9 @@ public sealed class DefeatBackdrop : MonoBehaviour
         }
     }
 
-    private static void Blur(Color32[] source, Color32[] destination, int width, int height, bool horizontal)
+    private static void Blur(Color32[] source, Color32[] destination, int width, int height, bool horizontal, int radius)
     {
-        const int radius = 5;
-        const int samples = radius * 2 + 1;
+        int samples = radius * 2 + 1;
         for (int y = 0; y < height; y++)
             for (int x = 0; x < width; x++)
             {
