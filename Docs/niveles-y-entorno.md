@@ -6,10 +6,12 @@ La selección representa cuatro variantes visuales del nivel. No hay un reloj qu
 
 | Índice guardado | Tarjeta / horario | Configuración ambiental actual |
 | ---: | --- | --- |
-| 0 | Nivel 1 · 1 p. m. | Usa el fondo diurno que ya está configurado en la escena; no activa un grupo adicional de daño. |
-| 1 | Nivel 2 · 6 p. m. | Fondo degradado de atardecer, sprite de sol de las 6 p. m. y `Daño_Nivel_2`. |
-| 2 | Nivel 3 · 9 p. m. | Fondo degradado nocturno, sprite de luna de las 9 p. m. y `Daño_Nivel_3`. |
-| 3 | Nivel 4 · 3 a. m. | Fondo degradado azul muy oscuro, sprite de luna de las 3 a. m. y `Daño_Nivel_4`. |
+| 0 | Nivel 1 · 1 p. m. | Usa el fondo diurno configurado en la escena; no activa grupos decorativos adicionales. |
+| 1 | Nivel 2 · 6 p. m. | Fondo degradado de atardecer, sprite de sol de las 6 p. m. y el grupo visual `Daño_Nivel_2`. |
+| 2 | Nivel 3 · 9 p. m. | Fondo degradado nocturno, sprite de luna de las 9 p. m. y el grupo visual `Daño_Nivel_3`. |
+| 3 | Nivel 4 · 3 a. m. | Fondo degradado azul muy oscuro, sprite de luna de las 3 a. m. y el grupo visual `Daño_Nivel_4`. |
+
+Los grupos `Daño_Nivel_2`, `Daño_Nivel_3` y `Daño_Nivel_4` cambian de visibilidad según la selección, pero solo contienen presentación del escenario y no infligen daño. El daño que sí está implementado proviene de ataques enemigos.
 
 Los degradados de los niveles 2, 3 y 4 se generan en memoria al entrar en la escena. El script también cambia el sprite de los objetos cuyo nombre termina en `_Sol`. La cámara recibe el color correspondiente como fondo.
 

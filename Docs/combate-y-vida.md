@@ -13,7 +13,7 @@ Después de recibir daño, el jugador no acepta otra aplicación de daño durant
 
 ### Derrota de la partida
 
-La partida termina si la salud del personaje llega a cero o si un enemigo que avanza hacia la entrada alcanza la posición inicial del jugador activo. Al activarse la derrota, se bloquean el movimiento, el apuntado, el disparo, el cambio de arma y las acciones de los enemigos. La pantalla de derrota explica el motivo y ofrece **Reintentar** (recarga la escena actual) y **Salir al menú** (abre `MainMenu`).
+La partida termina si la salud del personaje llega a cero o si un enemigo que avanza hacia la entrada alcanza la posición inicial del jugador activo. Al activarse la derrota, se bloquean el movimiento, el apuntado, el disparo, el cambio de arma y las acciones de los enemigos. La pantalla usa carteles de madera del menú con el título **¡PERDISTE!** y el mensaje **¡Inténtalo otra vez!**, sin estadísticas ni saldo. Ofrece **REINTENTAR** (recarga la escena actual), **TIENDA** (mejoras de pistola) y **MENÚ** (abre `MainMenu`). El diseño se ajusta al tamaño y área segura de la pantalla; los botones admiten mouse, toque y navegación de teclado.
 
 `PlayerHealthHUD` genera un Canvas con cinco segmentos y el contador numérico, sin nombre de personaje. Busca los componentes `PlayerHealth` activos y actualiza las filas si cambia el jugador activo. En `Gameplay` se muestra la fila del personaje seleccionado; en `Testing` pueden verse ambos. Los HUD se construyen en Play Mode.
 
@@ -40,7 +40,7 @@ Solo está disponible la pistola. Su alcance es 18 unidades, tiene cargador de 1
 
 El valor inicial de `EnemyHealth.maxHealth` en el script es 3, pero cada enemigo de `Testing` y los prefabs lo sobrescriben con los valores de la tabla. Al agotarse la salud, el enemigo desactiva el collider, activa `Defeat`, emite una única muerte y desaparece después de 1,2 segundos. `EnemyLootDrop` crea una moneda recogible por un jugador vivo. El escudo también se abre durante la animación de golpe pesado.
 
-Los enemigos pueden atacar a corta distancia o hacer una comprobación instantánea de impacto para sus disparos. El código actual tampoco crea una representación gráfica de los disparos enemigos.
+Los enemigos pueden atacar a corta distancia o aplicar el impacto de sus disparos de inmediato. El código actual no crea una representación gráfica de los disparos enemigos. Los ataques de SMG hacen hasta tres intentos separados por 0,16 s; la protección del jugador de 0,75 s puede bloquear los impactos posteriores del mismo ataque.
 
 ### Oleadas y presentación del nivel
 

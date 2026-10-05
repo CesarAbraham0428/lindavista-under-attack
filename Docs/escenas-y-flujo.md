@@ -21,7 +21,7 @@ Testing es una escena independiente para pruebas.
 
 ### `CharacterSelection`
 
-- Presenta las tarjetas de Marco y César y cuatro tarjetas de nivel.
+- En la edición anterior se presentó a Marco y César de frente y se ampliaron las cuatro portadas. La escena y su constructor en el repositorio actual todavía conservan los sprites de caminar y el tamaño anterior; ver [Menús y selección](menus-y-seleccion.md).
 - El perfil de `ProgressionService` decide los niveles seleccionables y los candados. Un perfil nuevo tiene únicamente el nivel 1 desbloqueado.
 - Al iniciar, guarda los índices elegidos en `Lindavista.SelectedCharacter` y `Lindavista.SelectedLevel`, y carga `Gameplay`.
 - El código inicia la selección en el índice 0 para personaje y nivel. La escena asigna los botones y tarjetas a esos índices.
