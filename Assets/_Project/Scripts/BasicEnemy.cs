@@ -251,5 +251,7 @@ public sealed class BasicEnemy : MonoBehaviour
 
         if (nearest != null)
             nearest.GetComponentInParent<PlayerActions>()?.TakeDamage(damage);
+        ShotVisual.EnemyShot(origin, direction, nearest != null ? nearestDistance : distance,
+            attackStyle == AttackStyle.SMG ? 1 : 0, nearest != null);
     }
 }

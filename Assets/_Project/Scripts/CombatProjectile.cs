@@ -13,11 +13,12 @@ public sealed class CombatProjectile : MonoBehaviour
     private float radius;
     private int damage;
     private bool spent;
+    private int weaponIndex;
 
     public int Damage => damage;
 
     public static bool TrySpawn(Vector2 origin, Vector2 direction, int shotDamage,
-        float shotSpeed, float shotRadius, float maxRange, Transform owner)
+        float shotSpeed, float shotRadius, float maxRange, Transform owner, int weaponIndex = 0)
     {
         if (GameFlowController.IsDefeatActive || activeProjectiles >= MaxActiveProjectiles ||
             direction.sqrMagnitude < 0.0001f)
@@ -31,15 +32,15 @@ public sealed class CombatProjectile : MonoBehaviour
         CombatProjectile projectile = shot.AddComponent<CombatProjectile>();
         projectile.direction = direction.normalized;
         projectile.owner = owner;
+        projectile.weaponIndex = Mathf.Clamp(weaponIndex, 0, 2);
         projectile.remainingRange = Mathf.Max(0.1f, maxRange);
 
         projectile.speed = Mathf.Max(0.1f, shotSpeed);
         projectile.damage = Mathf.Max(1, shotDamage);
         projectile.radius = Mathf.Max(0.01f, shotRadius);
-        SpriteRenderer visual = shot.AddComponent<SpriteRenderer>();
-        visual.sprite = ProgressionVisuals.Projectile;
-        visual.sortingOrder = 30;
         shot.transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+        ShotVisual.Attach(shot, projectile.weaponIndex);
+        ShotVisual.Muzzle(origin, projectile.direction, projectile.weaponIndex);
 
         activeProjectiles++;
         return true;
@@ -86,6 +87,8 @@ public sealed class CombatProjectile : MonoBehaviour
 
         if (nearestCollider != null)
         {
+            transform.position = origin + direction * nearestDistance;
+            ShotVisual.Impact(transform.position, direction, weaponIndex);
             nearestCollider.GetComponentInParent<EnemyHealth>()?.TakeDamage(damage, direction);
             spent = true;
             Destroy(gameObject);

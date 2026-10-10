@@ -5,9 +5,6 @@ public class PlayerActions : MonoBehaviour
 {
     [Header("Mouse aim")]
     [SerializeField, Min(0.1f)] private float maxAimDistance = 18f;
-    [Header("Projectile spawn (world units from sprite center)")]
-    [SerializeField, Min(0f)] private float pistolMuzzleDistance = 0.4f;
-    [SerializeField] private float muzzleHeight = 0.08f;
 
     private Animator animator;
     private PlayerMovement movement;
@@ -20,6 +17,7 @@ public class PlayerActions : MonoBehaviour
     private bool touchFireHeld;
     private bool inputLocked;
     private bool defeated;
+    private bool fireRequested;
 
     public bool IsDefeated => defeated;
     public bool IsInputLocked => inputLocked;
@@ -66,6 +64,7 @@ public class PlayerActions : MonoBehaviour
 
     private void Update()
     {
+        fireRequested = false;
         if (inputLocked || PistolUpgradeShop.IsOpen)
             return;
 
@@ -104,7 +103,7 @@ public class PlayerActions : MonoBehaviour
                              Mouse.current.leftButton.isPressed && hasAimInViewport;
         bool firingHeld = touchFireHeld || mouseFireHeld;
         if (firingHeld)
-            HoldFire();
+            fireRequested = true;
         else
         {
             ResetFireTriggers();
@@ -114,13 +113,17 @@ public class PlayerActions : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (inputLocked || defeated || spriteRenderer == null || movement == null)
+        if (inputLocked || defeated || spriteRenderer == null)
             return;
 
-        // Only movement keys change facing. Keep the last direction when idle.
-        float direction = movement.HorizontalInput;
+        // Firing poses must face the target, even while walking the other way.
+        bool firingPose = IsPlaying("Pistol_Fire") || IsPlaying("SMG_Fire") || IsPlaying("RPG_Fire");
+        float direction = fireRequested || firingPose ? AimDirection.x :
+            movement != null ? movement.HorizontalInput : 0f;
         if (direction != 0f)
             spriteRenderer.flipX = direction < 0f;
+        if (fireRequested)
+            HoldFire();
     }
 
     public void SelectTouchWeapon(int index)
@@ -208,12 +211,23 @@ public class PlayerActions : MonoBehaviour
             return;
 
         if (weapons.Magazine == 0) { TryReload(); return; }
-        Vector2 spawnPosition = AimOrigin + AimDirection * pistolMuzzleDistance + Vector2.up * muzzleHeight;
+        if (!weapons.CanFire) return;
+
+        // Evaluate the firing sprite before locating its barrel. A trigger alone
+        // blends for 80 ms and would emit while the previous idle/walk pose is visible.
+        if (animator != null && animator.runtimeAnimatorController != null)
+        {
+            ResetFireTriggers();
+            string character = animator.runtimeAnimatorController.name.Contains("Cesar") ? "Cesar" : "Marco";
+            string weapon = weapons.EquippedWeapon == 0 ? "Pistol" : weapons.EquippedWeapon == 1 ? "SMG" : "RPG";
+            animator.Play(character + "_" + weapon + "_Fire", 0, 0f);
+            animator.Update(0f);
+        }
+        Vector2 spawnPosition = PlayerMuzzle.WorldPosition(spriteRenderer, weapons.EquippedWeapon);
         Vector2 shotDirection = AimTarget - spawnPosition;
         if (shotDirection.sqrMagnitude < 0.0001f)
             shotDirection = AimDirection;
-        if (weapons.TryFire(spawnPosition, shotDirection.normalized, transform) && animator != null)
-            animator.SetTrigger(weapons.EquippedWeapon == 0 ? "FirePistol" : weapons.EquippedWeapon == 1 ? "FireSMG" : "FireRPG");
+        weapons.TryFire(spawnPosition, shotDirection.normalized, transform);
     }
 
     private void ResetFireTriggers()

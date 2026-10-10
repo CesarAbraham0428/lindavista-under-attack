@@ -11,9 +11,9 @@ Ambos controladores contienen clips para:
 - Fuego y recarga de pistola, SMG y RPG.
 - Un clip `Aim`.
 
-`PlayerMovement` cambia el booleano `IsMoving` cuando hay desplazamiento. `PlayerActions` activa los triggers de fuego y recarga del arma actual; al recibir daño activa `TakeDamage`; al quedarse sin vida o pulsar **E** activa `Defeat`. Después de la derrota, el movimiento queda bloqueado.
+`PlayerMovement` cambia el booleano `IsMoving` cuando hay desplazamiento. `PlayerActions` evalúa directamente el estado de fuego del arma actual antes de emitir cada proyectil, para que el sprite con el arma ya sea visible al disparar; usa triggers para recarga, `TakeDamage` y `Defeat`. Después de la derrota, el movimiento queda bloqueado.
 
-El sprite del jugador solo se voltea horizontalmente según la dirección del movimiento. El cursor define el punto de apuntado y la cruz de pantalla, pero el script actual no pone `IsAiming` en `true` (lo inicializa en `false`); por tanto, el clip `Aim` existe como recurso, pero no se activa desde el flujo de código revisado.
+Durante el disparo, el sprite se voltea hacia el objetivo, incluso si el jugador camina en sentido contrario. Fuera del disparo conserva la orientación del movimiento. `PlayerMuzzle` localiza el cañón en el sprite de cada personaje y arma, considerando fotograma, pivote, escala y reflejo; las balas y el fogonazo salen de ese punto. El cohete del RPG mide 1,1 unidades. El cursor define el punto de apuntado y la cruz de pantalla, pero el script no pone `IsAiming` en `true` (lo inicializa en `false`); el clip `Aim` no se activa desde este flujo.
 
 ## Enemigos
 

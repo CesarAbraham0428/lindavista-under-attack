@@ -12,6 +12,8 @@ public sealed class PlayerWeaponController : MonoBehaviour
     public int Magazine { get; private set; }
     public bool IsReloading => reload != null;
     public int EquippedWeapon { get; private set; }
+    public bool CanFire => isActiveAndEnabled && !IsReloading && Magazine > 0 &&
+        Time.time >= nextShotTime && !GameFlowController.IsMatchEnded;
     private readonly int[] magazines = new int[3];
     public event Action Changed;
 
@@ -30,10 +32,9 @@ public sealed class PlayerWeaponController : MonoBehaviour
 
     public bool TryFire(Vector2 origin, Vector2 direction, Transform owner)
     {
-        if (!isActiveAndEnabled || IsReloading || Magazine <= 0 || Time.time < nextShotTime ||
-            GameFlowController.IsMatchEnded) return false;
+        if (!CanFire) return false;
         if (!CombatProjectile.TrySpawn(origin, direction, Damage, Definition.ProjectileSpeed,
-            Definition.ProjectileRadius, Definition.Range, owner)) return false;
+            Definition.ProjectileRadius, Definition.Range, owner, EquippedWeapon)) return false;
         Magazine--;
         nextShotTime = Time.time + Definition.FireInterval;
         Changed?.Invoke();
