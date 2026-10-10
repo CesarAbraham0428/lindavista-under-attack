@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>Weapon-specific flight and transient effects, independent of damage and ammo.</summary>
 public sealed class ShotVisual : MonoBehaviour
 {
-    public const float RocketWidth = 1.1f;
+    public const float RocketWidth = 1.96f;
     private static readonly Sprite[] sprites = new Sprite[4];
     private static Sprite softDot;
     private int weapon;
@@ -88,14 +88,7 @@ public sealed class ShotVisual : MonoBehaviour
     {
         if (weapon == 2)
         {
-            Puff(position, Vector2.zero, new Color(1f, 0.9f, 0.55f), 0.28f, 1.1f, 0.12f);
-            for (int i = 0; i < 10; i++)
-            {
-                Vector2 outward = Quaternion.Euler(0, 0, i * 36f) * Vector2.right;
-                Puff(position, outward * 1.7f, new Color(1f, 0.39f, 0.07f, 0.85f), 0.15f, 0.4f, 0.23f);
-                Puff(position + outward * 0.12f, outward * 0.5f + Vector2.up * 0.3f,
-                    new Color(0.28f, 0.27f, 0.26f, 0.5f), 0.2f, 0.7f, 0.65f);
-            }
+            RocketImpact.Create(position);
             return;
         }
         Puff(position, Vector2.zero, new Color(1f, 0.9f, 0.65f), 0.13f, 0.025f, 0.065f);

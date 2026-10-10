@@ -114,7 +114,7 @@ public static class ShotVisualChecks
                 shot.transform.rotation = Quaternion.Euler(0, 0, 135);
                 ShotVisual.Attach(shot, i);
                 var renderer = shot.GetComponent<SpriteRenderer>();
-                float expectedWidth = i == 2 ? 1.1f : i == 1 ? .24f : .2f;
+                float expectedWidth = i == 2 ? 1.96f : i == 1 ? .24f : .2f;
                 Require(Mathf.Abs(renderer.sprite.bounds.size.x * shot.transform.localScale.x - expectedWidth) < .001f,
                     "Weapon " + i + " has correct world size");
                 Require(Vector2.Dot(shot.transform.right, new Vector2(-1, 1).normalized) > .999f,

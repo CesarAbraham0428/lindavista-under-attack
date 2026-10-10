@@ -6,9 +6,11 @@ sirviendo al HUD. Este atlas es arte separado para los proyectiles del mundo.
 
 - Pistola: bala corta de cobre, fogonazo, estela breve y chispas de impacto.
 - SMG: bala más fina, velocidad de 32 unidades/s y fogonazo más pequeño por disparo.
-- RPG: cohete de 1.1 unidades (antes 0.65), velocidad de 14 unidades/s, fuego de propulsión,
-  humo y explosión visual al impactar. La explosión conserva el daño directo
-  existente; no añade daño de área.
+- RPG: cohete de 1.96 unidades (40 % más grande que 1.4), velocidad de 14 unidades/s, fuego de propulsión
+  y humo. Al chocar reproduce nueve fotogramas cartoon de fuego y humo durante
+  0.54 s y con una anchura de celda de 4.4 unidades (el doble que antes), conserva
+  el daño directo y aplica medio daño en un radio de 0.95 unidades.
+  Cada enemigo recibe daño una sola vez y los colliders sólidos bloquean el daño cercano.
 - Los enemigos con pistola/SMG usan los mismos efectos. Su daño sigue siendo
   instantáneo según su implementación original; el vuelo añadido es visual.
 
@@ -27,12 +29,31 @@ evalúa el primer fotograma de la animación antes de emitir el proyectil en
 `LateUpdate`, evitando usar el sprite anterior durante la transición de 80 ms.
 El pivote de los proyectiles queda en la cola; el arte y el fogonazo comienzan
 en el cañón. El escape del RPG sigue esa cola al aumentar su tamaño.
-Las velocidades de SMG y RPG se ajustan en `WeaponDefinition.At`. Daño, gasto
-de munición, radio físico y cadencia se mantienen.
+Las velocidades de SMG y RPG se ajustan en `WeaponDefinition.At`. Daño directo, gasto
+de munición, radio físico y cadencia se mantienen. El barrido del RPG cubre desde
+la cola hasta la siguiente posición de la punta, incluidos enemigos a quemarropa;
+su impacto queda sobre la superficie alcanzada. Como la calle
+no tiene collider, también detecta la línea de los pies del jugador al disparar
+hacia abajo. El alcance agotado no provoca una explosión.
+
+`RocketImpact` carga `Resources/RpgImpactAtlas.png` con alfa transparente, sin
+mipmaps ni compresión y sin requerir Read/Write. Mantiene el pivote de las nueve
+celdas y desvanece los últimos fotogramas de humo. Se limita a 24 impactos activos.
+Arte y prompt de ImageGen: [RpgImpactGeneration.md](RpgImpactGeneration.md).
 
 ## Verificación
 
-Verificado en Unity 6000.3.23f1 mediante el MCP local el 10 de octubre de 2026:
+El impacto RPG se verificó en Unity 6000.3.23f1 en un proyecto temporal aislado:
+141 comprobaciones aprobadas de daño directo y de área, colliders duplicados,
+paredes, suelo físico y calle pintada, contacto de la punta y a quemarropa,
+orden entre enemigos y suelo, nueve cuadros con alfa, desvanecimiento, pausa
+y duración, incluida una captura de cámara con los nueve cuadros. Se revisó
+visualmente el render con transparencia. La prueba usa un perfil temporal y no
+modifica escenas de juego; guarda la captura en `Library/RpgImpactChecks/preview.png`.
+Para repetirla, guardar las escenas abiertas y ejecutar **Lindavista > Verify
+RPG impact (isolated Play Mode)**. Restaura las escenas al finalizar.
+
+Verificación previa de los efectos base mediante el MCP local el 10 de octubre de 2026:
 compilación sin errores, prueba del atlas y tamaños aprobada, y 36 disparos
 reales en Play Mode con ambos personajes, las tres armas, izquierda/derecha y
 cuatro diagonales. La prueba usa un perfil temporal y comprueba el punto real
