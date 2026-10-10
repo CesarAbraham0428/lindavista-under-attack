@@ -34,7 +34,7 @@ public static class ProgressionChecks
         var weapon = physicsPlayer.GetComponent<PlayerWeaponController>();
         Check(weapon.TryFire(new Vector2(1002, 0), Vector2.right, physicsPlayer.transform), "physics shot spawned");
         Check(weapon.TryReload(), "timed reload started");
-        return "Isolated scene checks started. Wait for the intro and enemy release, then CompleteSceneChecks.";
+        return "Isolated scene checks started. Wait until the spawner's PendingEnemies reaches zero (at least 29 seconds after the pan begins for level 1), then CompleteSceneChecks.";
     }
 
     public static string CompleteSceneChecks()

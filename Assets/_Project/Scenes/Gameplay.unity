@@ -2938,10 +2938,12 @@ MonoBehaviour:
     enemy3Count: 5
     enemy4Count: 5
   firstSpawnX: 93
-  spawnSpacing: 1.2
+  introEnemyCount: 3
+  spawnSpacing: 3
   groundY: -1.88
   laneOffset: 0.2
-  delayBetweenSpawns: 1.65
+  delayBetweenSpawns: 3.2
+  minimumSpawnClearance: 3
   entranceX: -6.72
 --- !u!1 &470185268
 GameObject:
