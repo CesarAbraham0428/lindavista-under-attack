@@ -72,6 +72,9 @@ public class CameraFollow2D : MonoBehaviour
                                  (2f * Mathf.Max(0.1f, attachedCamera.aspect));
             lineupOrthographicSize = Mathf.Max(normalOrthographicSize, requiredSize);
             attachedCamera.orthographicSize = lineupOrthographicSize;
+            // Keep the bottom of the normal view covered by the street during the intro zoom.
+            transform.position = new Vector3(spawner.IntroCameraX,
+                fixedY + lineupOrthographicSize - normalOrthographicSize, fixedZ);
         }
 
         // The character-selection bootstrap can swap the active player in Start.
@@ -101,7 +104,11 @@ public class CameraFollow2D : MonoBehaviour
             transform.position = new Vector3(cameraX, fixedY, fixedZ);
 
             if (attachedCamera != null && attachedCamera.orthographic)
+            {
                 attachedCamera.orthographicSize = Mathf.Lerp(lineupOrthographicSize, normalOrthographicSize, easedTime);
+                transform.position = new Vector3(cameraX,
+                    fixedY + attachedCamera.orthographicSize - normalOrthographicSize, fixedZ);
+            }
 
             yield return null;
         }

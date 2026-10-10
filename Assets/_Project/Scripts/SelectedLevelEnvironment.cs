@@ -71,6 +71,8 @@ public sealed class SelectedLevelEnvironment : MonoBehaviour
 
     private Texture2D runtimeGradientTexture;
     private Sprite runtimeGradientSprite;
+    private Transform runtimeSkyTransform;
+    private Camera runtimeSkyCamera;
 
     private void Awake()
     {
@@ -184,10 +186,24 @@ public sealed class SelectedLevelEnvironment : MonoBehaviour
         skyObject.transform.SetParent(gameplayCamera.transform, false);
         skyObject.transform.localPosition = new Vector3(0f, 0f, 10f);
         skyObject.transform.localScale = new Vector3(viewWidth / textureWidth, viewHeight / textureHeight, 1f);
+        runtimeSkyTransform = skyObject.transform;
+        runtimeSkyCamera = gameplayCamera;
 
         SpriteRenderer spriteRenderer = skyObject.AddComponent<SpriteRenderer>();
         spriteRenderer.sprite = runtimeGradientSprite;
         spriteRenderer.sortingOrder = short.MinValue + 1;
+    }
+
+    private void LateUpdate()
+    {
+        if (runtimeSkyTransform == null || runtimeSkyCamera == null)
+            return;
+
+        // The intro changes the camera zoom; the sky must continue to fill its viewport.
+        float height = runtimeSkyCamera.orthographicSize * 2f;
+        runtimeSkyTransform.localScale = new Vector3(
+            height * runtimeSkyCamera.aspect / runtimeGradientSprite.rect.width,
+            height / runtimeGradientSprite.rect.height, 1f);
     }
 
     private static Color EvaluateGradient(float height, float[] gradientHeights, Color[] gradientColors)
