@@ -1663,7 +1663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cb3e2822bd680f418e0be348e3780c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  speed: 2
+  speed: 2.3
   maxHorizontalPosition: 117
 --- !u!114 &184105908
 MonoBehaviour:
@@ -4232,10 +4232,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow2D
   target: {fileID: 184105904}
-  startFollowingAtX: 3
-  horizontalOffset: 2
+  targetScreenX: 0.2
+  leftTargetScreenX: 0.6
   maximumCameraX: 115
-  smoothTime: 0.3
+  smoothTime: 0.08
+  directionConfirmDuration: 0.4
+  directionTransitionDuration: 6
   lineupHoldDuration: 1.1
   returnPanDuration: 3.5
   lineupCameraPadding: 3
@@ -10730,7 +10732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cb3e2822bd680f418e0be348e3780c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  speed: 2
+  speed: 2.3
   maxHorizontalPosition: 117
 --- !u!70 &1517596040
 CapsuleCollider2D:
