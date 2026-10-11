@@ -72,6 +72,7 @@ public sealed class PistolUpgradeShop : MonoBehaviour
     private void Awake()
     {
         active = this;
+        MenuMusicPlayer.NotifyShop(true);
         fillSprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 1, 1), Vector2.one * .5f);
         var canvas = ProgressionUI.Canvas(transform, "Shop Canvas", 400);
         var overlay = ProgressionUI.Image(canvas.transform, "Overlay", new Color(.035f, .02f, .015f, .82f), true);
@@ -175,6 +176,7 @@ public sealed class PistolUpgradeShop : MonoBehaviour
     {
         ProgressionService.Changed -= Refresh;
         if (active == this) active = null;
+        MenuMusicPlayer.NotifyShop(false);
         if (fillSprite != null) Destroy(fillSprite);
     }
 }
