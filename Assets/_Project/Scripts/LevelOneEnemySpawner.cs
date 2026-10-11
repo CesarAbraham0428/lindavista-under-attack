@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>Builds the stage 5 enemy lineup and releases it toward Lindavista over time.</summary>
+/// <summary>Shows a small stage 5 preview, then creates the remaining wave gradually.</summary>
 public sealed class LevelOneEnemySpawner : MonoBehaviour
 {
     private const string SelectedLevelKey = "Lindavista.SelectedLevel";
@@ -34,15 +34,20 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
 
     [Header("Stage 5 lineup")]
     [SerializeField] private float firstSpawnX = 93f;
-    [SerializeField, Min(0.5f)] private float spawnSpacing = 1.2f;
+    [SerializeField, Min(1)] private int introEnemyCount = 3;
+    [SerializeField, Min(0.5f)] private float spawnSpacing = 3f;
     [SerializeField] private float groundY = -1.88f;
     [SerializeField, Min(0f)] private float laneOffset = 0.2f;
 
     [Header("Wave release")]
-    [SerializeField, Min(0f)] private float delayBetweenSpawns = 1.65f;
+    [SerializeField, Min(0.1f)] private float delayBetweenSpawns = 3.2f;
+    [SerializeField, Min(0.5f)] private float minimumSpawnClearance = 3f;
     [SerializeField] private float entranceX = -6.72f;
 
     private readonly List<BasicEnemy> queuedEnemies = new();
+    private List<GameObject> spawnOrder;
+    private float objectiveX;
+    private float reinforcementSpawnX;
     private bool prepared;
     private bool waveStarted;
     private bool releaseFinished;
@@ -58,11 +63,11 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
     /// <summary>Horizontal width occupied by the visible enemy lineup.</summary>
     public float LineupWidth => Mathf.Max(0, queuedEnemies.Count - 1) * spawnSpacing;
 
-    /// <summary>Creates the selected level's visible lineup with its movement AI held.</summary>
+    /// <summary>Creates only the intro enemies, keeping the rest as pending prefab entries.</summary>
     public bool PrepareWave(int selectedLevel)
     {
         if (prepared)
-            return queuedEnemies.Count > 0;
+            return TotalEnemies > 0;
 
         EnsureCompositionDefaults();
         int compositionIndex = ProgressionService.IsLevelUnlocked(selectedLevel)
@@ -107,35 +112,52 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
         HideLegacyEnemyPreviews();
         TotalEnemies = total;
         PendingEnemies = total;
-        List<GameObject> spawnOrder = BuildInterleavedSpawnOrder(prefabs, counts);
+        spawnOrder = BuildInterleavedSpawnOrder(prefabs, counts);
         PlayerActions startingPlayer = FindFirstObjectByType<PlayerActions>();
-        float objectiveX = startingPlayer != null
+        objectiveX = startingPlayer != null
             ? startingPlayer.transform.position.x
             : entranceX;
 
-        for (int i = 0; i < spawnOrder.Count; i++)
+        int previewCount = Mathf.Clamp(introEnemyCount, 1, spawnOrder.Count);
+        for (int i = 0; i < previewCount; i++)
         {
-            GameObject prefab = spawnOrder[i];
-            float lane = ((i % 3) - 1) * laneOffset;
-            Vector3 position = new(firstSpawnX + i * spawnSpacing, groundY + lane, 0f);
-            GameObject enemy = Instantiate(prefab, position, prefab.transform.rotation, transform);
-            enemy.name = $"{prefab.name}_Level_{compositionIndex + 1}_Wave_{i + 1:00}";
-
-            BasicEnemy behavior = enemy.GetComponent<BasicEnemy>();
-            EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
-            livingEnemies.Add(enemyHealth);
-            enemyHealth.Died += OnEnemyDied;
-            behavior.SetEntranceTargetX(objectiveX);
-            behavior.enabled = false;
-            queuedEnemies.Add(behavior);
+            queuedEnemies.Add(CreateEnemy(i, firstSpawnX + i * spawnSpacing, false));
         }
 
+        reinforcementSpawnX = firstSpawnX + (previewCount - 1) * spawnSpacing;
         IntroCameraX = firstSpawnX + (queuedEnemies.Count - 1) * spawnSpacing * 0.5f;
         prepared = true;
         return true;
     }
 
-    /// <summary>Starts releasing one prepared enemy at a time toward the entrance.</summary>
+    private BasicEnemy CreateEnemy(int index, float spawnX, bool startMoving)
+    {
+        GameObject prefab = spawnOrder[index];
+        float lane = ((index % 3) - 1) * laneOffset;
+        Vector3 position = new(spawnX, groundY + lane, 0f);
+        GameObject enemy = Instantiate(prefab, position, prefab.transform.rotation, transform);
+        enemy.name = $"{prefab.name}_Level_{SelectedLevel + 1}_Wave_{index + 1:00}";
+
+        BasicEnemy behavior = enemy.GetComponent<BasicEnemy>();
+        EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+        livingEnemies.Add(enemyHealth);
+        enemyHealth.Died += OnEnemyDied;
+        behavior.SetEntranceTargetX(objectiveX);
+        behavior.enabled = startMoving;
+        return behavior;
+    }
+
+    private bool IsReinforcementSpawnClear()
+    {
+        foreach (EnemyHealth enemy in livingEnemies)
+        {
+            if (enemy != null && Mathf.Abs(enemy.transform.position.x - reinforcementSpawnX) < minimumSpawnClearance)
+                return false;
+        }
+        return true;
+    }
+
+    /// <summary>Releases the preview, then spawns one reinforcement at a time.</summary>
     public void BeginWave()
     {
         if (!prepared || waveStarted)
@@ -147,17 +169,34 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
 
     private IEnumerator ReleaseWave()
     {
-        for (int i = 0; i < queuedEnemies.Count; i++)
+        for (int i = 0; i < spawnOrder.Count; i++)
         {
             if (GameFlowController.IsDefeatActive)
                 yield break;
 
-            if (queuedEnemies[i] != null)
-                queuedEnemies[i].enabled = true;
+            if (i < queuedEnemies.Count)
+            {
+                if (queuedEnemies[i] != null)
+                    queuedEnemies[i].enabled = true;
+            }
+            else
+            {
+                while (!IsReinforcementSpawnClear())
+                {
+                    if (GameFlowController.IsDefeatActive)
+                        yield break;
+                    yield return null;
+                }
+
+                // Defeat can occur on the frame the spawn point becomes free.
+                if (GameFlowController.IsDefeatActive)
+                    yield break;
+                CreateEnemy(i, reinforcementSpawnX, true);
+            }
             PendingEnemies--;
 
-            if (i + 1 < queuedEnemies.Count && delayBetweenSpawns > 0f)
-                yield return new WaitForSeconds(delayBetweenSpawns);
+            if (i + 1 < spawnOrder.Count)
+                yield return new WaitForSeconds(Mathf.Max(0.1f, delayBetweenSpawns));
         }
         releaseFinished = true;
         CheckWaveComplete();

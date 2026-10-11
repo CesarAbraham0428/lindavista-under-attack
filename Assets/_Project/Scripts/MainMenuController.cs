@@ -73,8 +73,7 @@ public sealed class MainMenuController : MonoBehaviour
 
     public void SetMasterVolume(float value)
     {
-        AudioListener.volume = value;
-        PlayerPrefs.SetFloat(MasterVolumeKey, value);
+        MenuMusicPlayer.SetMasterVolume(value);
     }
 
     private static void SetPanelState(GameObject panel, bool isVisible)

@@ -6,10 +6,14 @@ public class CameraFollow2D : MonoBehaviour
     private const string SelectedLevelKey = "Lindavista.SelectedLevel";
 
     [SerializeField] private Transform target;
-    [SerializeField] private float startFollowingAtX = 0f;
-    [SerializeField] private float horizontalOffset = 0f;
+    [SerializeField, Range(0.05f, 0.95f)] private float targetScreenX = 0.2f;
+    [SerializeField, Range(0.05f, 0.95f)] private float leftTargetScreenX = 0.6f;
     [SerializeField] private float maximumCameraX = 115f;
-    [SerializeField] private float smoothTime = 0.3f;
+    [SerializeField] private float smoothTime = 0.08f;
+
+    [Header("Direction framing")]
+    [SerializeField, Min(0f)] private float directionConfirmDuration = 0.4f;
+    [SerializeField, Min(0.01f)] private float directionTransitionDuration = 6f;
 
     [Header("Level start presentation")]
     [SerializeField, Min(0f)] private float lineupHoldDuration = 1.1f;
@@ -21,11 +25,18 @@ public class CameraFollow2D : MonoBehaviour
     private float fixedZ;
     private float horizontalVelocity;
     private float normalOrthographicSize;
-    private bool hasStartedFollowing;
     private bool introInProgress;
     private Camera attachedCamera;
     private PlayerActions playerActions;
     private PlayerMovement playerMovement;
+    private int framingDirection = 1;
+    private int pendingDirection;
+    private float pendingDirectionTime;
+    private float currentScreenX;
+    private float transitionStartScreenX;
+    private float transitionTargetScreenX;
+    private float transitionElapsed;
+    private bool framingTransitionActive;
 
     private void Awake()
     {
@@ -34,6 +45,7 @@ public class CameraFollow2D : MonoBehaviour
         fixedY = initialPosition.y;
         fixedZ = initialPosition.z;
         attachedCamera = GetComponent<Camera>();
+        currentScreenX = targetScreenX;
         if (attachedCamera != null && attachedCamera.orthographic)
             normalOrthographicSize = attachedCamera.orthographicSize;
 
@@ -72,6 +84,9 @@ public class CameraFollow2D : MonoBehaviour
                                  (2f * Mathf.Max(0.1f, attachedCamera.aspect));
             lineupOrthographicSize = Mathf.Max(normalOrthographicSize, requiredSize);
             attachedCamera.orthographicSize = lineupOrthographicSize;
+            // Keep the bottom of the normal view covered by the street during the intro zoom.
+            transform.position = new Vector3(spawner.IntroCameraX,
+                fixedY + lineupOrthographicSize - normalOrthographicSize, fixedZ);
         }
 
         // The character-selection bootstrap can swap the active player in Start.
@@ -101,7 +116,11 @@ public class CameraFollow2D : MonoBehaviour
             transform.position = new Vector3(cameraX, fixedY, fixedZ);
 
             if (attachedCamera != null && attachedCamera.orthographic)
+            {
                 attachedCamera.orthographicSize = Mathf.Lerp(lineupOrthographicSize, normalOrthographicSize, easedTime);
+                transform.position = new Vector3(cameraX,
+                    fixedY + attachedCamera.orthographicSize - normalOrthographicSize, fixedZ);
+            }
 
             yield return null;
         }
@@ -111,7 +130,6 @@ public class CameraFollow2D : MonoBehaviour
             attachedCamera.orthographicSize = normalOrthographicSize;
 
         introInProgress = false;
-        hasStartedFollowing = false;
         SetAllPlayerControlsLocked(false);
     }
 
@@ -126,16 +144,19 @@ public class CameraFollow2D : MonoBehaviour
         if (target == null)
             return;
 
-        if (!hasStartedFollowing)
-        {
-            if (target.position.x <= startFollowingAtX)
-                return;
+        UpdateDirectionFraming();
 
-            hasStartedFollowing = true;
+        float worldOffsetFromCenter = 0f;
+        if (attachedCamera != null && attachedCamera.orthographic)
+        {
+            float worldViewWidth = 2f * attachedCamera.orthographicSize * attachedCamera.aspect;
+            worldOffsetFromCenter = (currentScreenX - 0.5f) * worldViewWidth;
         }
 
+        // The start boundary holds the entrance view until the player reaches
+        // the desired screen position, so following begins without a catch-up pan.
         float desiredX = Mathf.Clamp(
-            target.position.x - horizontalOffset,
+            target.position.x - worldOffsetFromCenter,
             startCameraX,
             maximumCameraX
         );
@@ -159,6 +180,50 @@ public class CameraFollow2D : MonoBehaviour
             player = GameObject.Find("Player_Cesar");
 
         target = player != null ? player.transform : null;
+        playerMovement = target != null ? target.GetComponent<PlayerMovement>() : null;
+    }
+
+    private void UpdateDirectionFraming()
+    {
+        // Movement determines the view; aiming and firing can face independently.
+        float horizontal = playerMovement != null ? playerMovement.HorizontalInput : 0f;
+        int movementDirection = horizontal > 0.01f ? 1 : horizontal < -0.01f ? -1 : 0;
+        if (movementDirection == 0 || movementDirection == framingDirection)
+        {
+            pendingDirection = 0;
+            pendingDirectionTime = 0f;
+        }
+        else
+        {
+            if (pendingDirection != movementDirection)
+            {
+                pendingDirection = movementDirection;
+                pendingDirectionTime = 0f;
+            }
+
+            pendingDirectionTime += Time.deltaTime;
+            if (pendingDirectionTime >= directionConfirmDuration)
+            {
+                framingDirection = movementDirection;
+                pendingDirection = 0;
+                pendingDirectionTime = 0f;
+                // Retarget from the current composition if another turn interrupts the pan.
+                transitionStartScreenX = currentScreenX;
+                transitionTargetScreenX = framingDirection > 0 ? targetScreenX : leftTargetScreenX;
+                transitionElapsed = 0f;
+                framingTransitionActive = true;
+            }
+        }
+
+        if (!framingTransitionActive)
+            return;
+
+        transitionElapsed += Time.deltaTime;
+        float progress = Mathf.Clamp01(transitionElapsed / Mathf.Max(0.01f, directionTransitionDuration));
+        float easedProgress = progress * progress * (3f - 2f * progress);
+        currentScreenX = Mathf.Lerp(transitionStartScreenX, transitionTargetScreenX, easedProgress);
+        if (progress >= 1f)
+            framingTransitionActive = false;
     }
 
     private void SetAllPlayerControlsLocked(bool locked)

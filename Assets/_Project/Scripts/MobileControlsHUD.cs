@@ -96,6 +96,7 @@ public sealed class MobileControlsHUD : MonoBehaviour
 
     public void Press(TouchControlKind kind, bool pressed)
     {
+        if (pressed && GameFlowController.IsPaused) return;
         switch (kind)
         {
             case TouchControlKind.MoveLeft:
@@ -160,6 +161,11 @@ public sealed class MobileControlsHUD : MonoBehaviour
         ApplyMovement();
         if (actions != null)
             actions.StopTouchAimAndFire();
+    }
+
+    public static void CancelActiveTouches()
+    {
+        if (active != null) active.ClearTouches();
     }
 
     private void SetVisible(bool visible)

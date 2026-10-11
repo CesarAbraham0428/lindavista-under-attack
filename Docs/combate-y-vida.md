@@ -58,3 +58,13 @@ Los prefabs reutilizables están en `Assets/_Project/Prefabs/Enemy1_Base.prefab`
 - `Gameplay` tiene composiciones para cuatro niveles y desbloqueo secuencial al guardar una victoria.
 - La oleada del nivel 1 tiene 10 enemigos y 70 monedas en total. Tras eliminarla se permite recoger el dinero antes de finalizar.
 - El cargador, las mejoras, el monedero y el guardado están conectados. Consulta [Progresión del nivel 1](progresion-nivel-1.md). La compra de munición y otras armas queda para la siguiente etapa.
+
+## Audio de las armas
+
+`Resources/WeaponAudioLibrary.asset` contiene los seis clips preparados de `Audio/SFX/Weapons/Prepared`: disparo y recarga de pistola, rifle de asalto y RPG. Los originales descargados se conservan con sus fuentes en `Audio/SFX/Weapons/SOURCES.txt`.
+
+El disparo de pistola y el de rifle se recortaron a una única detonación. El RPG conserva un único lanzamiento. Las colas del sonido pueden superponerse cuando se dispara seguido; cada nuevo ataque del audio corresponde a un proyectil que `CombatProjectile.TrySpawn` consiguió emitir. Pulsar disparo durante el tiempo de espera, sin munición o durante una recarga no produce audio de disparo.
+
+`PlayerWeaponController` añade `PlayerWeaponAudio` al personaje y reproduce el sonido después de confirmar cada disparo. Hay dos fuentes independientes: una usa `PlayOneShot` para los disparos y otra reproduce la recarga. La recarga comienza una sola vez, dura lo que indica `WeaponDefinition.ReloadDuration` y se detiene al completarse, cambiar de arma, recibir daño, bloquear las acciones o desactivar el controlador. Intentar recargar un cargador lleno no reproduce sonido.
+
+Las tres recargas se prepararon a 1,20 s conservando el tono. El parámetro `ReloadSpeed` en los controladores de Marco y César ajusta la animación al tiempo real de recarga, con inicio inmediato y salida al terminar el clip. Los efectos respetan el volumen general del menú. Los clips se importan como PCM con precarga y `DecompressOnLoad` para responder sin esperar una descarga o decodificación durante el disparo.

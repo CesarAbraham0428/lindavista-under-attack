@@ -77,6 +77,7 @@ public static class MenuSceneBuilder
         SetObjectReference(controller, "storePanel", storePanel);
         SetObjectReference(controller, "settingsPanel", settingsPanel);
         SetObjectReference(controller, "masterVolumeSlider", volumeSlider);
+        MenuAudioSettingsSetup.ConfigurePanel(controller);
 
         CreateEventSystem();
         CartoonMenuStyle.Apply(canvas.transform);

@@ -271,7 +271,7 @@ Transform:
   m_GameObject: {fileID: 28647344}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 57, y: -0.36000004, z: -0.1}
+  m_LocalPosition: {x: 57, y: -0.35, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2938,10 +2938,12 @@ MonoBehaviour:
     enemy3Count: 5
     enemy4Count: 5
   firstSpawnX: 93
-  spawnSpacing: 1.2
+  introEnemyCount: 3
+  spawnSpacing: 3
   groundY: -1.88
   laneOffset: 0.2
-  delayBetweenSpawns: 1.65
+  delayBetweenSpawns: 3.2
+  minimumSpawnClearance: 3
   entranceX: -6.72
 --- !u!1 &470185268
 GameObject:
@@ -3228,7 +3230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cb3e2822bd680f418e0be348e3780c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  speed: 2
+  speed: 2.3
   maxHorizontalPosition: 117
 --- !u!70 &576606887
 CapsuleCollider2D:
@@ -4024,7 +4026,7 @@ Transform:
   m_GameObject: {fileID: 672495727}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 121.36346, y: -0.34, z: -0.1}
+  m_LocalPosition: {x: 121.36346, y: -0.35, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6052,7 +6054,7 @@ Transform:
   m_GameObject: {fileID: 864697957}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8.4771805, y: -0.53345, z: -0.1}
+  m_LocalPosition: {x: -8.4771805, y: -0.54345, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8004,7 +8006,7 @@ Transform:
   m_GameObject: {fileID: 1134495910}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 73, y: -0.34, z: -0.1}
+  m_LocalPosition: {x: 73, y: -0.35, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8801,7 +8803,7 @@ Transform:
   m_GameObject: {fileID: 1231832890}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 89, y: -0.34, z: -0.1}
+  m_LocalPosition: {x: 89, y: -0.35, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9154,10 +9156,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow2D
   target: {fileID: 0}
-  startFollowingAtX: 0
-  horizontalOffset: 0
+  targetScreenX: 0.2
+  leftTargetScreenX: 0.6
   maximumCameraX: 115
-  smoothTime: 0.3
+  smoothTime: 0.08
+  directionConfirmDuration: 0.4
+  directionTransitionDuration: 6
   lineupHoldDuration: 1.1
   returnPanDuration: 3.5
   lineupCameraPadding: 3
@@ -9249,7 +9253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cb3e2822bd680f418e0be348e3780c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  speed: 2
+  speed: 2.3
   maxHorizontalPosition: 117
 --- !u!70 &1325104749
 CapsuleCollider2D:
@@ -10065,7 +10069,7 @@ Transform:
   m_GameObject: {fileID: 1437345007}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 105, y: -0.34, z: -0.1}
+  m_LocalPosition: {x: 105, y: -0.35, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
