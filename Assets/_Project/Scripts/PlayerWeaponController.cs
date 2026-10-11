@@ -7,6 +7,7 @@ public sealed class PlayerWeaponController : MonoBehaviour
     [SerializeField] private WeaponDefinition definition;
     private float nextShotTime;
     private Coroutine reload;
+    private PlayerWeaponAudio weaponAudio;
     public WeaponDefinition Definition => EquippedWeapon == 0 && definition != null ? definition : WeaponDefinition.At(EquippedWeapon);
     public int Damage => Definition.DamageAt(ProgressionService.WeaponUpgrade(EquippedWeapon));
     public int Magazine { get; private set; }
@@ -19,6 +20,8 @@ public sealed class PlayerWeaponController : MonoBehaviour
 
     private void Awake()
     {
+        weaponAudio = GetComponent<PlayerWeaponAudio>();
+        if (weaponAudio == null) weaponAudio = gameObject.AddComponent<PlayerWeaponAudio>();
         for (int i = 0; i < 3; i++) magazines[i] = Mathf.Min(WeaponDefinition.At(i).MagazineSize, ProgressionService.Ammo(i));
         Magazine = magazines[0];
     }
@@ -37,6 +40,7 @@ public sealed class PlayerWeaponController : MonoBehaviour
             Definition.ProjectileRadius, Definition.Range, owner, EquippedWeapon)) return false;
         Magazine--;
         nextShotTime = Time.time + Definition.FireInterval;
+        weaponAudio.PlayShot(EquippedWeapon);
         Changed?.Invoke();
         return true;
     }
@@ -46,6 +50,7 @@ public sealed class PlayerWeaponController : MonoBehaviour
         if (!isActiveAndEnabled || IsReloading || Magazine >= Mathf.Min(Definition.MagazineSize, ProgressionService.Ammo(EquippedWeapon)) ||
             GameFlowController.IsMatchEnded) return false;
         reload = StartCoroutine(Reload());
+        weaponAudio.PlayReload(EquippedWeapon, Definition.ReloadDuration);
         Changed?.Invoke();
         return true;
     }
@@ -54,6 +59,7 @@ public sealed class PlayerWeaponController : MonoBehaviour
     {
         yield return new WaitForSeconds(Definition.ReloadDuration);
         Magazine = Mathf.Min(Definition.MagazineSize, ProgressionService.Ammo(EquippedWeapon));
+        weaponAudio.StopReload();
         reload = null;
         Changed?.Invoke();
     }
@@ -62,8 +68,13 @@ public sealed class PlayerWeaponController : MonoBehaviour
     {
         if (reload == null) return;
         StopCoroutine(reload);
+        weaponAudio.StopReload();
         reload = null;
         Changed?.Invoke();
     }
-    private void OnDisable() { CancelReload(); }
+    private void OnDisable()
+    {
+        CancelReload();
+        if (weaponAudio != null) weaponAudio.StopAll();
+    }
 }

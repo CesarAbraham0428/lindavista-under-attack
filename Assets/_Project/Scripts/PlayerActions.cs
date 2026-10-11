@@ -76,11 +76,11 @@ public class PlayerActions : MonoBehaviour
         if (Keyboard.current != null)
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame)
-                weapons.TryEquip(0);
+                EquipWeapon(0);
             else if (Keyboard.current.digit2Key.wasPressedThisFrame)
-                weapons.TryEquip(1);
+                EquipWeapon(1);
             else if (Keyboard.current.digit3Key.wasPressedThisFrame)
-                weapons.TryEquip(2);
+                EquipWeapon(2);
 
             if (Keyboard.current.rKey.wasPressedThisFrame)
                 TryReload();
@@ -129,7 +129,19 @@ public class PlayerActions : MonoBehaviour
     public void SelectTouchWeapon(int index)
     {
         if (!inputLocked && !defeated && index >= 0 && index <= 2)
-            weapons.TryEquip(index);
+            EquipWeapon(index);
+    }
+
+    private void EquipWeapon(int index)
+    {
+        bool wasReloading = weapons.IsReloading;
+        if (!weapons.TryEquip(index) || !wasReloading || animator == null ||
+            animator.runtimeAnimatorController == null) return;
+
+        ResetFireTriggers();
+        string character = animator.runtimeAnimatorController.name.Contains("Cesar") ? "Cesar" : "Marco";
+        animator.Play(character + "_Idle", 0, 0f);
+        animator.Update(0f);
     }
 
     public void ReloadTouchWeapon()
@@ -202,7 +214,23 @@ public class PlayerActions : MonoBehaviour
             return;
 
         ResetFireTriggers();
-        if (animator != null) animator.SetTrigger(weapons.EquippedWeapon == 0 ? "ReloadPistol" : weapons.EquippedWeapon == 1 ? "ReloadSMG" : "ReloadRPG");
+        PlayReloadAnimation();
+    }
+
+    private void PlayReloadAnimation()
+    {
+        if (animator == null || animator.runtimeAnimatorController == null) return;
+        string character = animator.runtimeAnimatorController.name.Contains("Cesar") ? "Cesar" : "Marco";
+        string weapon = weapons.EquippedWeapon == 0 ? "Pistol" : weapons.EquippedWeapon == 1 ? "SMG" : "RPG";
+        string stateName = character + "_" + weapon + "_Reload";
+        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        {
+            if (clip.name != stateName) continue;
+            animator.SetFloat("ReloadSpeed", clip.length / weapons.Definition.ReloadDuration);
+            break;
+        }
+        animator.Play(stateName, 0, 0f);
+        animator.Update(0f);
     }
 
     private void HoldFire()
