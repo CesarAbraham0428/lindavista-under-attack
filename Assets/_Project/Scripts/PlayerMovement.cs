@@ -44,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (GameFlowController.IsPaused) return;
         if (movementLocked)
         {
             if (animator != null)

@@ -1,11 +1,11 @@
 using UnityEngine;
 
-/// <summary>A compact, one-shot cartoon fire-to-smoke flipbook, independent of damage.</summary>
+/// <summary>A one-shot cartoon fire-to-smoke flipbook, independent of damage.</summary>
 public sealed class RocketImpact : MonoBehaviour
 {
     public const int FrameCount = 9;
     public const float Duration = 0.54f;
-    public const float Width = 4.4f;
+    public const float Width = 6.6f;
     private const int MaxActive = 24;
     private static readonly Sprite[] frames = new Sprite[FrameCount];
     private static int active;

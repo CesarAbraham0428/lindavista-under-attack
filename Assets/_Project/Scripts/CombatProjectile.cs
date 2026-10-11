@@ -5,7 +5,8 @@ using UnityEngine;
 public sealed class CombatProjectile : MonoBehaviour
 {
     private const int MaxActiveProjectiles = 64;
-    public const float RocketSplashRadius = 0.95f;
+    // Cover the enlarged impact canvas so clustered enemies share the explosion.
+    public const float RocketSplashRadius = RocketImpact.Width * 0.5f;
     private static int activeProjectiles;
 
     private Vector2 direction;
@@ -160,7 +161,7 @@ public sealed class CombatProjectile : MonoBehaviour
             if (IsSplashBlocked(position, target)) continue;
             damaged.Add(enemy);
             Vector2 outward = (Vector2)nearby.bounds.center - position;
-            enemy.TakeDamage(Mathf.Max(1, damage / 2), outward.sqrMagnitude > 0.0001f ? outward.normalized : direction);
+            enemy.TakeDamage(damage, outward.sqrMagnitude > 0.0001f ? outward.normalized : direction);
         }
     }
 

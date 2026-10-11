@@ -65,7 +65,7 @@ public class PlayerActions : MonoBehaviour
     private void Update()
     {
         fireRequested = false;
-        if (inputLocked || PistolUpgradeShop.IsOpen)
+        if (inputLocked || GameFlowController.IsPaused || PistolUpgradeShop.IsOpen)
             return;
 
         UpdateAim();
@@ -113,7 +113,7 @@ public class PlayerActions : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (inputLocked || defeated || spriteRenderer == null)
+        if (inputLocked || GameFlowController.IsPaused || defeated || spriteRenderer == null)
             return;
 
         // Firing poses must face the target, even while walking the other way.
@@ -128,7 +128,7 @@ public class PlayerActions : MonoBehaviour
 
     public void SelectTouchWeapon(int index)
     {
-        if (!inputLocked && !defeated && index >= 0 && index <= 2)
+        if (!inputLocked && !GameFlowController.IsPaused && !defeated && index >= 0 && index <= 2)
             EquipWeapon(index);
     }
 
@@ -146,7 +146,7 @@ public class PlayerActions : MonoBehaviour
 
     public void ReloadTouchWeapon()
     {
-        if (!inputLocked)
+        if (!inputLocked && !GameFlowController.IsPaused)
             TryReload();
     }
 
@@ -188,7 +188,7 @@ public class PlayerActions : MonoBehaviour
 
     public void SetTouchAimAndFire(Vector2 direction)
     {
-        if (inputLocked || defeated)
+        if (inputLocked || GameFlowController.IsPaused || defeated)
             return;
 
         touchAimActive = true;
@@ -210,7 +210,7 @@ public class PlayerActions : MonoBehaviour
 
     private void TryReload()
     {
-        if (inputLocked || defeated || IsBusyExceptFire() || !weapons.TryReload())
+        if (inputLocked || GameFlowController.IsPaused || defeated || IsBusyExceptFire() || !weapons.TryReload())
             return;
 
         ResetFireTriggers();
@@ -312,7 +312,7 @@ public class PlayerActions : MonoBehaviour
 
     private void OnGUI()
     {
-        if (inputLocked || defeated || aimCamera == null || !hasAimInViewport || MobileControlsHUD.IsVisible)
+        if (inputLocked || GameFlowController.IsPaused || defeated || aimCamera == null || !hasAimInViewport || MobileControlsHUD.IsVisible)
             return;
 
         Vector3 screen = aimCamera.WorldToScreenPoint(AimTarget);

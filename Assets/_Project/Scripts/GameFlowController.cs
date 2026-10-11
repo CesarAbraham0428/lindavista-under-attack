@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// <summary>Ends a match and presents the restart and menu options.</summary>
+/// <summary>Controls pause, match results and scene navigation.</summary>
 public sealed class GameFlowController : MonoBehaviour
 {
     private static GameFlowController active;
@@ -21,10 +22,18 @@ public sealed class GameFlowController : MonoBehaviour
     private Font font;
     private RectTransform defeatSafeArea;
     private RectTransform defeatContent;
+    private RectTransform pauseSafeArea;
+    private RectTransform pauseContent;
+    private Canvas pauseCanvas;
+    private Button pauseButton;
+    private bool paused;
+    private float previousTimeScale;
+    private bool previousAudioPause;
 
     // Compatibility for existing terminal checks in movement and enemy AI.
     public static bool IsDefeatActive => IsMatchEnded;
     public static bool IsMatchEnded => active != null && (active.defeatActive || active.victoryActive);
+    public static bool IsPaused => active != null && active.paused;
     public static bool IsCollectionPhase => active != null && active.collectionPhase;
     public static bool IsVictoryActive => active != null && active.victoryActive;
     public static int EnemiesKilled => active != null ? active.enemiesKilled : 0;
@@ -52,10 +61,106 @@ public sealed class GameFlowController : MonoBehaviour
         active = this;
         restartSceneName = gameObject.scene.name;
         font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        BuildPauseUI();
+    }
+
+    private void Update()
+    {
+        pauseButton.gameObject.SetActive(!IsMatchEnded && !paused && !PistolUpgradeShop.IsOpen);
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            TogglePause();
+    }
+
+    public void TogglePause()
+    {
+        if (paused) ResumeGame();
+        else PauseGame();
+    }
+
+    public void PauseGame()
+    {
+        if (paused || IsMatchEnded || PistolUpgradeShop.IsOpen) return;
+        previousTimeScale = Time.timeScale;
+        previousAudioPause = AudioListener.pause;
+        MobileControlsHUD.CancelActiveTouches();
+        paused = true;
+        Time.timeScale = 0f;
+        AudioListener.pause = true;
+        pauseCanvas.gameObject.SetActive(true);
+        pauseButton.gameObject.SetActive(false);
+        Canvas.ForceUpdateCanvases();
+        EventSystem.current.SetSelectedGameObject(pauseContent.Find("Pause Sign").gameObject);
+    }
+
+    public void ResumeGame()
+    {
+        if (!paused) return;
+        paused = false;
+        Time.timeScale = previousTimeScale;
+        AudioListener.pause = previousAudioPause;
+        if (pauseCanvas != null) pauseCanvas.gameObject.SetActive(false);
+        if (pauseButton != null) pauseButton.gameObject.SetActive(!IsMatchEnded);
+        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    private void BuildPauseUI()
+    {
+        EnsureEventSystem();
+        Canvas hud = ProgressionUI.Canvas(transform, "Pause HUD Canvas", 130);
+        pauseSafeArea = new GameObject("Pause Safe Area", typeof(RectTransform)).GetComponent<RectTransform>();
+        pauseSafeArea.SetParent(hud.transform, false);
+        var artwork = Resources.Load<ResultScreenAssets>("ResultScreenAssets");
+        Sprite wood = artwork != null ? artwork.WoodSign : null;
+        pauseButton = CreateCartoonButton(pauseSafeArea, "Pause Button", "PAUSA", wood,
+            Vector2.zero, new Vector2(250f, 100f), 40, PauseGame);
+        ProgressionUI.Top((RectTransform)pauseButton.transform, Vector2.one,
+            new Vector2(-24f, -24f), new Vector2(250f, 100f));
+
+        pauseCanvas = ProgressionUI.Canvas(transform, "Pause Canvas", 240);
+        Image dimmer = ProgressionUI.Image(pauseCanvas.transform, "Dim Background", new Color(0f, 0f, 0f, 0.65f), true);
+        StretchToParent(dimmer.rectTransform);
+        var panelSafeArea = new GameObject("Safe Area", typeof(RectTransform)).GetComponent<RectTransform>();
+        panelSafeArea.SetParent(pauseCanvas.transform, false);
+        pauseContent = new GameObject("Pause Content", typeof(RectTransform)).GetComponent<RectTransform>();
+        pauseContent.SetParent(panelSafeArea, false);
+        SetCentered(pauseContent, Vector2.zero, new Vector2(1120f, 820f));
+        Button heading = CreateCartoonButton(pauseContent, "Pause Sign", "PAUSA", wood,
+            new Vector2(0f, 220f), new Vector2(1040f, 250f), 120, ResumeGame);
+        heading.transform.localRotation = Quaternion.Euler(0f, 0f, 3f);
+        heading.GetComponentInChildren<Text>().color = new Color(1f, 0.92f, 0.65f);
+        Text hint = CreateCartoonText(pauseContent, "Resume Hint", "Toca PAUSA para continuar", 36);
+        SetCentered(hint.rectTransform, new Vector2(0f, 60f), new Vector2(900f, 70f));
+        CreateCartoonButton(pauseContent, "Retry Button", "REPETIR", wood,
+            new Vector2(0f, -70f), new Vector2(660f, 158f), 65, RestartCurrentScene);
+        CreateCartoonButton(pauseContent, "Levels Button", "NIVELES", wood,
+            new Vector2(-210f, -245f), new Vector2(360f, 112f), 44, ReturnToLevels);
+        CreateCartoonButton(pauseContent, "Menu Button", "MENÚ", wood,
+            new Vector2(210f, -245f), new Vector2(360f, 112f), 44, ReturnToMenu);
+        Canvas.willRenderCanvases += UpdatePauseLayout;
+        UpdatePauseLayout();
+        pauseCanvas.gameObject.SetActive(false);
+    }
+
+    private void UpdatePauseLayout()
+    {
+        if (pauseSafeArea == null || Screen.width <= 0 || Screen.height <= 0) return;
+        Rect area = Screen.safeArea;
+        pauseSafeArea.anchorMin = new Vector2(area.xMin / Screen.width, area.yMin / Screen.height);
+        pauseSafeArea.anchorMax = new Vector2(area.xMax / Screen.width, area.yMax / Screen.height);
+        pauseSafeArea.offsetMin = pauseSafeArea.offsetMax = Vector2.zero;
+        var panelSafeArea = (RectTransform)pauseContent.parent;
+        panelSafeArea.anchorMin = pauseSafeArea.anchorMin;
+        panelSafeArea.anchorMax = pauseSafeArea.anchorMax;
+        panelSafeArea.offsetMin = panelSafeArea.offsetMax = Vector2.zero;
+        Vector2 available = panelSafeArea.rect.size;
+        pauseContent.localScale = Vector3.one * Mathf.Max(0.01f,
+            Mathf.Min(1.15f, available.x / 1120f, available.y / 820f));
     }
 
     private void OnDestroy()
     {
+        ResumeGame();
+        Canvas.willRenderCanvases -= UpdatePauseLayout;
         Canvas.willRenderCanvases -= UpdateDefeatLayout;
         if (active == this)
             active = null;
@@ -109,6 +214,7 @@ public sealed class GameFlowController : MonoBehaviour
         if (active == null || IsMatchEnded || !active.collectionPhase) return;
         if (!ProgressionService.TryCompleteLevel(active.clearedLevel)) return;
         active.collectionPhase = false;
+        active.ResumeGame();
         active.victoryActive = true;
         active.LockActors();
         active.BuildDefeatUI("Nivel " + (active.clearedLevel + 1) + " completado.");
@@ -120,6 +226,7 @@ public sealed class GameFlowController : MonoBehaviour
             return;
 
         defeatActive = true;
+        ResumeGame();
         collectionPhase = false;
         LockActors();
         BuildDefeatUI(message);
@@ -180,8 +287,8 @@ public sealed class GameFlowController : MonoBehaviour
             new Vector2(0f, -65f), new Vector2(660f, 158f), 65, RestartCurrentScene);
         CreateCartoonButton(defeatContent, "Shop Button", "TIENDA", wood,
             new Vector2(-210f, -235f), new Vector2(360f, 112f), 44, PistolUpgradeShop.Open);
-        CreateCartoonButton(defeatContent, "Menu Button", "MENÚ", wood,
-            new Vector2(210f, -235f), new Vector2(360f, 112f), 44, ReturnToMenu);
+        CreateCartoonButton(defeatContent, "Levels Button", "NIVELES", wood,
+            new Vector2(210f, -235f), new Vector2(360f, 112f), 44, ReturnToLevels);
         Canvas.willRenderCanvases += UpdateDefeatLayout;
         Canvas.ForceUpdateCanvases();
         UpdateDefeatLayout();
@@ -307,11 +414,19 @@ public sealed class GameFlowController : MonoBehaviour
 
     private void RestartCurrentScene()
     {
+        ResumeGame();
         SceneManager.LoadScene(restartSceneName);
     }
 
     private void ReturnToMenu()
     {
+        ResumeGame();
         SceneManager.LoadScene("MainMenu");
+    }
+
+    private void ReturnToLevels()
+    {
+        ResumeGame();
+        SceneManager.LoadScene("CharacterSelection");
     }
 }

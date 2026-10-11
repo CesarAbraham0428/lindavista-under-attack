@@ -14,7 +14,7 @@ public sealed class PlayerWeaponController : MonoBehaviour
     public bool IsReloading => reload != null;
     public int EquippedWeapon { get; private set; }
     public bool CanFire => isActiveAndEnabled && !IsReloading && Magazine > 0 &&
-        Time.time >= nextShotTime && !GameFlowController.IsMatchEnded;
+        Time.time >= nextShotTime && !GameFlowController.IsMatchEnded && !GameFlowController.IsPaused;
     private readonly int[] magazines = new int[3];
     public event Action Changed;
 
@@ -27,7 +27,7 @@ public sealed class PlayerWeaponController : MonoBehaviour
     }
     public bool TryEquip(int index)
     {
-        if (!ProgressionService.OwnsWeapon(index)) return false;
+        if (GameFlowController.IsPaused || !ProgressionService.OwnsWeapon(index)) return false;
         CancelReload(); magazines[EquippedWeapon] = Magazine;
         EquippedWeapon = index; Magazine = Mathf.Min(magazines[index], ProgressionService.Ammo(index));
         Changed?.Invoke(); return true;
@@ -48,7 +48,7 @@ public sealed class PlayerWeaponController : MonoBehaviour
     public bool TryReload()
     {
         if (!isActiveAndEnabled || IsReloading || Magazine >= Mathf.Min(Definition.MagazineSize, ProgressionService.Ammo(EquippedWeapon)) ||
-            GameFlowController.IsMatchEnded) return false;
+            GameFlowController.IsMatchEnded || GameFlowController.IsPaused) return false;
         reload = StartCoroutine(Reload());
         weaponAudio.PlayReload(EquippedWeapon, Definition.ReloadDuration);
         Changed?.Invoke();

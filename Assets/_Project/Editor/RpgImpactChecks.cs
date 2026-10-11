@@ -248,18 +248,24 @@ public static class RpgImpactChecks
         DuplicateCollider(direct, new Vector2(0f, .15f));
         EnemyHealth nearby = Enemy(new Vector2(3.05f, .6f), Vector2.one * .3f);
         DuplicateCollider(nearby, new Vector2(0f, .03f));
-        EnemyHealth far = Enemy(new Vector2(3.5f, 2f), Vector2.one * .3f);
+        EnemyHealth fartherInGroup = Enemy(new Vector2(5f, 0f), Vector2.one * .3f);
+        DuplicateCollider(fartherInGroup, new Vector2(0f, .03f));
+        EnemyHealth overlapping = Enemy(new Vector2(3.05f, 0f), Vector2.one * .3f);
+        EnemyHealth far = Enemy(new Vector2(7f, 0f), Vector2.one * .3f);
         var shot = Fire(Vector2.zero, Vector2.right, 2);
         Check(Mathf.Abs(shot.GetComponent<SpriteRenderer>().bounds.size.x - 1.96f) < .002f, "rocket art is enlarged to 1.96 world units");
         Step(shot);
         Check(direct.CurrentHealth == 4, "direct enemy receives full six damage once");
-        Check(nearby.CurrentHealth == 7, "nearby enemy receives half damage once across child colliders");
+        Check(nearby.CurrentHealth == 4, "nearby enemy receives full damage once across child colliders");
+        Check(fartherInGroup.CurrentHealth == 4, "enemy beyond the old splash radius receives full damage once");
+        Check(overlapping.CurrentHealth == 4, "overlapping enemy also receives full explosion damage");
         Check(far.CurrentHealth == 10, "enemy outside splash radius stays unharmed");
         RocketImpact impact = OneImpact();
         Check(Vector2.Distance(impact.transform.position, new Vector2(2.63f, 0f)) < .01f, "impact is anchored to the enemy surface");
         Check(Mathf.Abs(shot.transform.position.x + ShotVisual.RocketWidth - 2.75f) < .01f, "rocket nose stops at the enemy surface");
         Step(shot);
-        Check(direct.CurrentHealth == 4 && nearby.CurrentHealth == 7, "spent shot cannot damage twice");
+        Check(direct.CurrentHealth == 4 && nearby.CurrentHealth == 4 &&
+            fartherInGroup.CurrentHealth == 4 && overlapping.CurrentHealth == 4, "spent shot cannot damage the group twice");
     }
 
     private static void VerifyWallImpact()
@@ -269,7 +275,7 @@ public static class RpgImpactChecks
         EnemyHealth behind = Enemy(new Vector2(3.5f, 0f), Vector2.one * .3f);
         var shot = Fire(Vector2.zero, Vector2.right, 2);
         Step(shot);
-        Check(front.CurrentHealth == 7, "wall detonation damages a nearby enemy on the exposed side");
+        Check(front.CurrentHealth == 4, "wall detonation damages a nearby enemy on the exposed side");
         Check(behind.CurrentHealth == 10, "solid wall blocks splash reaching an enemy behind it");
         Check(Vector2.Distance(OneImpact().transform.position, new Vector2(2.68f, 0f)) < .01f, "wall detonation appears at its visible surface");
     }
@@ -283,7 +289,7 @@ public static class RpgImpactChecks
         var shot = Fire(Vector2.zero, Vector2.right, 2);
         Step(shot);
         Check(closest.CurrentHealth == 4, "point-blank enemy between muzzle and nose receives direct damage");
-        Check(farther.CurrentHealth == 7, "farther point-blank enemy receives splash rather than direct damage");
+        Check(farther.CurrentHealth == 4, "farther point-blank enemy receives full explosion damage");
         Check(Vector2.Distance(OneImpact().transform.position, new Vector2(.28f, 0f)) < .01f,
             "point-blank impact uses the closest enemy surface");
         Check(Vector2.Distance(shot.transform.position, Vector2.zero) < .001f,
@@ -296,7 +302,7 @@ public static class RpgImpactChecks
         EnemyHealth near = Enemy(new Vector2(.5f, -.6f), Vector2.one * .2f);
         var shot = Fire(new Vector2(0f, 1f), Vector2.down, 2);
         Step(shot);
-        Check(near.CurrentHealth == 7, "physical floor explosion applies nearby damage");
+        Check(near.CurrentHealth == 4, "physical floor explosion applies full nearby damage");
         Check(Vector2.Distance(OneImpact().transform.position, new Vector2(0f, -.78f)) < .01f, "physical floor impact stays at contact");
     }
 
@@ -314,7 +320,7 @@ public static class RpgImpactChecks
             var shot = Fire(new Vector2(0f, 1.5f), Vector2.down, 2, owner.transform);
             owner.transform.position += Vector3.up * 3f;
             Step(shot);
-            Check(near.CurrentHealth == 7, "painted floor explosion applies nearby damage without a floor collider");
+            Check(near.CurrentHealth == 4, "painted floor explosion applies full nearby damage without a floor collider");
             Check(Vector2.Distance(OneImpact().transform.position, new Vector2(0f, feet + .12f)) < .01f, "painted floor is snapshotted from launch-time feet");
             Check(Mathf.Abs(shot.transform.position.y - ShotVisual.RocketWidth - feet) < .01f, "downward rocket nose reaches painted floor");
         }
@@ -331,7 +337,7 @@ public static class RpgImpactChecks
         try
         {
             float feet = renderer.bounds.min.y + renderer.bounds.size.y * .03f;
-            EnemyHealth enemy = Enemy(new Vector2(0f, enemyFirst ? 0f : -2.2f), Vector2.one * .4f);
+            EnemyHealth enemy = Enemy(new Vector2(0f, enemyFirst ? 0f : -4.6f), Vector2.one * .4f);
             var shot = Fire(new Vector2(0f, ShotVisual.RocketWidth + .6f), Vector2.down, 2, owner.transform);
             Step(shot);
             if (enemyFirst)
@@ -396,7 +402,7 @@ public static class RpgImpactChecks
             Check(renderer.color.a <= previousAlpha + .001f, "frame " + i + " alpha never increases");
             previousAlpha = renderer.color.a;
         }
-        Check(Mathf.Abs(initialWidth - RocketImpact.Width) < .002f, "impact uses intended modest world size");
+        Check(Mathf.Abs(initialWidth - 4.4f * 1.5f) < .002f, "impact canvas is 50 percent larger than its original width");
         Check(previousAlpha < .2f, "last smoke frame fades before removal");
     }
 
