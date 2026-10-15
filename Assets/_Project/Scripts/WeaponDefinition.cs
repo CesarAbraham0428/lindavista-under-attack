@@ -32,6 +32,16 @@ public sealed class WeaponDefinition : ScriptableObject
     }
 
     private static WeaponDefinition smg, rpg;
+    private static readonly WeaponDefinition[] cesarWeapons = new WeaponDefinition[3];
+    public static WeaponDefinition ForCharacter(int index, bool cesar)
+    {
+        if (!cesar) return At(index);
+        if (index < 0 || index >= 3) throw new System.ArgumentOutOfRangeException(nameof(index));
+        if (cesarWeapons[index] == null)
+            cesarWeapons[index] = Resources.Load<WeaponDefinition>("Cesar" + CharacterWeapons.State(index, true) + "Definition");
+        return cesarWeapons[index];
+    }
+
     public static WeaponDefinition At(int index)
     {
         if (index == 0) return Pistol;

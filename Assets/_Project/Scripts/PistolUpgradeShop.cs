@@ -106,18 +106,18 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         }
         healthBuy = Buy(character.transform, "MEJORAR VIDA", () => Result(ProgressionService.TryUpgradeHealth()),
             .065f, .025f, .935f, .155f, true, true);
-        var art = Resources.Load<WeaponHUDAssets>("WeaponHUDAssets");
+        var art = CharacterWeapons.Artwork(!marco);
         for (int i = 0; i < 3; i++)
         {
             int index = i;
             float bottom = .65f - i * .23f;
-            var row = Frame(panel.transform, ShopBalance.Names[i], new Color(.46f, .32f, .19f), .305f, bottom, .975f, bottom + .21f);
+            var row = Frame(panel.transform, CharacterWeapons.Name(i, !marco), new Color(.46f, .32f, .19f), .305f, bottom, .975f, bottom + .21f);
             var frame = Frame(row.transform, "Icon Frame", new Color(.83f, .71f, .47f), .018f, .105f, .19f, .905f);
             var icon = ProgressionUI.Image(frame.transform, "Weapon Icon", Color.white);
             icon.sprite = art != null ? art.IconAt(i) : ProgressionVisuals.Pistol;
             icon.preserveAspect = true;
             ProgressionUI.Percent(icon.rectTransform, .07f, .12f, .93f, .88f);
-            Label(row.transform, ShopBalance.Names[i], 37, .215f, .735f, .72f, .975f);
+            Label(row.transform, CharacterWeapons.Name(i, !marco), 37, .215f, .735f, .72f, .975f);
             int tiers = WeaponDefinition.At(i).MaxUpgrade + 1;
             for (int j = 0; j < 6; j++)
             {
@@ -139,10 +139,10 @@ public sealed class PistolUpgradeShop : MonoBehaviour
             // Fixed inset keeps the fill inside the frame at every aspect ratio and amount.
             ammoFill[i].rectTransform.offsetMin = new Vector2(9, 5);
             ammoFill[i].rectTransform.offsetMax = new Vector2(-9, -5);
-            ammo[i] = Buy(row.transform, "CARGADOR", () => Result(ProgressionService.TryBuyAmmo(index)), .215f, .055f, .595f, .435f, true);
+            ammo[i] = Buy(row.transform, "MUNICIÓN", () => Result(ProgressionService.TryBuyAmmo(index)), .215f, .055f, .595f, .435f, true);
             upgrade[i] = Buy(row.transform, "MEJORAR ARMA", () => Result(ProgressionService.TryUpgradeWeapon(index)), .615f, .055f, .975f, .435f, true, true);
         }
-        feedback = Label(panel.transform, "Cada compra de munición añade un cargador completo.", 27, .305f, .12f, .975f, .18f);
+        feedback = Label(panel.transform, "Cada compra de munición añade un paquete completo.", 27, .305f, .12f, .975f, .18f);
         Buy(panel.transform, "VOLVER", () => Destroy(gameObject), .025f, .025f, .25f, .115f);
 #if UNITY_EDITOR
         Buy(panel.transform, "+1000 monedas · prueba", () => Result(ProgressionService.TryCredit(1000)), .735f, .025f, .975f, .095f);
@@ -162,10 +162,10 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         {
             int level = ProgressionService.WeaponUpgrade(i), cost = WeaponDefinition.At(i).UpgradeCost(level);
             int amount = ProgressionService.Ammo(i);
-            stats[i].text = "Munición " + amount + "/" + ShopBalance.Capacity[i] + "  ·  Daño " + WeaponDefinition.At(i).DamageAt(level);
+            stats[i].text = "Munición " + amount + "/" + ShopBalance.Capacity[i] + "  ·  Daño " + WeaponDefinition.ForCharacter(i, CharacterWeapons.SelectedCesar).DamageAt(level);
             ammoFill[i].fillAmount = Mathf.Clamp01((float)amount / ShopBalance.Capacity[i]);
             bool fits = amount + ShopBalance.Pack[i] <= ShopBalance.Capacity[i];
-            PurchaseState(ammo[i], fits ? "CARGADOR +" + ShopBalance.Pack[i] : "SIN ESPACIO", ShopBalance.AmmoCost[i], fits);
+            PurchaseState(ammo[i], fits ? "MUNICIÓN +" + ShopBalance.Pack[i] : "SIN ESPACIO", ShopBalance.AmmoCost[i], fits);
             PurchaseState(upgrade[i], cost > 0 ? "DAÑO +1" : "MEJORA MÁXIMA", cost, true);
             for (int j = 0; j < 6; j++) bars[i, j].color = j <= level ? ProgressionUI.Gold : Muted;
         }

@@ -1,0 +1,369 @@
+fileFormatVersion: 2
+guid: 0307196816c046846b2c02eccf4d3ba2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4748597819618579827
+    second: Cesar_Escopeta_Reload_0
+  - first:
+      213: -3638121175628030390
+    second: Cesar_Escopeta_Reload_1
+  - first:
+      213: -8654400309000669449
+    second: Cesar_Escopeta_Reload_2
+  - first:
+      213: 5514825233030648937
+    second: Cesar_Escopeta_Reload_3
+  - first:
+      213: -289388537118550771
+    second: Cesar_Escopeta_Reload_4
+  - first:
+      213: -1971350418779263198
+    second: Cesar_Escopeta_Reload_5
+  - first:
+      213: 1727231407960246704
+    second: Cesar_Escopeta_Reload_6
+  - first:
+      213: -3996911090790233559
+    second: Cesar_Escopeta_Reload_7
+  - first:
+      213: -4572182570659843471
+    second: Cesar_Escopeta_Reload_8
+  - first:
+      213: -4052784736363960803
+    second: Cesar_Escopeta_Reload_9
+  - first:
+      213: 5662397176961868012
+    second: Cesar_Escopeta_Reload_10
+  - first:
+      213: 5377346910859289199
+    second: Cesar_Escopeta_Reload_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 95.4
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Reload_1
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 537
+        width: 346
+        height: 524
+      alignment: 9
+      pivot: {x: 0.5, y: 0.46469465}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4e5ddcf01cc28dc0800000000000000
+      internalID: -3638121175628030390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Reload_4
+      rect:
+        serializedVersion: 2
+        x: 733
+        y: 527
+        width: 351
+        height: 541
+      alignment: 9
+      pivot: {x: 0.5, y: 0.46857673}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d059af2a8a2ebfbf0800000000000000
+      internalID: -289388537118550771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Reload_6
+      rect:
+        serializedVersion: 2
+        x: 1097
+        y: 535
+        width: 339
+        height: 538
+      alignment: 9
+      pivot: {x: 0.5, y: 0.45260224}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b94e5470db58f710800000000000000
+      internalID: 1727231407960246704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Reload_7
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 537
+        width: 384
+        height: 496
+      alignment: 9
+      pivot: {x: 0.5, y: 0.49092743}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92a01aa1a8e1888c0800000000000000
+      internalID: -3996911090790233559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Reload_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 26
+        width: 370
+        height: 508
+      alignment: 9
+      pivot: {x: 0.5, y: 0.51279527}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 172769b2d285c80c0800000000000000
+      internalID: -4572182570659843471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Reload_9
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 44
+        width: 351
+        height: 488
+      alignment: 9
+      pivot: {x: 0.5, y: 0.49487707}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d16a6ed31cd91c7c0800000000000000
+      internalID: -4052784736363960803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Reload_10
+      rect:
+        serializedVersion: 2
+        x: 731
+        y: 22
+        width: 379
+        height: 499
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5300601}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce0acf55b30e49e40800000000000000
+      internalID: 5662397176961868012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Reload_11
+      rect:
+        serializedVersion: 2
+        x: 1105
+        y: 38
+        width: 343
+        height: 487
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5082136}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f62efc7668c20aa40800000000000000
+      internalID: 5377346910859289199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 86d5db2b3c11cfc41937593a92d4e9df
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":2.0},"gridSpriteSize":{"x":362.0,"y":507.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Cesar_Escopeta_Reload_0: -4748597819618579827
+      Cesar_Escopeta_Reload_1: -3638121175628030390
+      Cesar_Escopeta_Reload_10: 5662397176961868012
+      Cesar_Escopeta_Reload_11: 5377346910859289199
+      Cesar_Escopeta_Reload_2: -8654400309000669449
+      Cesar_Escopeta_Reload_3: 5514825233030648937
+      Cesar_Escopeta_Reload_4: -289388537118550771
+      Cesar_Escopeta_Reload_5: -1971350418779263198
+      Cesar_Escopeta_Reload_6: 1727231407960246704
+      Cesar_Escopeta_Reload_7: -3996911090790233559
+      Cesar_Escopeta_Reload_8: -4572182570659843471
+      Cesar_Escopeta_Reload_9: -4052784736363960803
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

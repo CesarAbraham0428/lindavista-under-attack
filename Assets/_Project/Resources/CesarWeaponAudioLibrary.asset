@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b45195e3398d844bb900f6f003278d2, type: 3}
+  m_Name: CesarWeaponAudioLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponAudioLibrary
+  shots:
+  - {fileID: 8300000, guid: c0b75c88190fdc04e81d1fa4f3decb8e, type: 3}
+  - {fileID: 8300000, guid: 8826a7e8ddfefa648b23a0e582aa6e53, type: 3}
+  - {fileID: 8300000, guid: 527c75345ec382a43aa637d610da699a, type: 3}
+  reloads:
+  - {fileID: 8300000, guid: 80778ee934c551f4b9693c2479d13664, type: 3}
+  - {fileID: 8300000, guid: e6b75758a33795f45a42c91041c696c1, type: 3}
+  - {fileID: 8300000, guid: 36d707fb50a7ec849a17290bda7c6a6a, type: 3}
+  shotVolumes:
+  - 0.8
+  - 0.6
+  - 0.9
+  reloadVolume: 0.7

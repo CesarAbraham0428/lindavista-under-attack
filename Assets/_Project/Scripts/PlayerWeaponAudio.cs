@@ -10,7 +10,8 @@ public sealed class PlayerWeaponAudio : MonoBehaviour
 
     private void Awake()
     {
-        library = Resources.Load<WeaponAudioLibrary>("WeaponAudioLibrary");
+        library = Resources.Load<WeaponAudioLibrary>(CharacterWeapons.IsCesar(gameObject)
+            ? "CesarWeaponAudioLibrary" : "WeaponAudioLibrary");
         shotSource = CreateSource("Weapon Fire Audio", 64);
         reloadSource = CreateSource("Weapon Reload Audio", 100);
         if (library == null)

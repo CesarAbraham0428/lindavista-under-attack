@@ -60,6 +60,8 @@ public class PlayerActions : MonoBehaviour
         aimCamera = Camera.main;
         if (animator != null)
             animator.SetBool("IsAiming", false);
+        weapons.Changed += OnWeaponChanged;
+        OnWeaponChanged();
     }
 
     private void Update()
@@ -117,7 +119,7 @@ public class PlayerActions : MonoBehaviour
             return;
 
         // Firing poses must face the target, even while walking the other way.
-        bool firingPose = IsPlaying("Pistol_Fire") || IsPlaying("SMG_Fire") || IsPlaying("RPG_Fire");
+        bool firingPose = IsPlaying(weapons.AnimationWeapon + "_Fire");
         float direction = fireRequested || firingPose ? AimDirection.x :
             movement != null ? movement.HorizontalInput : 0f;
         if (direction != 0f)
@@ -132,16 +134,23 @@ public class PlayerActions : MonoBehaviour
             EquipWeapon(index);
     }
 
-    private void EquipWeapon(int index)
+    public void EquipWeapon(int index)
     {
-        bool wasReloading = weapons.IsReloading;
-        if (!weapons.TryEquip(index) || !wasReloading || animator == null ||
+        int previous = weapons.EquippedWeapon;
+        if (!weapons.TryEquip(index) || previous == index || animator == null ||
             animator.runtimeAnimatorController == null) return;
 
         ResetFireTriggers();
         string character = animator.runtimeAnimatorController.name.Contains("Cesar") ? "Cesar" : "Marco";
         animator.Play(character + "_Idle", 0, 0f);
         animator.Update(0f);
+    }
+
+    private void OnWeaponChanged()
+    {
+        maxAimDistance = weapons.Definition.Range;
+        if (animator != null && weapons.IsCesar)
+            animator.SetFloat("WeaponIndex", weapons.EquippedWeapon);
     }
 
     public void ReloadTouchWeapon()
@@ -163,6 +172,7 @@ public class PlayerActions : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (weapons != null) weapons.Changed -= OnWeaponChanged;
         if (health == null) return;
         health.Damaged -= OnDamaged;
         health.Died -= Defeat;
@@ -221,7 +231,7 @@ public class PlayerActions : MonoBehaviour
     {
         if (animator == null || animator.runtimeAnimatorController == null) return;
         string character = animator.runtimeAnimatorController.name.Contains("Cesar") ? "Cesar" : "Marco";
-        string weapon = weapons.EquippedWeapon == 0 ? "Pistol" : weapons.EquippedWeapon == 1 ? "SMG" : "RPG";
+        string weapon = weapons.AnimationWeapon;
         string stateName = character + "_" + weapon + "_Reload";
         foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
         {
@@ -247,7 +257,7 @@ public class PlayerActions : MonoBehaviour
         {
             ResetFireTriggers();
             string character = animator.runtimeAnimatorController.name.Contains("Cesar") ? "Cesar" : "Marco";
-            string weapon = weapons.EquippedWeapon == 0 ? "Pistol" : weapons.EquippedWeapon == 1 ? "SMG" : "RPG";
+            string weapon = weapons.AnimationWeapon;
             animator.Play(character + "_" + weapon + "_Fire", 0, 0f);
             animator.Update(0f);
         }
@@ -332,9 +342,7 @@ public class PlayerActions : MonoBehaviour
 
     private bool IsBusyExceptFire()
     {
-        return IsPlaying("Pistol_Reload") ||
-               IsPlaying("SMG_Reload") ||
-               IsPlaying("RPG_Reload") ||
+        return weapons.IsReloading || IsPlaying(weapons.AnimationWeapon + "_Reload") ||
                IsPlaying("Damage") ||
                IsPlaying("Defeat");
     }

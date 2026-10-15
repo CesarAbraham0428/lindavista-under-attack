@@ -8,7 +8,10 @@ public sealed class PlayerWeaponController : MonoBehaviour
     private float nextShotTime;
     private Coroutine reload;
     private PlayerWeaponAudio weaponAudio;
-    public WeaponDefinition Definition => EquippedWeapon == 0 && definition != null ? definition : WeaponDefinition.At(EquippedWeapon);
+    public bool IsCesar => CharacterWeapons.IsCesar(gameObject);
+    public string AnimationWeapon => CharacterWeapons.State(EquippedWeapon, IsCesar);
+    public WeaponDefinition Definition => !IsCesar && EquippedWeapon == 0 && definition != null
+        ? definition : WeaponDefinition.ForCharacter(EquippedWeapon, IsCesar);
     public int Damage => Definition.DamageAt(ProgressionService.WeaponUpgrade(EquippedWeapon));
     public int Magazine { get; private set; }
     public bool IsReloading => reload != null;
@@ -22,12 +25,13 @@ public sealed class PlayerWeaponController : MonoBehaviour
     {
         weaponAudio = GetComponent<PlayerWeaponAudio>();
         if (weaponAudio == null) weaponAudio = gameObject.AddComponent<PlayerWeaponAudio>();
-        for (int i = 0; i < 3; i++) magazines[i] = Mathf.Min(WeaponDefinition.At(i).MagazineSize, ProgressionService.Ammo(i));
+        for (int i = 0; i < 3; i++) magazines[i] = Mathf.Min(WeaponDefinition.ForCharacter(i, IsCesar).MagazineSize, ProgressionService.Ammo(i));
         Magazine = magazines[0];
     }
     public bool TryEquip(int index)
     {
-        if (GameFlowController.IsPaused || !ProgressionService.OwnsWeapon(index)) return false;
+        if (GameFlowController.IsPaused || GameFlowController.IsMatchEnded || !ProgressionService.OwnsWeapon(index)) return false;
+        if (index == EquippedWeapon) return true;
         CancelReload(); magazines[EquippedWeapon] = Magazine;
         EquippedWeapon = index; Magazine = Mathf.Min(magazines[index], ProgressionService.Ammo(index));
         Changed?.Invoke(); return true;

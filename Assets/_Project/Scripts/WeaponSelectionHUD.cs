@@ -49,7 +49,7 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
     {
         active = this;
         ProgressionUI.EnsureEventSystem();
-        var artwork = Resources.Load<WeaponHUDAssets>("WeaponHUDAssets");
+        var artwork = CharacterWeapons.Artwork(CharacterWeapons.SelectedCesar);
         for (int i = 0; i < ammoArtwork.Length; i++)
             ammoArtwork[i] = new HUDSpriteVariants(artwork != null ? artwork.AmmoAt(i) : null);
         circle = MakeCircle();
@@ -141,8 +141,9 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
     public static void Select(int index)
     {
         if (active == null || index < 0 || index >= 3 || !active.CanSelect()) return;
-        if (active.weapons == null || !active.weapons.TryEquip(index)) return;
-        active.selected = index;
+        if (active.weapons == null) return;
+        active.player.EquipWeapon(index);
+        active.selected = active.weapons.EquippedWeapon;
         active.RefreshSelection();
     }
 
@@ -170,13 +171,27 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
         if (weapons != null) weapons.Changed -= RefreshAmmo;
         weapons = current;
         if (weapons != null) weapons.Changed += RefreshAmmo;
+        var artwork = CharacterWeapons.Artwork(weapons != null ? weapons.IsCesar : CharacterWeapons.SelectedCesar);
+        for (int i = 0; i < icons.Length; i++)
+        {
+            icons[i].sprite = artwork != null ? artwork.IconAt(i) : null;
+            icons[i].enabled = icons[i].sprite != null;
+            ammoArtwork[i]?.Dispose();
+            ammoArtwork[i] = new HUDSpriteVariants(artwork != null ? artwork.AmmoAt(i) : null);
+        }
         RefreshAmmo();
     }
 
     private void RefreshAmmo()
     {
         if (ammoStatus == null) return;
-        string[] names = { "PISTOLA", "METRALLETA", "RPG" };
+        if (weapons != null && selected != weapons.EquippedWeapon)
+        {
+            selected = weapons.EquippedWeapon;
+            RefreshSelection();
+            return;
+        }
+        string name = CharacterWeapons.Name(selected, weapons != null ? weapons.IsCesar : CharacterWeapons.SelectedCesar);
         for (int i = 0; i < ammoCounts.Length; i++)
             ammoCounts[i].text = weapons != null ? ProgressionService.Ammo(i).ToString() : "—";
 
@@ -192,8 +207,8 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
             // Missing artwork still leaves a readable magazine counter.
             cartridges[i].enabled = cartridges[i].sprite != null;
         }
-        ammoStatus.text = !available ? names[selected] + " · NO DISPONIBLE" :
-            weapons.IsReloading ? "RECARGANDO…" : remaining == 0 ? "SIN BALAS · RECARGA" : names[selected];
+        ammoStatus.text = !available ? name + " · NO DISPONIBLE" :
+            weapons.IsReloading ? "RECARGANDO…" : remaining == 0 ? "SIN BALAS · RECARGA" : name;
         ammoStatus.color = available && (weapons.IsReloading || remaining == 0)
             ? ProgressionUI.Gold : new Color(0.96f, 0.93f, 0.85f);
         ammoValue.text = available ? remaining + " / " + capacity : "—";
