@@ -92,7 +92,9 @@ public static class RpgImpactChecks
         directory = Path.GetFullPath(Path.Combine("Library", "RpgImpactChecks"));
         Directory.CreateDirectory(directory);
         string profilePath = Path.Combine(directory, "profile-" + Guid.NewGuid().ToString("N") + ".json");
-        File.WriteAllText(profilePath, JsonUtility.ToJson(new ProgressionProfile { ammunition = new[] { 60, 180, 12 } }));
+        var profile = new ProgressionProfile();
+        profile.marco.ammunition = new[] { 60, 180, 12 };
+        File.WriteAllText(profilePath, JsonUtility.ToJson(profile));
         profileScope = ProgressionService.UseVerificationRepository(new ProgressionRepository(profilePath));
         assertions = 0;
         deadline = EditorApplication.timeSinceStartup + 45;
@@ -121,7 +123,7 @@ public static class RpgImpactChecks
     {
         yield return null; // Allow runtime reset hooks and the first Play Mode frame to finish.
         Check(!GameFlowController.IsMatchEnded, "isolated scene has no ended match");
-        Check(ProgressionService.Ammo(2) == 12, "temporary profile is active");
+        Check(ProgressionService.Ammo(2, false) == 12, "temporary profile is active");
         VerifyAtlas();
         VerifyEnemyImpact();
         ClearObjects();

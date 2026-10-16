@@ -1,6 +1,6 @@
 using UnityEngine;
 
-/// <summary>Three local slots per character; wallet and slot progression remain shared.</summary>
+/// <summary>Three local weapon slots per character, with their own progression and artwork.</summary>
 public static class CharacterWeapons
 {
     private static readonly string[] MarcoStates = { "Pistol", "SMG", "RPG" };

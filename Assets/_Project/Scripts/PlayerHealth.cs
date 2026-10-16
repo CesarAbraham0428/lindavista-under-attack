@@ -3,25 +3,32 @@ using UnityEngine;
 
 public sealed class PlayerHealth : MonoBehaviour
 {
-    [SerializeField, Min(1)] private int maxHealth = 5;
+    private int maxHealth;
     [SerializeField, Min(0f)] private float damageCooldown = 0.75f;
     private float nextDamageTime;
     private int appliedUpgrade;
+    private bool isCesar;
     public int CurrentHealth { get; private set; }
     public int MaxHealth => maxHealth;
     public bool IsDead { get; private set; }
+    public bool IsCesar => isCesar;
     public event Action<int, int> HealthChanged;
     public event Action Damaged;
     public event Action Died;
 
-    private void Awake() { appliedUpgrade = ProgressionService.HealthUpgrade; Initialize(maxHealth + appliedUpgrade, damageCooldown); }
+    private void Awake()
+    {
+        isCesar = CharacterWeapons.IsCesar(gameObject);
+        appliedUpgrade = ProgressionService.HealthUpgradeFor(isCesar);
+        Initialize(CharacterStats.BaseHealth(isCesar) + appliedUpgrade, damageCooldown);
+    }
     private void OnEnable() { ProgressionService.Changed += ApplyUpgrade; ApplyUpgrade(); }
     private void OnDisable() { ProgressionService.Changed -= ApplyUpgrade; }
     private void ApplyUpgrade()
     {
-        int difference = ProgressionService.HealthUpgrade - appliedUpgrade;
+        int difference = ProgressionService.HealthUpgradeFor(isCesar) - appliedUpgrade;
         if (difference == 0) return;
-        appliedUpgrade = ProgressionService.HealthUpgrade;
+        appliedUpgrade = ProgressionService.HealthUpgradeFor(isCesar);
         maxHealth = Mathf.Max(1, maxHealth + difference);
         if (!IsDead) CurrentHealth = Mathf.Clamp(CurrentHealth + difference, 0, maxHealth);
         HealthChanged?.Invoke(CurrentHealth, maxHealth);

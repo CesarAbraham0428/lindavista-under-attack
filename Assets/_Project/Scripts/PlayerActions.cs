@@ -22,7 +22,7 @@ public class PlayerActions : MonoBehaviour
     public bool IsDefeated => defeated;
     public bool IsInputLocked => inputLocked;
     public int CurrentHealth => health != null ? health.CurrentHealth : 0;
-    public int MaxHealth => health != null ? health.MaxHealth : 5;
+    public int MaxHealth => health != null ? health.MaxHealth : CharacterStats.BaseHealth(CharacterWeapons.IsCesar(gameObject));
     public PlayerHealth Health => health;
     public PlayerWeaponController Weapons => weapons;
     public Vector2 AimDirection { get; private set; } = Vector2.right;

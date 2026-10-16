@@ -229,7 +229,10 @@ public static class SniperShotChecks
     {
         Directory.CreateDirectory("Library/SniperShotChecks");
         string path = "Library/SniperShotChecks/profile-" + Guid.NewGuid().ToString("N") + ".json";
-        File.WriteAllText(path, JsonUtility.ToJson(new ProgressionProfile { ammunition = new[] { 60, 180, 12 } }));
+        File.WriteAllText(path, JsonUtility.ToJson(new ProgressionProfile
+        {
+            cesar = new CharacterProgression { weaponUpgrades = new[] { 0, 0, 0 }, ammunition = new[] { 60, 180, 12 } }
+        }));
         try
         {
             using (ProgressionService.UseVerificationRepository(new ProgressionRepository(path)))
@@ -246,7 +249,7 @@ public static class SniperShotChecks
                 actions.SelectTouchWeapon(1);
                 Check(controller.EquippedWeapon == 1, "Cesar equips sniper");
                 actions.SetTouchAimAndFire(Vector2.right);
-                int ammo = ProgressionService.Ammo(1), magazine = controller.Magazine;
+                int ammo = ProgressionService.Ammo(1, true), magazine = controller.Magazine;
                 typeof(PlayerActions).GetField("fireRequested", Private).SetValue(actions, true);
                 typeof(PlayerActions).GetMethod("LateUpdate", Private).Invoke(actions, null);
                 var shot = Object.FindFirstObjectByType<CombatProjectile>();
@@ -259,7 +262,7 @@ public static class SniperShotChecks
                 Vector2 expected = player.transform.TransformPoint(measured);
                 Check(Vector2.Distance(shot.transform.position, expected) < .002f, "actual shot begins at current sniper barrel");
                 Check((int)typeof(CombatProjectile).GetField("targetLimit", Private).GetValue(shot) == 2, "controller passes base penetration");
-                Check(ProgressionService.Ammo(1) == ammo - 1 && controller.Magazine == magazine - 1, "single round consumed");
+                Check(ProgressionService.Ammo(1, true) == ammo - 1 && controller.Magazine == magazine - 1, "single round consumed");
                 Check(!controller.TryFire(Vector2.zero, Vector2.right, player.transform), "sniper cooldown applies");
             }
         }

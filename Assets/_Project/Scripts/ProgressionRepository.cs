@@ -3,30 +3,78 @@ using System.IO;
 using UnityEngine;
 
 [Serializable]
-public sealed class ProgressionProfile
+public sealed class CharacterProgression
 {
-    public string format = "Lindavista.Progression";
-    public int version = 1;
-    public int coins;
-    public int pistolUpgrade;
-    public int completedLevelsMask;
     public int healthUpgrade;
-    public int[] weaponUpgrades = { 0, 0, 0 };
-    public int[] ammunition = { 48, 90, 6 };
-    public string[] ownedWeapons = { "pistol" };
+    public int[] weaponUpgrades;
+    public int[] ammunition;
 
-    public ProgressionProfile Copy() => new ProgressionProfile
+    public static CharacterProgression Create() => new CharacterProgression
     {
-        coins = coins, pistolUpgrade = pistolUpgrade, healthUpgrade = healthUpgrade,
-        weaponUpgrades = (int[])weaponUpgrades.Clone(), ammunition = (int[])ammunition.Clone(),
-        completedLevelsMask = completedLevelsMask,
-        ownedWeapons = (string[])ownedWeapons.Clone()
+        weaponUpgrades = new[] { 0, 0, 0 }, ammunition = new[] { 48, 90, 6 }
+    };
+
+    public CharacterProgression Copy() => new CharacterProgression
+    {
+        healthUpgrade = healthUpgrade, weaponUpgrades = (int[])weaponUpgrades.Clone(),
+        ammunition = (int[])ammunition.Clone()
     };
 }
 
-/// <summary>Commits complete transactions before publishing them; preserves a recoverable backup.</summary>
+[Serializable]
+public sealed class ProgressionProfile
+{
+    public string format = "Lindavista.Progression";
+    public int version = 2;
+    public int coins;
+    public int completedLevelsMask;
+    public CharacterProgression marco = CharacterProgression.Create();
+    public CharacterProgression cesar = CharacterProgression.Create();
+
+    public CharacterProgression Character(bool isCesar) => isCesar ? cesar : marco;
+
+    // Compatibility for old verification tools: the old inventory belongs to Marco.
+    public int pistolUpgrade => marco.weaponUpgrades[0];
+    public int healthUpgrade => marco.healthUpgrade;
+    public int[] weaponUpgrades => marco.weaponUpgrades;
+    public int[] ammunition => marco.ammunition;
+
+    public ProgressionProfile Copy() => new ProgressionProfile
+    {
+        coins = coins, completedLevelsMask = completedLevelsMask,
+        marco = marco.Copy(), cesar = cesar.Copy()
+    };
+}
+
+/// <summary>One wallet and level map, with separately saved inventories for each character.</summary>
 public sealed class ProgressionRepository
 {
+    [Serializable]
+    private sealed class SaveHeader
+    {
+        public string format;
+        public int version;
+        public int coins;
+        public int completedLevelsMask;
+    }
+
+    [Serializable]
+    private sealed class LegacyProfile
+    {
+        public int pistolUpgrade;
+        public int healthUpgrade;
+        public int[] weaponUpgrades;
+        public int[] ammunition;
+        public string[] ownedWeapons;
+    }
+
+    [Serializable]
+    private sealed class StoredCharacters
+    {
+        public CharacterProgression marco;
+        public CharacterProgression cesar;
+    }
+
     private readonly string path;
     private bool writable = true;
     private ProgressionProfile profile;
@@ -54,24 +102,62 @@ public sealed class ProgressionRepository
         {
             if (!File.Exists(file)) return null;
             string json = File.ReadAllText(file);
-            // Fields must be present: JsonUtility alone can accept incomplete documents.
             if (!json.Contains("\"format\"") || !json.Contains("\"version\"") ||
-                !json.Contains("\"coins\"") || !json.Contains("\"pistolUpgrade\"") ||
-                !json.Contains("\"completedLevelsMask\"") || !json.Contains("\"ownedWeapons\"")) return null;
-            var data = JsonUtility.FromJson<ProgressionProfile>(json);
-            if (data == null || data.format != "Lindavista.Progression" || data.version != 1 ||
-                data.coins < 0 || data.pistolUpgrade < 0 || data.pistolUpgrade > WeaponDefinition.Pistol.MaxUpgrade ||
-                data.completedLevelsMask < 0 || data.completedLevelsMask > 15 || data.ownedWeapons == null ||
-                data.ownedWeapons.Length != 1 || data.ownedWeapons[0] != "pistol") return null;
-            if (!json.Contains("\"ammunition\"")) data.ammunition = new[] { 48, 90, 6 };
-            if (!json.Contains("\"weaponUpgrades\"")) data.weaponUpgrades = new[] { data.pistolUpgrade, 0, 0 };
-            if (data.ammunition == null || data.ammunition.Length != 3 || data.weaponUpgrades == null || data.weaponUpgrades.Length != 3 || data.healthUpgrade < 0 || data.healthUpgrade > ShopBalance.MaxHealthUpgrade) return null;
-            for (int i = 0; i < 3; i++)
-                if (data.ammunition[i] < 0 || data.ammunition[i] > ShopBalance.Capacity[i] || data.weaponUpgrades[i] < 0 || data.weaponUpgrades[i] > WeaponDefinition.At(i).MaxUpgrade) return null;
-            data.weaponUpgrades[0] = data.pistolUpgrade;
+                !json.Contains("\"coins\"") || !json.Contains("\"completedLevelsMask\"")) return null;
+            var header = JsonUtility.FromJson<SaveHeader>(json);
+            if (header == null || header.format != "Lindavista.Progression" ||
+                header.coins < 0 || header.completedLevelsMask < 0 || header.completedLevelsMask > 15) return null;
+
+            ProgressionProfile data;
+            if (header.version == 1)
+            {
+                if (!json.Contains("\"pistolUpgrade\"") || !json.Contains("\"ownedWeapons\"")) return null;
+                var legacy = JsonUtility.FromJson<LegacyProfile>(json);
+                if (legacy == null || legacy.pistolUpgrade < 0 || legacy.pistolUpgrade > WeaponDefinition.Pistol.MaxUpgrade ||
+                    legacy.ownedWeapons == null || legacy.ownedWeapons.Length != 1 || legacy.ownedWeapons[0] != "pistol") return null;
+                if (!json.Contains("\"ammunition\"")) legacy.ammunition = new[] { 48, 90, 6 };
+                if (!json.Contains("\"weaponUpgrades\"")) legacy.weaponUpgrades = new[] { legacy.pistolUpgrade, 0, 0 };
+                if (legacy.weaponUpgrades == null || legacy.weaponUpgrades.Length != 3) return null;
+                legacy.weaponUpgrades[0] = legacy.pistolUpgrade;
+                data = new ProgressionProfile
+                {
+                    coins = header.coins, completedLevelsMask = header.completedLevelsMask,
+                    marco = new CharacterProgression
+                    {
+                        healthUpgrade = legacy.healthUpgrade, weaponUpgrades = legacy.weaponUpgrades,
+                        ammunition = legacy.ammunition
+                    }
+                };
+            }
+            else if (header.version == 2)
+            {
+                if (!json.Contains("\"marco\"") || !json.Contains("\"cesar\"")) return null;
+                // Read without the new-profile defaults so missing inventories cannot be silently reset.
+                var characters = JsonUtility.FromJson<StoredCharacters>(json);
+                if (characters == null) return null;
+                data = new ProgressionProfile
+                {
+                    coins = header.coins, completedLevelsMask = header.completedLevelsMask,
+                    marco = characters.marco, cesar = characters.cesar
+                };
+            }
+            else return null;
+
+            if (data == null || !Valid(data.marco, false) || !Valid(data.cesar, true)) return null;
             return data;
         }
         catch (Exception) { return null; }
+    }
+
+    private static bool Valid(CharacterProgression character, bool cesar)
+    {
+        if (character == null || character.ammunition == null || character.ammunition.Length != 3 ||
+            character.weaponUpgrades == null || character.weaponUpgrades.Length != 3 ||
+            character.healthUpgrade < 0 || character.healthUpgrade > ShopBalance.MaxHealthUpgrade) return false;
+        for (int i = 0; i < 3; i++)
+            if (character.ammunition[i] < 0 || character.ammunition[i] > ShopBalance.Capacity[i] ||
+                character.weaponUpgrades[i] < 0 || character.weaponUpgrades[i] > WeaponDefinition.ForCharacter(i, cesar).MaxUpgrade) return false;
+        return true;
     }
 
     public bool TryCredit(int amount)
@@ -82,39 +168,50 @@ public sealed class ProgressionRepository
         return Commit(next);
     }
 
-    public bool TryUpgradePistol() => TryUpgradeWeapon(0);
-    public bool TryUpgradeWeapon(int index)
+    public bool TryUpgradePistol() => TryUpgradeWeapon(0, false);
+    public bool TryUpgradeWeapon(int index) => TryUpgradeWeapon(index, false);
+    public bool TryUpgradeWeapon(int index, bool cesar)
     {
         if (index < 0 || index > 2) return false;
-        int cost = WeaponDefinition.At(index).UpgradeCost(profile.weaponUpgrades[index]);
+        int cost = WeaponDefinition.ForCharacter(index, cesar).UpgradeCost(profile.Character(cesar).weaponUpgrades[index]);
         if (cost == 0) { LastError = "Mejora máxima alcanzada."; return false; }
         if (profile.coins < cost) { LastError = "No tienes suficientes monedas."; return false; }
         var next = profile.Copy();
         next.coins -= cost;
-        next.weaponUpgrades[index]++;
-        next.pistolUpgrade = next.weaponUpgrades[0];
+        next.Character(cesar).weaponUpgrades[index]++;
         return Commit(next);
     }
-    public bool TryUpgradeHealth()
+
+    public bool TryUpgradeHealth() => TryUpgradeHealth(false);
+    public bool TryUpgradeHealth(bool cesar)
     {
-        int cost = ShopBalance.HealthCost(profile.healthUpgrade);
+        int cost = ShopBalance.HealthCost(profile.Character(cesar).healthUpgrade);
         if (cost == 0 || profile.coins < cost) { LastError = "Mejora máxima o monedas insuficientes."; return false; }
-        var next = profile.Copy(); next.coins -= cost; next.healthUpgrade++;
+        var next = profile.Copy();
+        next.coins -= cost;
+        next.Character(cesar).healthUpgrade++;
         return Commit(next);
     }
-    public bool TryBuyAmmo(int index)
+
+    public bool TryBuyAmmo(int index) => TryBuyAmmo(index, false);
+    public bool TryBuyAmmo(int index, bool cesar)
     {
         if (index < 0 || index > 2) return false;
-        if (profile.ammunition[index] + ShopBalance.Pack[index] > ShopBalance.Capacity[index])
+        if (profile.Character(cesar).ammunition[index] + ShopBalance.Pack[index] > ShopBalance.Capacity[index])
         { LastError = "No cabe un cargador completo."; return false; }
         if (profile.coins < ShopBalance.AmmoCost[index]) { LastError = "No tienes suficientes monedas."; return false; }
-        var next = profile.Copy(); next.coins -= ShopBalance.AmmoCost[index]; next.ammunition[index] += ShopBalance.Pack[index];
+        var next = profile.Copy();
+        next.coins -= ShopBalance.AmmoCost[index];
+        next.Character(cesar).ammunition[index] += ShopBalance.Pack[index];
         return Commit(next);
     }
-    public bool TryConsumeAmmo(int index)
+
+    public bool TryConsumeAmmo(int index) => TryConsumeAmmo(index, false);
+    public bool TryConsumeAmmo(int index, bool cesar)
     {
-        if (index < 0 || index > 2 || profile.ammunition[index] <= 0) return false;
-        var next = profile.Copy(); next.ammunition[index]--;
+        if (index < 0 || index > 2 || profile.Character(cesar).ammunition[index] <= 0) return false;
+        var next = profile.Copy();
+        next.Character(cesar).ammunition[index]--;
         return Commit(next);
     }
 

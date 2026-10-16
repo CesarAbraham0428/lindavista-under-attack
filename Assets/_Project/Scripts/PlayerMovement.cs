@@ -11,8 +11,10 @@ public class PlayerMovement : MonoBehaviour
     private float horizontal;
     private float touchHorizontal;
     private bool movementLocked;
+    private bool isCesar;
 
     public float HorizontalInput => horizontal;
+    public float MovementSpeed => speed * CharacterStats.SpeedMultiplier(isCesar);
 
     public void SetMovementLocked(bool locked)
     {
@@ -40,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        isCesar = CharacterWeapons.IsCesar(gameObject);
     }
 
     private void Update()
@@ -82,7 +85,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        float nextX = rb.position.x + horizontal * speed * Time.fixedDeltaTime;
+        float nextX = rb.position.x + horizontal * MovementSpeed * Time.fixedDeltaTime;
 
         if (horizontal > 0f && nextX >= maxHorizontalPosition)
         {
@@ -100,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         rb.linearVelocity = new Vector2(
-            horizontal * speed,
+            horizontal * MovementSpeed,
             rb.linearVelocity.y
         );
     }

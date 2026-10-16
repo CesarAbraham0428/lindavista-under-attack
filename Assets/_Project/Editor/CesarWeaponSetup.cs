@@ -22,6 +22,8 @@ public static class CesarWeaponSetup
         if (!controller.parameters.Any(p => p.name == "WeaponIndex"))
             controller.AddParameter("WeaponIndex", AnimatorControllerParameterType.Float);
         var machine = controller.layers[0].stateMachine;
+        var idle = AssetDatabase.LoadAssetAtPath<AnimationClip>(Animations + "Cesar_Idle.anim");
+        if (idle == null) throw new InvalidOperationException("Cesar's unarmed idle clip is missing.");
         var poses = new AnimationClip[3];
         for (int i = 0; i < Weapons.Length; i++)
         {
@@ -57,16 +59,20 @@ public static class CesarWeaponSetup
         tree.children = poses.Select((p, i) => new ChildMotion { motion = p, threshold = i, timeScale = 1f }).ToArray();
         foreach (var state in machine.states.Select(s => s.state))
         {
-            if (state.name == "Cesar_Idle" || state.name == "Cesar_Aim") { state.motion = tree; state.speed = 1f; }
+            // Walking, damage and completed actions all return to the same unarmed
+            // resting pose, regardless of the selected weapon. Only aiming is equipped.
+            if (state.name == "Cesar_Idle") { state.motion = idle; state.speed = 1f; }
+            if (state.name == "Cesar_Aim") { state.motion = tree; state.speed = 1f; }
             if (state.name == "Cesar_Damage")
                 foreach (var transition in state.transitions) { transition.exitTime = 1f; transition.duration = 0f; }
+            EditorUtility.SetDirty(state);
         }
         BuildArtwork();
         BuildAudio();
         EditorUtility.SetDirty(tree);
         EditorUtility.SetDirty(controller);
         AssetDatabase.SaveAssets();
-        Debug.Log("Cesar weapons ready: shotgun, sniper and grenade launcher with fire/reload animations and audio.");
+        Debug.Log("Cesar weapons ready: unarmed idle, equipped aim, shotgun, sniper and grenade launcher actions/audio.");
     }
 
     private static Sprite[] Frames(string path)

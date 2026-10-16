@@ -8,7 +8,13 @@ public sealed class PistolUpgradeShop : MonoBehaviour
     private Text wallet, health, feedback;
     private Button healthBuy;
     private readonly Image[] ammoFill = new Image[3];
-    private readonly Image[] life = new Image[10];
+    private Image[] life;
+    private bool cesar;
+    private Image portrait;
+    private Text speed;
+    private readonly Image[] weaponIcons = new Image[3];
+    private readonly Text[] weaponNames = new Text[3];
+    private readonly Button[] characterTabs = new Button[2];
     private readonly Text[] stats = new Text[3];
     private readonly Button[] ammo = new Button[3], upgrade = new Button[3];
     private readonly Image[,] bars = new Image[3, 6];
@@ -72,6 +78,7 @@ public sealed class PistolUpgradeShop : MonoBehaviour
     private void Awake()
     {
         active = this;
+        cesar = CharacterWeapons.SelectedCesar;
         MenuMusicPlayer.NotifyShop(true);
         fillSprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 1, 1), Vector2.one * .5f);
         var canvas = ProgressionUI.Canvas(transform, "Shop Canvas", 400);
@@ -90,35 +97,36 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         wallet = Label(purse.transform, "", 42, .27f, .08f, .95f, .92f);
         var character = Frame(panel.transform, "Character", new Color(.18f, .24f, .19f), .025f, .185f, .285f, .86f);
         Frame(character.transform, "Portrait backdrop", new Color(.27f, .34f, .25f), .045f, .315f, .955f, .965f);
-        bool marco = PlayerPrefs.GetInt("Lindavista.SelectedCharacter", 0) == 0;
-        var portrait = ProgressionUI.Image(character.transform, "Portrait", Color.white);
-        var characters = Resources.Load<ShopCharacterAssets>("ShopCharacterAssets");
-        portrait.sprite = characters != null ? (marco ? characters.marco : characters.cesar) : null;
+        characterTabs[0] = Buy(character.transform, "MARCO", () => SelectCharacter(false), .045f, .87f, .49f, .975f);
+        characterTabs[1] = Buy(character.transform, "CÉSAR", () => SelectCharacter(true), .51f, .87f, .955f, .975f);
+        portrait = ProgressionUI.Image(character.transform, "Portrait", Color.white);
         portrait.preserveAspect = true;
-        portrait.enabled = portrait.sprite != null;
-        ProgressionUI.Percent(portrait.rectTransform, .09f, .33f, .91f, .95f);
+        ProgressionUI.Percent(portrait.rectTransform, .09f, .39f, .91f, .855f);
+        speed = Label(character.transform, "", 27, .06f, .315f, .94f, .385f);
+        speed.alignment = TextAnchor.MiddleCenter;
         health = Label(character.transform, "", 34, .08f, .235f, .92f, .305f);
         var lifeMeter = Frame(character.transform, "Health meter", new Color(.10f, .14f, .105f), .07f, .175f, .93f, .233f);
+        life = new Image[CharacterStats.MaximumHealth(true)];
         for (int j = 0; j < life.Length; j++)
         {
             life[j] = ProgressionUI.Image(lifeMeter.transform, "Health " + (j + 1), Color.white);
-            ProgressionUI.Percent(life[j].rectTransform, .025f + j * .095f, .20f, .025f + j * .095f + .077f, .80f);
         }
-        healthBuy = Buy(character.transform, "MEJORAR VIDA", () => Result(ProgressionService.TryUpgradeHealth()),
+        healthBuy = Buy(character.transform, "MEJORAR VIDA", () => Result(ProgressionService.TryUpgradeHealth(cesar)),
             .065f, .025f, .935f, .155f, true, true);
-        var art = CharacterWeapons.Artwork(!marco);
+        var art = CharacterWeapons.Artwork(cesar);
         for (int i = 0; i < 3; i++)
         {
             int index = i;
             float bottom = .65f - i * .23f;
-            var row = Frame(panel.transform, CharacterWeapons.Name(i, !marco), new Color(.46f, .32f, .19f), .305f, bottom, .975f, bottom + .21f);
+            var row = Frame(panel.transform, "Weapon " + i, new Color(.46f, .32f, .19f), .305f, bottom, .975f, bottom + .21f);
             var frame = Frame(row.transform, "Icon Frame", new Color(.83f, .71f, .47f), .018f, .105f, .19f, .905f);
             var icon = ProgressionUI.Image(frame.transform, "Weapon Icon", Color.white);
+            weaponIcons[i] = icon;
             icon.sprite = art != null ? art.IconAt(i) : ProgressionVisuals.Pistol;
             icon.preserveAspect = true;
             ProgressionUI.Percent(icon.rectTransform, .07f, .12f, .93f, .88f);
-            Label(row.transform, CharacterWeapons.Name(i, !marco), 37, .215f, .735f, .72f, .975f);
-            int tiers = WeaponDefinition.At(i).MaxUpgrade + 1;
+            weaponNames[i] = Label(row.transform, CharacterWeapons.Name(i, cesar), 37, .215f, .735f, .72f, .975f);
+            int tiers = WeaponDefinition.ForCharacter(i, cesar).MaxUpgrade + 1;
             for (int j = 0; j < 6; j++)
             {
                 bars[i, j] = ProgressionUI.Image(row.transform, "Level " + j, Muted);
@@ -139,10 +147,10 @@ public sealed class PistolUpgradeShop : MonoBehaviour
             // Fixed inset keeps the fill inside the frame at every aspect ratio and amount.
             ammoFill[i].rectTransform.offsetMin = new Vector2(9, 5);
             ammoFill[i].rectTransform.offsetMax = new Vector2(-9, -5);
-            ammo[i] = Buy(row.transform, "MUNICIÓN", () => Result(ProgressionService.TryBuyAmmo(index)), .215f, .055f, .595f, .435f, true);
-            upgrade[i] = Buy(row.transform, "MEJORAR ARMA", () => Result(ProgressionService.TryUpgradeWeapon(index)), .615f, .055f, .975f, .435f, true, true);
+            ammo[i] = Buy(row.transform, "MUNICIÓN", () => Result(ProgressionService.TryBuyAmmo(index, cesar)), .215f, .055f, .595f, .435f, true);
+            upgrade[i] = Buy(row.transform, "MEJORAR ARMA", () => Result(ProgressionService.TryUpgradeWeapon(index, cesar)), .615f, .055f, .975f, .435f, true, true);
         }
-        feedback = Label(panel.transform, "Cada compra de munición añade un paquete completo.", 27, .305f, .12f, .975f, .18f);
+        feedback = Label(panel.transform, "Vida, munición y mejoras independientes por personaje.", 27, .305f, .12f, .975f, .18f);
         Buy(panel.transform, "VOLVER", () => Destroy(gameObject), .025f, .025f, .25f, .115f);
 #if UNITY_EDITOR
         Buy(panel.transform, "+1000 monedas · prueba", () => Result(ProgressionService.TryCredit(1000)), .735f, .025f, .975f, .095f);
@@ -153,25 +161,54 @@ public sealed class PistolUpgradeShop : MonoBehaviour
     private void Refresh()
     {
         wallet.text = ProgressionService.Coins.ToString("N0");
-        int hp = Mathf.Clamp(5 + ProgressionService.HealthUpgrade, 5, life.Length);
-        health.text = "VIDA  " + hp + " / " + life.Length;
-        for (int j = 0; j < life.Length; j++) life[j].color = j < hp ? new Color(.97f, .38f, .23f) : Muted;
-        int hc = ShopBalance.HealthCost(ProgressionService.HealthUpgrade);
+        var characters = Resources.Load<ShopCharacterAssets>("ShopCharacterAssets");
+        portrait.sprite = characters != null ? (cesar ? characters.cesar : characters.marco) : null;
+        portrait.enabled = portrait.sprite != null;
+        characterTabs[0].interactable = cesar;
+        characterTabs[1].interactable = !cesar;
+        speed.text = cesar ? "VELOCIDAD  110%" : "VELOCIDAD  100%";
+        int hp = ProgressionService.MaxHealthFor(cesar);
+        int maximum = CharacterStats.MaximumHealth(cesar);
+        health.text = "VIDA  " + hp + " / " + maximum;
+        for (int j = 0; j < life.Length; j++)
+        {
+            life[j].gameObject.SetActive(j < maximum);
+            float step = .95f / maximum;
+            ProgressionUI.Percent(life[j].rectTransform, .025f + j * step, .20f, .025f + (j + 1) * step - .008f, .80f);
+            life[j].color = j < hp ? new Color(.97f, .38f, .23f) : Muted;
+        }
+        int hc = ShopBalance.HealthCost(ProgressionService.HealthUpgradeFor(cesar));
         PurchaseState(healthBuy, hc > 0 ? "MEJORAR VIDA +1" : "VIDA AL MÁXIMO", hc, true);
+        var art = CharacterWeapons.Artwork(cesar);
         for (int i = 0; i < 3; i++)
         {
-            int level = ProgressionService.WeaponUpgrade(i), cost = WeaponDefinition.At(i).UpgradeCost(level);
-            int amount = ProgressionService.Ammo(i);
-            var definition = WeaponDefinition.ForCharacter(i, CharacterWeapons.SelectedCesar);
+            var definition = WeaponDefinition.ForCharacter(i, cesar);
+            int level = ProgressionService.WeaponUpgrade(i, cesar), cost = definition.UpgradeCost(level);
+            int amount = ProgressionService.Ammo(i, cesar);
+            weaponNames[i].text = CharacterWeapons.Name(i, cesar);
+            weaponIcons[i].sprite = art != null ? art.IconAt(i) : ProgressionVisuals.Pistol;
             stats[i].text = "Munición " + amount + "/" + ShopBalance.Capacity[i] + "  ·  Daño " + definition.DamageAt(level) +
                 (definition.IsPiercing ? "  ·  Atraviesa " + definition.TargetsAt(level) : "");
             ammoFill[i].fillAmount = Mathf.Clamp01((float)amount / ShopBalance.Capacity[i]);
             bool fits = amount + ShopBalance.Pack[i] <= ShopBalance.Capacity[i];
             PurchaseState(ammo[i], fits ? "MUNICIÓN +" + ShopBalance.Pack[i] : "SIN ESPACIO", ShopBalance.AmmoCost[i], fits);
             PurchaseState(upgrade[i], cost > 0 ? "DAÑO +1" : "MEJORA MÁXIMA", cost, true);
-            for (int j = 0; j < 6; j++) bars[i, j].color = j <= level ? ProgressionUI.Gold : Muted;
+            int tiers = definition.MaxUpgrade + 1;
+            for (int j = 0; j < 6; j++)
+            {
+                bars[i, j].gameObject.SetActive(j < tiers);
+                float step = .25f / tiers;
+                ProgressionUI.Percent(bars[i, j].rectTransform, .725f + j * step, .815f, .725f + (j + 1) * step - .006f, .92f);
+                bars[i, j].color = j <= level ? ProgressionUI.Gold : Muted;
+            }
         }
         if (!ProgressionService.CanSave) feedback.text = ProgressionService.LastError;
+    }
+    private void SelectCharacter(bool value)
+    {
+        cesar = value;
+        Refresh();
+        feedback.text = "Compras para " + (cesar ? "César" : "Marco") + ".";
     }
     private void Result(bool success) { feedback.text = success ? "¡Compra completada y guardada!" : ProgressionService.LastError ?? "No se pudo completar la compra."; }
     private void OnDestroy()

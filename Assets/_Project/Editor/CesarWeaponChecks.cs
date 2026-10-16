@@ -26,6 +26,18 @@ public static class CesarWeaponChecks
         var marco = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/_Project/Animations/Player_Marco.controller");
         var cesarAudio = Resources.Load<WeaponAudioLibrary>("CesarWeaponAudioLibrary");
         var marcoAudio = Resources.Load<WeaponAudioLibrary>("WeaponAudioLibrary");
+        var idle = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/_Project/Animations/Players/Cesar/Cesar_Idle.anim");
+        var idleState = cesar.layers[0].stateMachine.states.First(s => s.state.name == "Cesar_Idle").state;
+        var idleKeys = AnimationUtility.GetObjectReferenceCurve(idle, AnimationUtility.GetObjectReferenceCurveBindings(idle).Single());
+        Check(idleState.motion == idle, "resting pose uses unarmed idle instead of equipped blend tree");
+        Check(idleKeys.Length > 0 && idleKeys.All(k => k.value != null && k.value.name == "Cesar_Damage_8f_0" &&
+            AssetDatabase.GetAssetPath(k.value).EndsWith("Cesar_Damage_8f.png")), "idle references neutral body artwork");
+        Check(AnimationUtility.GetAnimationClipSettings(idle).loopTime, "unarmed idle loops");
+        foreach (string stateName in new[] { "Cesar_Walk", "Cesar_Damage" })
+        {
+            var state = cesar.layers[0].stateMachine.states.First(s => s.state.name == stateName).state;
+            Check(state.transitions.Any(t => t.destinationState == idleState), stateName + " returns to unarmed idle");
+        }
         for (int i = 0; i < 3; i++)
         {
             string weapon = CharacterWeapons.State(i, true);
@@ -58,6 +70,7 @@ public static class CesarWeaponChecks
                           frames[frame].pivot.y > 150f, "standing scale and pivot " + stateName + " frame " + frame);
                 }
                 Check(state.transitions.All(t => t.hasExitTime && t.exitTime == 1f), "complete animation before exit " + stateName);
+                Check(state.transitions.Any(t => t.destinationState == idleState), "action returns to unarmed idle " + stateName);
                 Check(!marco.layers[0].stateMachine.states.Any(s => s.state.name.Contains(weapon)), "Marco excludes " + stateName);
             }
         }
@@ -109,6 +122,9 @@ public static class CesarWeaponChecks
             var weapons = cesar.GetComponent<PlayerWeaponController>();
             var animator = cesar.GetComponent<Animator>();
             var renderer = cesar.GetComponent<SpriteRenderer>();
+            var idle = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/_Project/Animations/Players/Cesar/Cesar_Idle.anim");
+            var idleKeys = AnimationUtility.GetObjectReferenceCurve(idle, AnimationUtility.GetObjectReferenceCurveBindings(idle).Single());
+            var neutralSprite = idleKeys[0].value;
             var holdFire = typeof(PlayerActions).GetMethod("HoldFire", BindingFlags.NonPublic | BindingFlags.Instance);
             Check(weapons.IsCesar && !marco.GetComponent<PlayerWeaponController>().IsCesar, "actor identity independent of menu selection");
             Check(!weapons.TryEquip(-1) && !weapons.TryEquip(3), "reject out-of-range weapons");
@@ -118,7 +134,15 @@ public static class CesarWeaponChecks
                 animator.Play("Cesar_Idle", 0, 0f);
                 animator.Update(0f);
                 string weapon = CharacterWeapons.State(i, true);
-                Check(renderer.sprite.name.Contains(weapon), "equipped idle pose " + weapon);
+                Check(renderer.sprite == neutralSprite, "unarmed idle with " + weapon + " selected");
+                animator.SetBool("IsMoving", true);
+                animator.Play("Cesar_Walk", 0, 0f);
+                animator.Update(0f);
+                animator.SetBool("IsMoving", false);
+                animator.Update(0.12f);
+                animator.Update(0.12f);
+                Check(animator.GetCurrentAnimatorStateInfo(0).IsName("Cesar_Idle") && renderer.sprite == neutralSprite,
+                    "stopping walking returns to unarmed pose with " + weapon);
                 // Evaluate the actual controller at every key; missing sub-assets previously
                 // made these states render null even though gameplay and audio still worked.
                 foreach (string action in new[] { "Fire", "Reload" })
@@ -133,16 +157,21 @@ public static class CesarWeaponChecks
                         Check(renderer.sprite != null && renderer.sprite == keys[frame].value,
                             "visible Animator frame " + stateName + " " + frame);
                     }
+                    animator.SetFloat("ReloadSpeed", 1f);
+                    animator.Update(clip.length + 0.12f);
+                    animator.Update(0.12f);
+                    Check(animator.GetCurrentAnimatorStateInfo(0).IsName("Cesar_Idle") && renderer.sprite == neutralSprite,
+                        "completed action returns to unarmed pose " + stateName);
                 }
                 animator.Play("Cesar_Idle", 0, 0f);
                 animator.Update(0f);
                 Check(weapons.Magazine == weapons.Definition.MagazineSize, "initial magazine " + weapon);
-                int ammo = ProgressionService.Ammo(i);
+                int ammo = ProgressionService.Ammo(i, true);
                 actions.SetTouchAimAndFire(Vector2.right);
                 holdFire.Invoke(actions, null);
                 actions.StopTouchAimAndFire();
                 Check(animator.GetCurrentAnimatorStateInfo(0).IsName("Cesar_" + weapon + "_Fire"), "real fire input selects animation " + weapon);
-                Check(weapons.Magazine == weapons.Definition.MagazineSize - 1 && ProgressionService.Ammo(i) == ammo - 1, "exactly one round consumed " + weapon);
+                Check(weapons.Magazine == weapons.Definition.MagazineSize - 1 && ProgressionService.Ammo(i, true) == ammo - 1, "exactly one round consumed " + weapon);
                 Check(cesar.GetComponentsInChildren<AudioSource>().Any(s => s.isPlaying), "shot sound starts " + weapon);
                 Check(!weapons.TryFire(new Vector2(1000, 0), Vector2.right, cesar.transform), "cadence blocks duplicate shot " + weapon);
                 actions.ReloadTouchWeapon();
@@ -166,6 +195,7 @@ public static class CesarWeaponChecks
                 Check(!reloadAudio.isPlaying, "reload sound stops on completion " + weapon);
                 animator.Update(0f);
                 Check(!animator.GetCurrentAnimatorStateInfo(0).IsName("Cesar_" + weapon + "_Reload"), "reload exits without getting stuck " + weapon);
+                Check(renderer.sprite == neutralSprite, "real reload returns to unarmed pose " + weapon);
                 Check(weapons.TryFire(new Vector2(1000, 0), Vector2.right, cesar.transform), "fire resumes after reload " + weapon);
                 yield return new WaitForSeconds(weapons.Definition.FireInterval + 0.05f);
             }

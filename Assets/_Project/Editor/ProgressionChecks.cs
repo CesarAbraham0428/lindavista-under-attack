@@ -170,8 +170,8 @@ public static class ProgressionChecks
                 proxy = new GameObject("Verification Player", typeof(PlayerHealth), typeof(PlayerWeaponController));
                 proxy.transform.position = new Vector3(1000, 0, 0);
                 var health = proxy.GetComponent<PlayerHealth>();
-                Check(health.CurrentHealth == 5, "initial player health");
-                Check(health.TakeDamage(1) && !health.TakeDamage(1) && health.CurrentHealth == 4, "damage protection");
+                Check(health.CurrentHealth == 10, "initial Marco health");
+                Check(health.TakeDamage(1) && !health.TakeDamage(1) && health.CurrentHealth == 9, "damage protection");
                 health.Initialize(5, 0);
                 int playerDeaths = 0;
                 health.Died += () => playerDeaths++;
@@ -201,7 +201,7 @@ public static class ProgressionChecks
                 Check(weapon.Magazine == 11 && !weapon.TryFire(new Vector2(1002, 0), Vector2.right, proxy.transform), "ammo consumption and cadence");
                 var projectile = UnityEngine.Object.FindObjectsByType<CombatProjectile>(FindObjectsSortMode.None).First(p => p.transform.position.x > 900);
                 Check(projectile.Damage == 2, "projectile snapshots base damage");
-                Check(ProgressionService.TryCredit(20) && ProgressionService.TryUpgradePistol(), "upgrade from pickup earnings");
+                Check(ProgressionService.TryCredit(20) && ProgressionService.TryUpgradeWeapon(0, false), "upgrade from pickup earnings");
                 Check(weapon.Damage == 3 && projectile.Damage == 2, "upgrade affects future shots only");
                 Check(weapon.TryReload() && weapon.IsReloading && !weapon.TryFire(new Vector2(1002, 0), Vector2.right, proxy.transform), "reload blocks fire");
                 weapon.CancelReload();

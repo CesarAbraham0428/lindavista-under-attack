@@ -193,7 +193,7 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
         }
         string name = CharacterWeapons.Name(selected, weapons != null ? weapons.IsCesar : CharacterWeapons.SelectedCesar);
         for (int i = 0; i < ammoCounts.Length; i++)
-            ammoCounts[i].text = weapons != null ? ProgressionService.Ammo(i).ToString() : "—";
+            ammoCounts[i].text = weapons != null ? ProgressionService.Ammo(i, weapons.IsCesar).ToString() : "—";
 
         bool available = weapons != null && weapons.EquippedWeapon == selected;
         int capacity = available ? Mathf.Max(1, weapons.Definition.MagazineSize) : 0;

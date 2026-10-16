@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using UnityEngine;
 
-/// <summary>One shared profile for both characters. Scene objects never own the wallet.</summary>
+/// <summary>Shared wallet and levels; health, weapon upgrades and ammunition belong to each character.</summary>
 public static class ProgressionService
 {
     private static ProgressionRepository repository;
@@ -10,20 +10,29 @@ public static class ProgressionService
     private static ProgressionRepository Repository => repository ??=
         new ProgressionRepository(Path.Combine(Application.persistentDataPath, "progression-v1.json"));
     public static int Coins => Repository.Snapshot.coins;
-    public static int PistolUpgrade => Repository.Snapshot.pistolUpgrade;
+    public static int PistolUpgrade => WeaponUpgrade(0);
     public static string LastError => Repository.LastError;
     public static bool CanSave => Repository.CanSave;
-    public static bool OwnsWeapon(int index) => index >= 0 && index < 3;
-    public static int HealthUpgrade => Repository.Snapshot.healthUpgrade;
-    public static int WeaponUpgrade(int index) => Repository.Snapshot.weaponUpgrades[index];
-    public static int Ammo(int index) => Repository.Snapshot.ammunition[index];
-    public static bool TryUpgradeWeapon(int index) => Publish(Repository.TryUpgradeWeapon(index));
-    public static bool TryUpgradeHealth() => Publish(Repository.TryUpgradeHealth());
-    public static bool TryBuyAmmo(int index) => Publish(Repository.TryBuyAmmo(index));
-    public static bool TryConsumeAmmo(int index) => Publish(Repository.TryConsumeAmmo(index));
+    public static bool OwnsWeapon(int index) => OwnsWeapon(index, CharacterWeapons.SelectedCesar);
+    public static bool OwnsWeapon(int index, bool cesar) => index >= 0 && index < 3;
+    public static int HealthUpgrade => HealthUpgradeFor(CharacterWeapons.SelectedCesar);
+    public static int HealthUpgradeFor(bool cesar) => Repository.Snapshot.Character(cesar).healthUpgrade;
+    public static int MaxHealthFor(bool cesar) => CharacterStats.BaseHealth(cesar) + HealthUpgradeFor(cesar);
+    public static int WeaponUpgrade(int index) => WeaponUpgrade(index, CharacterWeapons.SelectedCesar);
+    public static int WeaponUpgrade(int index, bool cesar) => Repository.Snapshot.Character(cesar).weaponUpgrades[index];
+    public static int Ammo(int index) => Ammo(index, CharacterWeapons.SelectedCesar);
+    public static int Ammo(int index, bool cesar) => Repository.Snapshot.Character(cesar).ammunition[index];
+    public static bool TryUpgradeWeapon(int index) => TryUpgradeWeapon(index, CharacterWeapons.SelectedCesar);
+    public static bool TryUpgradeWeapon(int index, bool cesar) => Publish(Repository.TryUpgradeWeapon(index, cesar));
+    public static bool TryUpgradeHealth() => TryUpgradeHealth(CharacterWeapons.SelectedCesar);
+    public static bool TryUpgradeHealth(bool cesar) => Publish(Repository.TryUpgradeHealth(cesar));
+    public static bool TryBuyAmmo(int index) => TryBuyAmmo(index, CharacterWeapons.SelectedCesar);
+    public static bool TryBuyAmmo(int index, bool cesar) => Publish(Repository.TryBuyAmmo(index, cesar));
+    public static bool TryConsumeAmmo(int index) => TryConsumeAmmo(index, CharacterWeapons.SelectedCesar);
+    public static bool TryConsumeAmmo(int index, bool cesar) => Publish(Repository.TryConsumeAmmo(index, cesar));
     public static bool IsLevelUnlocked(int level) => Repository.IsLevelUnlocked(level);
     public static bool TryCredit(int amount) => Publish(Repository.TryCredit(amount));
-    public static bool TryUpgradePistol() => Publish(Repository.TryUpgradePistol());
+    public static bool TryUpgradePistol() => TryUpgradeWeapon(0);
     public static bool TryCompleteLevel(int level) => Publish(Repository.TryCompleteLevel(level));
 
     private static bool Publish(bool success)

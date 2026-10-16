@@ -13,9 +13,9 @@ public static class PlayerMuzzle
     };
     private static readonly Vector2[][] cesar =
     {
-        new[] { P(375,119), P(365,118), P(334,111), P(343,110), P(359,123), P(359,123), P(351,123), P(359,122) },
+        new[] { P(325,361), P(365,118), P(334,111), P(343,110), P(359,123), P(359,123), P(351,123), P(359,122) },
         new[] { P(370,139), P(332,135), P(328,136), P(314,137), P(315,120), P(316,123), P(315,125), P(338,129) },
-        new[] { P(355,149), P(336,147), P(241,150), P(187,156), P(302,151), P(337,151), P(340,151), P(335,151) }
+        new[] { P(373,182), P(336,147), P(241,150), P(187,156), P(302,151), P(337,151), P(340,151), P(335,151) }
     };
     // The newer sniper sheet has its own barrel positions; the legacy SMG
     // sockets above belong to a different drawing and sit above this rifle.

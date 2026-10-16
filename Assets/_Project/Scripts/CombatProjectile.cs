@@ -27,14 +27,14 @@ public sealed class CombatProjectile : MonoBehaviour
 
     public static bool TrySpawn(Vector2 origin, Vector2 direction, int shotDamage,
         float shotSpeed, float shotRadius, float maxRange, Transform owner, int weaponIndex = 0,
-        int maxTargets = 1)
+        int maxTargets = 1, bool grenadeLauncher = false)
     {
         if (GameFlowController.IsDefeatActive || activeProjectiles >= MaxActiveProjectiles ||
             direction.sqrMagnitude < 0.0001f)
             return false;
 
         var weapon = owner != null ? owner.GetComponent<PlayerWeaponController>() : null;
-        if (weapon != null && !ProgressionService.TryConsumeAmmo(weapon.EquippedWeapon)) return false;
+        if (weapon != null && !ProgressionService.TryConsumeAmmo(weapon.EquippedWeapon, weapon.IsCesar)) return false;
 
         GameObject shot = new GameObject("Projectile");
         shot.transform.position = new Vector3(origin.x, origin.y, 0f);
@@ -47,6 +47,16 @@ public sealed class CombatProjectile : MonoBehaviour
         projectile.speed = Mathf.Max(0.1f, shotSpeed);
         projectile.damage = Mathf.Max(1, shotDamage);
         projectile.radius = Mathf.Max(0.01f, shotRadius);
+        if (grenadeLauncher)
+        {
+            // Keep the shared projectile budget and owner/ammo rules, while the
+            // grenade controls its own ballistic flight and delayed detonation.
+            projectile.enabled = false;
+            GrenadeProjectile.Attach(shot, origin, projectile.direction, projectile.damage,
+                projectile.speed, projectile.radius, projectile.remainingRange, owner);
+            activeProjectiles++;
+            return true;
+        }
         projectile.targetLimit = projectile.weaponIndex == 1 ? Mathf.Clamp(maxTargets, 1, 4) : 1;
         if (projectile.targetLimit > 1) projectile.piercedEnemies = new HashSet<EnemyHealth>();
         if (projectile.weaponIndex == 2 && owner != null)
@@ -227,6 +237,12 @@ public sealed class CombatProjectile : MonoBehaviour
         direct?.TakeDamage(damage, direction);
         if (weaponIndex != 2) return;
 
+        ApplySplashDamage(position, damage, direction, owner, direct);
+    }
+
+    internal static void ApplySplashDamage(Vector2 position, int damage, Vector2 direction,
+        Transform owner, EnemyHealth direct = null)
+    {
         var damaged = new HashSet<EnemyHealth>();
         if (direct != null) damaged.Add(direct);
         foreach (Collider2D nearby in Physics2D.OverlapCircleAll(position, RocketSplashRadius))
@@ -234,14 +250,14 @@ public sealed class CombatProjectile : MonoBehaviour
             EnemyHealth enemy = nearby.GetComponentInParent<EnemyHealth>();
             if (enemy == null || enemy.IsDead || damaged.Contains(enemy)) continue;
             Vector2 target = nearby.ClosestPoint(position);
-            if (IsSplashBlocked(position, target)) continue;
+            if (IsSplashBlocked(position, target, owner)) continue;
             damaged.Add(enemy);
             Vector2 outward = (Vector2)nearby.bounds.center - position;
             enemy.TakeDamage(damage, outward.sqrMagnitude > 0.0001f ? outward.normalized : direction);
         }
     }
 
-    private bool IsSplashBlocked(Vector2 origin, Vector2 target)
+    private static bool IsSplashBlocked(Vector2 origin, Vector2 target, Transform owner)
     {
         foreach (RaycastHit2D hit in Physics2D.LinecastAll(origin, target))
         {
