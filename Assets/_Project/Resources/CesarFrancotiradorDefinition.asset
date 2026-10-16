@@ -20,3 +20,7 @@ MonoBehaviour:
   magazineSize: 5
   reloadDuration: 2.2
   upgradeCosts: 280000005a00000096000000dc0000002c010000
+  piercingShot: 1
+  basePiercingTargets: 2
+  maxPiercingTargets: 4
+  upgradesPerExtraTarget: 2

@@ -41,7 +41,8 @@ public sealed class PlayerWeaponController : MonoBehaviour
     {
         if (!CanFire) return false;
         if (!CombatProjectile.TrySpawn(origin, direction, Damage, Definition.ProjectileSpeed,
-            Definition.ProjectileRadius, Definition.Range, owner, EquippedWeapon)) return false;
+            Definition.ProjectileRadius, Definition.Range, owner, EquippedWeapon,
+            Definition.TargetsAt(ProgressionService.WeaponUpgrade(EquippedWeapon)))) return false;
         Magazine--;
         nextShotTime = Time.time + Definition.FireInterval;
         weaponAudio.PlayShot(EquippedWeapon);

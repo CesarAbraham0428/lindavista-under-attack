@@ -162,7 +162,9 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         {
             int level = ProgressionService.WeaponUpgrade(i), cost = WeaponDefinition.At(i).UpgradeCost(level);
             int amount = ProgressionService.Ammo(i);
-            stats[i].text = "Munición " + amount + "/" + ShopBalance.Capacity[i] + "  ·  Daño " + WeaponDefinition.ForCharacter(i, CharacterWeapons.SelectedCesar).DamageAt(level);
+            var definition = WeaponDefinition.ForCharacter(i, CharacterWeapons.SelectedCesar);
+            stats[i].text = "Munición " + amount + "/" + ShopBalance.Capacity[i] + "  ·  Daño " + definition.DamageAt(level) +
+                (definition.IsPiercing ? "  ·  Atraviesa " + definition.TargetsAt(level) : "");
             ammoFill[i].fillAmount = Mathf.Clamp01((float)amount / ShopBalance.Capacity[i]);
             bool fits = amount + ShopBalance.Pack[i] <= ShopBalance.Capacity[i];
             PurchaseState(ammo[i], fits ? "MUNICIÓN +" + ShopBalance.Pack[i] : "SIN ESPACIO", ShopBalance.AmmoCost[i], fits);

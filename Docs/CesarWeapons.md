@@ -12,7 +12,7 @@ Balance inicial editable en `Assets/_Project/Resources/Cesar*Definition.asset`:
 | Francotirador | 8 | 5 | 1.1 s | 2.2 s |
 | Lanzagranadas | 10 | 2 | 1.2 s | 2 s |
 
-Los proyectiles y sus efectos reutilizan el sistema existente. Quedan para después el ajuste preciso de las bocas de las armas y efectos específicos, como se solicitó. La escopeta usa por ahora un proyectil, sin dispersión nueva.
+La escopeta usa por ahora un proyectil, sin dispersión nueva. El francotirador tiene una estela dorada propia y atraviesa 2 enemigos distintos de base, 3 desde la segunda mejora y 4 desde la cuarta, dentro de sus 26 unidades de alcance. Se detiene ante obstáculos sólidos y muestra una pequeña salpicadura cartoon al causar daño. Ajustes, assets y prompts en [Art/SniperEffects.md](Art/SniperEffects.md).
 
 ## Assets
 

@@ -19,11 +19,15 @@ public sealed class CombatProjectile : MonoBehaviour
     private int weaponIndex;
     private bool hasGround;
     private float groundY;
+    private int targetLimit;
+    private HashSet<EnemyHealth> piercedEnemies;
+    private SniperShotVisual sniperVisual;
 
     public int Damage => damage;
 
     public static bool TrySpawn(Vector2 origin, Vector2 direction, int shotDamage,
-        float shotSpeed, float shotRadius, float maxRange, Transform owner, int weaponIndex = 0)
+        float shotSpeed, float shotRadius, float maxRange, Transform owner, int weaponIndex = 0,
+        int maxTargets = 1)
     {
         if (GameFlowController.IsDefeatActive || activeProjectiles >= MaxActiveProjectiles ||
             direction.sqrMagnitude < 0.0001f)
@@ -43,6 +47,8 @@ public sealed class CombatProjectile : MonoBehaviour
         projectile.speed = Mathf.Max(0.1f, shotSpeed);
         projectile.damage = Mathf.Max(1, shotDamage);
         projectile.radius = Mathf.Max(0.01f, shotRadius);
+        projectile.targetLimit = projectile.weaponIndex == 1 ? Mathf.Clamp(maxTargets, 1, 4) : 1;
+        if (projectile.targetLimit > 1) projectile.piercedEnemies = new HashSet<EnemyHealth>();
         if (projectile.weaponIndex == 2 && owner != null)
         {
             var body = owner.GetComponent<SpriteRenderer>();
@@ -57,8 +63,16 @@ public sealed class CombatProjectile : MonoBehaviour
             }
         }
         shot.transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-        ShotVisual.Attach(shot, projectile.weaponIndex);
-        ShotVisual.Muzzle(origin, projectile.direction, projectile.weaponIndex);
+        if (projectile.piercedEnemies != null)
+        {
+            projectile.sniperVisual = SniperShotVisual.Create(origin, projectile.direction);
+            SniperShotVisual.Muzzle(origin, projectile.direction);
+        }
+        else
+        {
+            ShotVisual.Attach(shot, projectile.weaponIndex);
+            ShotVisual.Muzzle(origin, projectile.direction, projectile.weaponIndex);
+        }
 
         activeProjectiles++;
         return true;
@@ -78,6 +92,11 @@ public sealed class CombatProjectile : MonoBehaviour
 
         float distance = Mathf.Min(speed * Time.fixedDeltaTime, remainingRange);
         Vector2 tail = transform.position;
+        if (piercedEnemies != null)
+        {
+            SweepSniper(tail, distance);
+            return;
+        }
         // Sweep the whole rocket through its next nose position. Starting at the tail
         // also catches point-blank targets already inside the newly spawned sprite.
         float noseOffset = weaponIndex == 2 ? Mathf.Max(0f, ShotVisual.RocketWidth - radius) : 0f;
@@ -145,6 +164,63 @@ public sealed class CombatProjectile : MonoBehaviour
         }
     }
 
+    private void SweepSniper(Vector2 start, float distance)
+    {
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(start, radius, direction, distance);
+        // Resolve every contact along this step, nearest first. A wall wins a tie
+        // so overlapping enemy hitboxes cannot carry a shot through solid scenery.
+        System.Array.Sort(hits, (a, b) =>
+        {
+            int order = a.distance.CompareTo(b.distance);
+            if (order != 0) return order;
+            bool aWall = a.collider != null && !a.collider.isTrigger && a.collider.GetComponentInParent<EnemyHealth>() == null;
+            bool bWall = b.collider != null && !b.collider.isTrigger && b.collider.GetComponentInParent<EnemyHealth>() == null;
+            return bWall.CompareTo(aWall);
+        });
+        foreach (RaycastHit2D hit in hits)
+        {
+            Collider2D collider = hit.collider;
+            if (collider == null || collider.transform == owner ||
+                (owner != null && collider.transform.IsChildOf(owner)) ||
+                collider.GetComponentInParent<PlayerActions>() != null ||
+                collider.GetComponentInParent<CoinPickup>() != null) continue;
+
+            EnemyHealth enemy = collider.GetComponentInParent<EnemyHealth>();
+            if (enemy == null && collider.isTrigger) continue;
+            if (enemy != null && (enemy.IsDead || piercedEnemies.Contains(enemy))) continue;
+
+            Vector2 contact = hit.distance > 0f ? hit.point : collider.ClosestPoint(start);
+            if (enemy != null)
+            {
+                piercedEnemies.Add(enemy);
+                int healthBefore = enemy.CurrentHealth;
+                enemy.TakeDamage(damage, direction);
+                if (enemy.CurrentHealth < healthBefore) SniperShotVisual.Blood(contact, direction);
+                else ShotVisual.Impact(contact, direction, 1); // Shield feedback retains the enemy's rules.
+                if (piercedEnemies.Count < targetLimit) continue;
+            }
+            else ShotVisual.Impact(contact, direction, 1);
+
+            MoveSniper(start + direction * Mathf.Clamp(hit.distance, 0f, distance));
+            spent = true;
+            Destroy(gameObject);
+            return;
+        }
+        MoveSniper(start + direction * distance);
+        remainingRange -= distance;
+        if (remainingRange <= 0f)
+        {
+            spent = true;
+            Destroy(gameObject);
+        }
+    }
+
+    private void MoveSniper(Vector2 position)
+    {
+        transform.position = position;
+        if (sniperVisual != null) sniperVisual.DrawTo(position);
+    }
+
     private void ApplyImpactDamage(Collider2D hitCollider, Vector2 position)
     {
         EnemyHealth direct = hitCollider != null ? hitCollider.GetComponentInParent<EnemyHealth>() : null;
@@ -180,6 +256,7 @@ public sealed class CombatProjectile : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (sniperVisual != null) sniperVisual.Release();
         activeProjectiles = Mathf.Max(0, activeProjectiles - 1);
     }
 

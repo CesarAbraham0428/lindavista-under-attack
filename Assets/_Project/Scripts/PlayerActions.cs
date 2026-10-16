@@ -258,7 +258,10 @@ public class PlayerActions : MonoBehaviour
             ResetFireTriggers();
             string character = animator.runtimeAnimatorController.name.Contains("Cesar") ? "Cesar" : "Marco";
             string weapon = weapons.AnimationWeapon;
-            animator.Play(character + "_" + weapon + "_Fire", 0, 0f);
+            // The sniper sheet starts with three raising poses. Emit on its
+            // fourth frame, where the rifle is aimed and the drawn flash appears.
+            float firingPoseTime = weapons.IsCesar && weapons.Definition.IsPiercing ? 0.38f : 0f;
+            animator.Play(character + "_" + weapon + "_Fire", 0, firingPoseTime);
             animator.Update(0f);
         }
         Vector2 spawnPosition = PlayerMuzzle.WorldPosition(spriteRenderer, weapons.EquippedWeapon);
