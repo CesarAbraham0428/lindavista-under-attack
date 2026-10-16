@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
+    [SerializeField] private float minHorizontalPosition = -6.72f;
     [SerializeField] private float maxHorizontalPosition = 117f;
 
     private Rigidbody2D rb;
@@ -70,10 +71,12 @@ public class PlayerMovement : MonoBehaviour
 
         horizontal = keyboardHorizontal != 0f ? keyboardHorizontal : touchHorizontal;
 
-        if (horizontal > 0f && rb.position.x >= maxHorizontalPosition)
+        if ((horizontal < 0f && rb.position.x <= minHorizontalPosition) ||
+            (horizontal > 0f && rb.position.x >= maxHorizontalPosition))
             horizontal = 0f;
 
-        animator.SetBool("IsMoving", horizontal != 0f);
+        if (animator != null)
+            animator.SetBool("IsMoving", horizontal != 0f);
     }
 
     private void FixedUpdate()
@@ -85,22 +88,22 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        float nextX = rb.position.x + horizontal * MovementSpeed * Time.fixedDeltaTime;
-
-        if (horizontal > 0f && nextX >= maxHorizontalPosition)
+        // Clamp the body as well as input, so a physics step or external push cannot
+        // move the player behind the entrance or beyond the end of the street.
+        Vector2 position = rb.position;
+        position.x = Mathf.Clamp(position.x, minHorizontalPosition, maxHorizontalPosition);
+        float nextX = position.x + horizontal * MovementSpeed * Time.fixedDeltaTime;
+        bool reachesEntrance = horizontal < 0f && nextX <= minHorizontalPosition;
+        bool reachesEnd = horizontal > 0f && nextX >= maxHorizontalPosition;
+        if (reachesEntrance || reachesEnd)
         {
-            Vector2 position = rb.position;
-            position.x = maxHorizontalPosition;
-            rb.position = position;
+            position.x = reachesEntrance ? minHorizontalPosition : maxHorizontalPosition;
             horizontal = 0f;
-            animator.SetBool("IsMoving", false);
+            if (animator != null)
+                animator.SetBool("IsMoving", false);
         }
-        else if (rb.position.x > maxHorizontalPosition)
-        {
-            Vector2 position = rb.position;
-            position.x = maxHorizontalPosition;
+        if (position != rb.position)
             rb.position = position;
-        }
 
         rb.linearVelocity = new Vector2(
             horizontal * MovementSpeed,

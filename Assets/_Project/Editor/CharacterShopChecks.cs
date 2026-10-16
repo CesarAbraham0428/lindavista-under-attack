@@ -41,6 +41,15 @@ public static class CharacterShopChecks
             tabs[0].onClick.Invoke();
             Check(health.text == "VIDA  10 / 15", "Marco base health and upgrade limit");
             Check(Field<Image[]>(shop, "life").Count(i => i.gameObject.activeSelf) == 15, "Marco meter capacity");
+            Check(Field<Text>(shop, "speed").text.Contains("1 / 3") && Field<Text>(shop, "speed").text.Contains("110%") &&
+                Field<Image[]>(shop, "speedBars").Count(i => i.gameObject.activeSelf) == 3 &&
+                Field<Image[]>(shop, "speedBars").Count(i => i.gameObject.activeSelf && i.color == ProgressionUI.Gold) == 1,
+                "Marco starts with one of three speed bars at 110 percent");
+            int speedCoins = ProgressionService.Coins;
+            Field<Button>(shop, "speedBuy").onClick.Invoke();
+            Check(ProgressionService.Coins == speedCoins - 40 && ProgressionService.SpeedUpgradeFor(false) == 1 &&
+                ProgressionService.SpeedUpgradeFor(true) == 0 && Field<Text>(shop, "speed").text.Contains("2 / 3") &&
+                Field<Text>(shop, "speed").text.Contains("120%"), "Marco speed button charges and refreshes only his progression");
             Field<Button>(shop, "healthBuy").onClick.Invoke();
             ammunition[0].onClick.Invoke();
             upgrades[0].onClick.Invoke();
@@ -51,7 +60,16 @@ public static class CharacterShopChecks
             Check(ProgressionService.WeaponUpgrade(0, false) == 1 && ProgressionService.WeaponUpgrade(0, true) == 0,
                 "Marco weapon purchase leaves Cesar unchanged");
             tabs[1].onClick.Invoke();
-            Check(health.text == "VIDA  12 / 17" && Field<Text>(shop, "speed").text.Contains("110%"), "Cesar stats shown");
+            Check(health.text == "VIDA  12 / 17" && Field<Text>(shop, "speed").text.Contains("100%") &&
+                Field<Text>(shop, "speed").text.Contains("1 / 2"), "Cesar stats shown");
+            Check(Field<Image[]>(shop, "speedBars").Count(i => i.gameObject.activeSelf) == 2,
+                "Cesar speed meter has two bars");
+            Field<Button>(shop, "speedBuy").onClick.Invoke();
+            Check(ProgressionService.SpeedUpgradeFor(true) == 1 && ProgressionService.SpeedUpgradeFor(false) == 1 &&
+                Field<Text>(shop, "speed").text.Contains("2 / 2") && Field<Text>(shop, "speed").text.Contains("110%") &&
+                !Field<Button>(shop, "speedBuy").interactable &&
+                !Field<Button>(shop, "speedBuy").transform.Find("Price").gameObject.activeSelf,
+                "Cesar speed reaches his own limit and disables the button and price");
             Check(Field<Image[]>(shop, "life").Count(i => i.gameObject.activeSelf) == 17, "Cesar meter capacity");
             Check(Field<Text[]>(shop, "weaponNames")[0].text == "ESCOPETA" &&
                 Field<Image[]>(shop, "weaponIcons")[2].sprite == CharacterWeapons.Artwork(true).IconAt(2), "Cesar arsenal art and names");
@@ -69,8 +87,16 @@ public static class CharacterShopChecks
             tabs[0].onClick.Invoke();
             Check(health.text == "VIDA  11 / 15" && Field<Text[]>(shop, "weaponNames")[0].text == "PISTOLA",
                 "returning to Marco restores his own displayed progression");
+            Check(Field<Button>(shop, "speedBuy").interactable && Field<Text>(shop, "speed").text.Contains("2 / 3"),
+                "returning to Marco restores his available final speed upgrade");
+            speedCoins = ProgressionService.Coins;
+            Field<Button>(shop, "speedBuy").onClick.Invoke();
+            Check(ProgressionService.Coins == speedCoins - 80 && Field<Text>(shop, "speed").text.Contains("3 / 3") &&
+                Field<Text>(shop, "speed").text.Contains("130%") && !Field<Button>(shop, "speedBuy").interactable,
+                "Marco final speed bar costs eighty coins and disables further purchases");
             var loaded = new ProgressionRepository(Path.Combine(directory, "profile.json")).Snapshot;
-            Check(loaded.Character(false).healthUpgrade == 1 && loaded.Character(true).healthUpgrade == 1,
+            Check(loaded.Character(false).healthUpgrade == 1 && loaded.Character(true).healthUpgrade == 1 &&
+                loaded.Character(false).speedUpgrade == 2 && loaded.Character(true).speedUpgrade == 1,
                 "shop transactions persist both characters");
             string result = "CHARACTER_SHOP_CHECKS_OK: " + assertions + " assertions.";
             Debug.Log(result);

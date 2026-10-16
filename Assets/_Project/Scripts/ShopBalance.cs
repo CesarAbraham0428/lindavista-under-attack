@@ -6,4 +6,6 @@ public static class ShopBalance
     public static readonly int[] AmmoCost = { 10, 20, 35 };
     public const int MaxHealthUpgrade = 5;
     public static int HealthCost(int level) => level < MaxHealthUpgrade ? 30 * (level + 1) : 0;
+    public static int SpeedCost(int level, bool cesar) =>
+        level >= 0 && level < CharacterStats.MaximumSpeedBars(cesar) - 1 ? 40 * (level + 1) : 0;
 }

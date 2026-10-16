@@ -53,6 +53,42 @@ public static class CharacterProgressionChecks
             Check(loaded.Snapshot.marco.ammunition[0] == 60 && loaded.Snapshot.cesar.healthUpgrade == 1,
                 "snapshots cannot mutate stored character records");
 
+            string speedPath = Path.Combine(directory, "speed.json");
+            var speed = new ProgressionRepository(speedPath);
+            Check(speed.Snapshot.marco.speedUpgrade == 0 && speed.Snapshot.cesar.speedUpgrade == 0 &&
+                CharacterStats.MaximumSpeedBars(false) == 3 && CharacterStats.MaximumSpeedBars(true) == 2,
+                "both characters start at one speed bar with independent limits");
+            Check(!speed.TryUpgradeSpeed(false) && speed.Snapshot.coins == 0 && speed.Snapshot.marco.speedUpgrade == 0,
+                "insufficient coins cannot buy speed");
+            Check(speed.TryCredit(160) && speed.TryUpgradeSpeed(false) && speed.Snapshot.coins == 120 &&
+                speed.Snapshot.marco.speedUpgrade == 1 && speed.Snapshot.cesar.speedUpgrade == 0,
+                "Marco first speed bar costs forty coins and leaves Cesar unchanged");
+            Check(speed.TryUpgradeSpeed(false) && speed.Snapshot.coins == 40 && speed.Snapshot.marco.speedUpgrade == 2,
+                "Marco second speed purchase costs eighty coins and reaches three bars");
+            Check(!speed.TryUpgradeSpeed(false) && speed.Snapshot.coins == 40, "Marco speed cap does not charge");
+            Check(speed.TryUpgradeSpeed(true) && speed.Snapshot.coins == 0 && speed.Snapshot.cesar.speedUpgrade == 1 &&
+                speed.Snapshot.marco.speedUpgrade == 2, "Cesar speed reaches two bars independently");
+            Check(!speed.TryUpgradeSpeed(true) && speed.Snapshot.coins == 0, "Cesar speed cap does not charge");
+            var speedLoaded = new ProgressionRepository(speedPath);
+            var speedSnapshot = speedLoaded.Snapshot;
+            speedSnapshot.marco.speedUpgrade = 0;
+            Check(speedLoaded.Snapshot.marco.speedUpgrade == 2 && speedLoaded.Snapshot.cesar.speedUpgrade == 1 &&
+                speedLoaded.Snapshot.marco.healthUpgrade == 0 && speedLoaded.Snapshot.marco.ammunition[0] == 48,
+                "speed persists, snapshots are isolated and other inventory is preserved");
+
+            string previousV2Path = Path.Combine(directory, "previous-v2.json");
+            File.WriteAllText(previousV2Path, "{\"format\":\"Lindavista.Progression\",\"version\":2,\"coins\":80," +
+                "\"completedLevelsMask\":3,\"marco\":{\"healthUpgrade\":2,\"weaponUpgrades\":[1,0,0],\"ammunition\":[7,80,2]}," +
+                "\"cesar\":{\"healthUpgrade\":1,\"weaponUpgrades\":[0,1,0],\"ammunition\":[9,50,3]}}");
+            var previousV2 = new ProgressionRepository(previousV2Path);
+            Check(previousV2.CanSave && previousV2.Snapshot.marco.speedUpgrade == 0 && previousV2.Snapshot.cesar.speedUpgrade == 0 &&
+                previousV2.Snapshot.coins == 80 && previousV2.IsLevelUnlocked(2) &&
+                previousV2.Snapshot.marco.healthUpgrade == 2 && previousV2.Snapshot.cesar.weaponUpgrades[1] == 1 &&
+                previousV2.Snapshot.marco.ammunition[0] == 7 && previousV2.Snapshot.cesar.ammunition[2] == 3,
+                "v2 saves without speed fields retain all progress and start at one speed bar");
+            Check(previousV2.TryUpgradeSpeed(true) && new ProgressionRepository(previousV2Path).Snapshot.cesar.speedUpgrade == 1,
+                "old v2 saves can buy and persist speed");
+
             string legacyPath = Path.Combine(directory, "legacy.json");
             const string legacyJson = "{\"format\":\"Lindavista.Progression\",\"version\":1,\"coins\":100,\"pistolUpgrade\":2," +
                 "\"completedLevelsMask\":3,\"healthUpgrade\":3,\"weaponUpgrades\":[2,4,3],\"ammunition\":[7,8,0],\"ownedWeapons\":[\"pistol\"]}";
@@ -67,6 +103,8 @@ public static class CharacterProgressionChecks
             Check(migrated.Snapshot.cesar.healthUpgrade == 0 && migrated.Snapshot.cesar.weaponUpgrades[1] == 0 &&
                 migrated.Snapshot.cesar.ammunition[0] == 48 && migrated.Snapshot.cesar.ammunition[2] == 6,
                 "legacy progress does not grant Cesar upgrades or consumed reserves");
+            Check(migrated.Snapshot.marco.speedUpgrade == 0 && migrated.Snapshot.cesar.speedUpgrade == 0,
+                "v1 saves start both characters at one speed bar");
             Check(File.ReadAllText(legacyPath) == legacyJson, "migration reads without overwriting original save");
             Check(migrated.TryConsumeAmmo(2, true), "first migrated transaction commits new schema");
             Check(File.ReadAllText(legacyPath + ".bak") == legacyJson, "original legacy save retained as backup");
@@ -90,6 +128,17 @@ public static class CharacterProgressionChecks
             File.WriteAllText(invalidPath, JsonUtility.ToJson(invalid));
             var blocked = new ProgressionRepository(invalidPath);
             Check(!blocked.CanSave && !blocked.TryCredit(1), "invalid character data never overwritten");
+            foreach (bool isCesar in new[] { false, true })
+            {
+                foreach (int badSpeed in new[] { -1, CharacterStats.MaximumSpeedBars(isCesar) })
+                {
+                    string badSpeedPath = Path.Combine(directory, "invalid-speed-" + isCesar + "-" + badSpeed + ".json");
+                    var invalidSpeed = new ProgressionProfile();
+                    invalidSpeed.Character(isCesar).speedUpgrade = badSpeed;
+                    File.WriteAllText(badSpeedPath, JsonUtility.ToJson(invalidSpeed));
+                    Check(!new ProgressionRepository(badSpeedPath).CanSave, "out of range speed rejected for " + isCesar + ": " + badSpeed);
+                }
+            }
             string incompletePath = Path.Combine(directory, "incomplete.json");
             File.WriteAllText(incompletePath, "{\"format\":\"Lindavista.Progression\",\"version\":2,\"coins\":0," +
                 "\"completedLevelsMask\":0,\"marco\":{},\"cesar\":{}}");
@@ -134,16 +183,26 @@ public static class CharacterProgressionChecks
                     Check(!marcoHealth.IsCesar && cesarHealth.IsCesar && marcoHealth.MaxHealth == 10 && cesarHealth.MaxHealth == 12,
                         "runtime health uses character identity despite opposite selection");
                     Check(marcoHealth.CurrentHealth == 10 && cesarHealth.CurrentHealth == 12, "each match starts at its own full health");
-                    Check(Mathf.Approximately(cesar.GetComponent<PlayerMovement>().MovementSpeed,
-                        marco.GetComponent<PlayerMovement>().MovementSpeed * 1.1f), "Cesar movement is ten percent faster");
+                    var marcoMovement = marco.GetComponent<PlayerMovement>();
+                    var cesarMovement = cesar.GetComponent<PlayerMovement>();
+                    float baseCesarSpeed = cesarMovement.MovementSpeed;
+                    Check(Mathf.Approximately(marcoMovement.MovementSpeed, baseCesarSpeed * 1.1f),
+                        "Marco starts ten percent faster with the same single speed bar");
                     Check(ProgressionService.TryCredit(1000) && ProgressionService.TryUpgradeHealth(false) &&
-                        ProgressionService.TryUpgradeWeapon(0, false), "Marco purchases with Cesar object active");
+                        ProgressionService.TryUpgradeWeapon(0, false) && ProgressionService.TryUpgradeSpeed(false),
+                        "Marco purchases with Cesar object active");
                     Check(marcoHealth.MaxHealth == 11 && marcoHealth.CurrentHealth == 11 && cesarHealth.MaxHealth == 12 &&
                         marcoWeapons.Damage == WeaponDefinition.ForCharacter(0, false).DamageAt(1) &&
                         cesarWeapons.Damage == WeaponDefinition.ForCharacter(0, true).DamageAt(0),
                         "only Marco runtime attributes react to Marco purchases");
-                    Check(ProgressionService.TryUpgradeHealth(true) && ProgressionService.TryUpgradeWeapon(0, true), "Cesar purchases");
+                    Check(Mathf.Approximately(marcoMovement.MovementSpeed, baseCesarSpeed * 1.2f) &&
+                        Mathf.Approximately(cesarMovement.MovementSpeed, baseCesarSpeed), "speed upgrade immediately affects only Marco");
+                    Check(ProgressionService.TryUpgradeHealth(true) && ProgressionService.TryUpgradeWeapon(0, true) &&
+                        ProgressionService.TryUpgradeSpeed(true), "Cesar purchases");
                     PlayerPrefs.SetInt(selectionKey, 1);
+                    Check(Mathf.Approximately(marcoMovement.MovementSpeed, baseCesarSpeed * 1.2f) &&
+                        Mathf.Approximately(cesarMovement.MovementSpeed, baseCesarSpeed * 1.1f),
+                        "Cesar speed upgrade applies immediately and changing menu selection preserves each active identity");
                     Check(marcoHealth.MaxHealth == 11 && cesarHealth.MaxHealth == 13 &&
                         marcoWeapons.Damage == WeaponDefinition.ForCharacter(0, false).DamageAt(1) &&
                         cesarWeapons.Damage == WeaponDefinition.ForCharacter(0, true).DamageAt(1),

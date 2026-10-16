@@ -6,12 +6,13 @@ public sealed class PistolUpgradeShop : MonoBehaviour
     private static PistolUpgradeShop active;
     private static readonly Color Muted = new Color(.43f, .39f, .28f);
     private Text wallet, health, feedback;
-    private Button healthBuy;
+    private Button healthBuy, speedBuy;
     private readonly Image[] ammoFill = new Image[3];
     private Image[] life;
     private bool cesar;
     private Image portrait;
     private Text speed;
+    private readonly Image[] speedBars = new Image[3];
     private readonly Image[] weaponIcons = new Image[3];
     private readonly Text[] weaponNames = new Text[3];
     private readonly Button[] characterTabs = new Button[2];
@@ -96,23 +97,32 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         Coin(purse.transform, .055f, .12f, .23f, .88f);
         wallet = Label(purse.transform, "", 42, .27f, .08f, .95f, .92f);
         var character = Frame(panel.transform, "Character", new Color(.18f, .24f, .19f), .025f, .185f, .285f, .86f);
-        Frame(character.transform, "Portrait backdrop", new Color(.27f, .34f, .25f), .045f, .315f, .955f, .965f);
+        Frame(character.transform, "Portrait backdrop", new Color(.27f, .34f, .25f), .045f, .53f, .955f, .965f);
         characterTabs[0] = Buy(character.transform, "MARCO", () => SelectCharacter(false), .045f, .87f, .49f, .975f);
         characterTabs[1] = Buy(character.transform, "CÉSAR", () => SelectCharacter(true), .51f, .87f, .955f, .975f);
         portrait = ProgressionUI.Image(character.transform, "Portrait", Color.white);
         portrait.preserveAspect = true;
-        ProgressionUI.Percent(portrait.rectTransform, .09f, .39f, .91f, .855f);
-        speed = Label(character.transform, "", 27, .06f, .315f, .94f, .385f);
+        ProgressionUI.Percent(portrait.rectTransform, .09f, .535f, .91f, .855f);
+        speed = Label(character.transform, "", 27, .06f, .22f, .94f, .28f);
         speed.alignment = TextAnchor.MiddleCenter;
-        health = Label(character.transform, "", 34, .08f, .235f, .92f, .305f);
-        var lifeMeter = Frame(character.transform, "Health meter", new Color(.10f, .14f, .105f), .07f, .175f, .93f, .233f);
+        var speedMeter = Frame(character.transform, "Speed meter", new Color(.10f, .14f, .105f), .07f, .17f, .93f, .215f);
+        for (int j = 0; j < speedBars.Length; j++)
+        {
+            speedBars[j] = ProgressionUI.Image(speedMeter.transform, "Speed " + (j + 1), Muted);
+            speedBars[j].sprite = CartoonUI.FrameSprite;
+            speedBars[j].type = Image.Type.Sliced;
+        }
+        speedBuy = Buy(character.transform, "MEJORAR VELOCIDAD", () => Result(ProgressionService.TryUpgradeSpeed(cesar)),
+            .065f, .025f, .935f, .155f, true, true);
+        health = Label(character.transform, "", 34, .08f, .455f, .92f, .52f);
+        var lifeMeter = Frame(character.transform, "Health meter", new Color(.10f, .14f, .105f), .07f, .405f, .93f, .455f);
         life = new Image[CharacterStats.MaximumHealth(true)];
         for (int j = 0; j < life.Length; j++)
         {
             life[j] = ProgressionUI.Image(lifeMeter.transform, "Health " + (j + 1), Color.white);
         }
         healthBuy = Buy(character.transform, "MEJORAR VIDA", () => Result(ProgressionService.TryUpgradeHealth(cesar)),
-            .065f, .025f, .935f, .155f, true, true);
+            .065f, .285f, .935f, .395f, true, true);
         var art = CharacterWeapons.Artwork(cesar);
         for (int i = 0; i < 3; i++)
         {
@@ -150,7 +160,7 @@ public sealed class PistolUpgradeShop : MonoBehaviour
             ammo[i] = Buy(row.transform, "MUNICIÓN", () => Result(ProgressionService.TryBuyAmmo(index, cesar)), .215f, .055f, .595f, .435f, true);
             upgrade[i] = Buy(row.transform, "MEJORAR ARMA", () => Result(ProgressionService.TryUpgradeWeapon(index, cesar)), .615f, .055f, .975f, .435f, true, true);
         }
-        feedback = Label(panel.transform, "Vida, munición y mejoras independientes por personaje.", 27, .305f, .12f, .975f, .18f);
+        feedback = Label(panel.transform, "Vida, velocidad, munición y mejoras por personaje.", 27, .305f, .12f, .975f, .18f);
         Buy(panel.transform, "VOLVER", () => Destroy(gameObject), .025f, .025f, .25f, .115f);
 #if UNITY_EDITOR
         Buy(panel.transform, "+1000 monedas · prueba", () => Result(ProgressionService.TryCredit(1000)), .735f, .025f, .975f, .095f);
@@ -166,7 +176,20 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         portrait.enabled = portrait.sprite != null;
         characterTabs[0].interactable = cesar;
         characterTabs[1].interactable = !cesar;
-        speed.text = cesar ? "VELOCIDAD  110%" : "VELOCIDAD  100%";
+        int speedLevel = ProgressionService.SpeedUpgradeFor(cesar);
+        int maximumSpeed = CharacterStats.MaximumSpeedBars(cesar);
+        speed.text = "VELOCIDAD " + (speedLevel + 1) + " / " + maximumSpeed + "  ·  " +
+            Mathf.RoundToInt(CharacterStats.SpeedMultiplierAt(cesar, speedLevel) * 100f) + "%";
+        for (int j = 0; j < speedBars.Length; j++)
+        {
+            speedBars[j].gameObject.SetActive(j < maximumSpeed);
+            float step = .95f / maximumSpeed;
+            ProgressionUI.Percent(speedBars[j].rectTransform, .025f + j * step, .18f,
+                .025f + (j + 1) * step - .012f, .82f);
+            speedBars[j].color = j <= speedLevel ? ProgressionUI.Gold : Muted;
+        }
+        int sc = ShopBalance.SpeedCost(speedLevel, cesar);
+        PurchaseState(speedBuy, sc > 0 ? "MEJORAR VELOCIDAD" : "VELOCIDAD MÁXIMA", sc, true);
         int hp = ProgressionService.MaxHealthFor(cesar);
         int maximum = CharacterStats.MaximumHealth(cesar);
         health.text = "VIDA  " + hp + " / " + maximum;

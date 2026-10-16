@@ -43,7 +43,7 @@ public sealed class PlayerWeaponController : MonoBehaviour
         if (!CombatProjectile.TrySpawn(origin, direction, Damage, Definition.ProjectileSpeed,
             Definition.ProjectileRadius, Definition.Range, owner, EquippedWeapon,
             Definition.TargetsAt(ProgressionService.WeaponUpgrade(EquippedWeapon, IsCesar)),
-            IsCesar && EquippedWeapon == 2)) return false;
+            IsCesar && EquippedWeapon == 2, Camera.main)) return false;
         Magazine--;
         nextShotTime = Time.time + Definition.FireInterval;
         weaponAudio.PlayShot(EquippedWeapon);

@@ -3229,6 +3229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 2.3
+  minHorizontalPosition: -6.72
   maxHorizontalPosition: 117
 --- !u!70 &576606887
 CapsuleCollider2D:
@@ -9157,9 +9158,9 @@ MonoBehaviour:
   targetScreenX: 0.2
   leftTargetScreenX: 0.6
   maximumCameraX: 115
-  smoothTime: 0.08
-  directionConfirmDuration: 0.4
-  directionTransitionDuration: 6
+  smoothTime: 0.1
+  directionConfirmDuration: 0.08
+  directionTransitionDuration: 0.9
   lineupHoldDuration: 1.1
   returnPanDuration: 3.5
   lineupCameraPadding: 3
@@ -9294,6 +9295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 2.3
+  minHorizontalPosition: -6.72
   maxHorizontalPosition: 117
 --- !u!70 &1325104749
 CapsuleCollider2D:

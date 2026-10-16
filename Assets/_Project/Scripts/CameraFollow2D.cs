@@ -9,11 +9,11 @@ public class CameraFollow2D : MonoBehaviour
     [SerializeField, Range(0.05f, 0.95f)] private float targetScreenX = 0.2f;
     [SerializeField, Range(0.05f, 0.95f)] private float leftTargetScreenX = 0.6f;
     [SerializeField] private float maximumCameraX = 115f;
-    [SerializeField] private float smoothTime = 0.08f;
+    [SerializeField, Min(0.01f)] private float smoothTime = 0.1f;
 
     [Header("Direction framing")]
-    [SerializeField, Min(0f)] private float directionConfirmDuration = 0.4f;
-    [SerializeField, Min(0.01f)] private float directionTransitionDuration = 6f;
+    [SerializeField, Min(0f)] private float directionConfirmDuration = 0.08f;
+    [SerializeField, Min(0.01f)] private float directionTransitionDuration = 0.9f;
 
     [Header("Level start presentation")]
     [SerializeField, Min(0f)] private float lineupHoldDuration = 1.1f;
@@ -33,10 +33,7 @@ public class CameraFollow2D : MonoBehaviour
     private int pendingDirection;
     private float pendingDirectionTime;
     private float currentScreenX;
-    private float transitionStartScreenX;
-    private float transitionTargetScreenX;
-    private float transitionElapsed;
-    private bool framingTransitionActive;
+    private float framingVelocity;
 
     private void Awake()
     {
@@ -187,6 +184,14 @@ public class CameraFollow2D : MonoBehaviour
     {
         // Movement determines the view; aiming and firing can face independently.
         float horizontal = playerMovement != null ? playerMovement.HorizontalInput : 0f;
+        StepDirectionFraming(horizontal, Time.deltaTime);
+    }
+
+    private void StepDirectionFraming(float horizontal, float deltaTime)
+    {
+        if (deltaTime <= 0f)
+            return;
+
         int movementDirection = horizontal > 0.01f ? 1 : horizontal < -0.01f ? -1 : 0;
         if (movementDirection == 0 || movementDirection == framingDirection)
         {
@@ -201,29 +206,22 @@ public class CameraFollow2D : MonoBehaviour
                 pendingDirectionTime = 0f;
             }
 
-            pendingDirectionTime += Time.deltaTime;
+            pendingDirectionTime += deltaTime;
             if (pendingDirectionTime >= directionConfirmDuration)
             {
                 framingDirection = movementDirection;
                 pendingDirection = 0;
                 pendingDirectionTime = 0f;
-                // Retarget from the current composition if another turn interrupts the pan.
-                transitionStartScreenX = currentScreenX;
-                transitionTargetScreenX = framingDirection > 0 ? targetScreenX : leftTargetScreenX;
-                transitionElapsed = 0f;
-                framingTransitionActive = true;
             }
         }
 
-        if (!framingTransitionActive)
-            return;
-
-        transitionElapsed += Time.deltaTime;
-        float progress = Mathf.Clamp01(transitionElapsed / Mathf.Max(0.01f, directionTransitionDuration));
-        float easedProgress = progress * progress * (3f - 2f * progress);
-        currentScreenX = Mathf.Lerp(transitionStartScreenX, transitionTargetScreenX, easedProgress);
-        if (progress >= 1f)
-            framingTransitionActive = false;
+        // Preserve pan velocity when turning again, rather than restarting an easing
+        // curve at zero speed. Brief input changes do not shake the view, while a
+        // sustained turn starts reframing in 80 ms and settles in about one second.
+        float desiredScreenX = framingDirection > 0 ? targetScreenX : leftTargetScreenX;
+        currentScreenX = Mathf.SmoothDamp(currentScreenX, desiredScreenX,
+            ref framingVelocity, Mathf.Max(0.01f, directionTransitionDuration / 3f),
+            0.8f, deltaTime);
     }
 
     private void SetAllPlayerControlsLocked(bool locked)

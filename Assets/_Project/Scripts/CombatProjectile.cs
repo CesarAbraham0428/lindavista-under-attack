@@ -22,12 +22,14 @@ public sealed class CombatProjectile : MonoBehaviour
     private int targetLimit;
     private HashSet<EnemyHealth> piercedEnemies;
     private SniperShotVisual sniperVisual;
+    private Camera flightCamera;
+    private readonly Plane[] cameraPlanes = new Plane[6];
 
     public int Damage => damage;
 
     public static bool TrySpawn(Vector2 origin, Vector2 direction, int shotDamage,
         float shotSpeed, float shotRadius, float maxRange, Transform owner, int weaponIndex = 0,
-        int maxTargets = 1, bool grenadeLauncher = false)
+        int maxTargets = 1, bool grenadeLauncher = false, Camera viewCamera = null)
     {
         if (GameFlowController.IsDefeatActive || activeProjectiles >= MaxActiveProjectiles ||
             direction.sqrMagnitude < 0.0001f)
@@ -57,6 +59,11 @@ public sealed class CombatProjectile : MonoBehaviour
             activeProjectiles++;
             return true;
         }
+        // Player bullets span the current view, regardless of pointer distance or
+        // the weapon's old fixed range. Off-screen simulation and grenades retain
+        // their own finite range. Keep following the view while the camera moves.
+        if (IsInCamera(viewCamera, origin) || (owner != null && IsInCamera(viewCamera, owner.position)))
+            projectile.flightCamera = viewCamera;
         projectile.targetLimit = projectile.weaponIndex == 1 ? Mathf.Clamp(maxTargets, 1, 4) : 1;
         if (projectile.targetLimit > 1) projectile.piercedEnemies = new HashSet<EnemyHealth>();
         if (projectile.weaponIndex == 2 && owner != null)
@@ -100,8 +107,18 @@ public sealed class CombatProjectile : MonoBehaviour
         if (spent)
             return;
 
-        float distance = Mathf.Min(speed * Time.fixedDeltaTime, remainingRange);
         Vector2 tail = transform.position;
+        if (flightCamera != null && flightCamera.isActiveAndEnabled)
+            remainingRange = DistanceToCameraEdge(tail);
+        if (remainingRange <= 0.00001f)
+        {
+            // A camera shift may put an in-flight round outside the view.
+            // Retire it before even an overlapping off-screen collider is swept.
+            spent = true;
+            Destroy(gameObject);
+            return;
+        }
+        float distance = Mathf.Min(speed * Time.fixedDeltaTime, remainingRange);
         if (piercedEnemies != null)
         {
             SweepSniper(tail, distance);
@@ -111,7 +128,8 @@ public sealed class CombatProjectile : MonoBehaviour
         // also catches point-blank targets already inside the newly spawned sprite.
         float noseOffset = weaponIndex == 2 ? Mathf.Max(0f, ShotVisual.RocketWidth - radius) : 0f;
         Vector2 origin = tail + direction * noseOffset;
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(tail, radius, direction, distance + noseOffset);
+        float castDistance = flightCamera != null ? Mathf.Min(distance + noseOffset, remainingRange) : distance + noseOffset;
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(tail, radius, direction, castDistance);
         float nearestDistance = float.PositiveInfinity;
         float nearestCastDistance = float.PositiveInfinity;
         Collider2D nearestCollider = null;
@@ -172,6 +190,30 @@ public sealed class CombatProjectile : MonoBehaviour
             spent = true;
             Destroy(gameObject);
         }
+    }
+
+    private static bool IsInCamera(Camera camera, Vector3 position)
+    {
+        if (camera == null || !camera.isActiveAndEnabled) return false;
+        Vector3 point = camera.WorldToViewportPoint(position);
+        return point.z > 0f && point.x >= 0f && point.x <= 1f && point.y >= 0f && point.y <= 1f;
+    }
+
+    private float DistanceToCameraEdge(Vector2 origin)
+    {
+        GeometryUtility.CalculateFrustumPlanes(flightCamera, cameraPlanes);
+        float distance = float.PositiveInfinity;
+        // The first four planes are left/right/bottom/top. The shot travels on
+        // the gameplay plane, so near and far clipping are not travel limits.
+        for (int i = 0; i < 4; i++)
+        {
+            float inside = cameraPlanes[i].GetDistanceToPoint(origin);
+            if (inside < -0.0001f) return 0f;
+            float outward = -Vector3.Dot(cameraPlanes[i].normal, direction);
+            if (outward > 0.0001f)
+                distance = Mathf.Min(distance, Mathf.Max(0f, inside) / outward);
+        }
+        return float.IsPositiveInfinity(distance) ? remainingRange : distance;
     }
 
     private void SweepSniper(Vector2 start, float distance)

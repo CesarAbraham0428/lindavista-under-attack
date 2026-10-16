@@ -266,7 +266,12 @@ public class PlayerActions : MonoBehaviour
         }
         Vector2 spawnPosition = PlayerMuzzle.WorldPosition(spriteRenderer, weapons.EquippedWeapon);
         Vector2 shotDirection = AimTarget - spawnPosition;
-        if (shotDirection.sqrMagnitude < 0.0001f)
+        // Mouse shots pass through the crosshair and continue to the camera edge.
+        // A pointer behind the barrel must not reverse the intended direction;
+        // touch aiming already supplies a direction without a world-space target.
+        bool reversesHorizontalAim = Mathf.Abs(AimDirection.x) > 0.0001f && shotDirection.x * AimDirection.x < 0f;
+        if (touchAimActive || shotDirection.sqrMagnitude < 0.0001f ||
+            Vector2.Dot(shotDirection, AimDirection) <= 0f || reversesHorizontalAim)
             shotDirection = AimDirection;
         weapons.TryFire(spawnPosition, shotDirection.normalized, transform);
     }
@@ -314,13 +319,17 @@ public class PlayerActions : MonoBehaviour
         Vector3 mouseWorld = aimCamera.ScreenToWorldPoint(
             new Vector3(mousePosition.x, mousePosition.y, distanceFromCamera));
 
-        Vector2 fromPlayer = (Vector2)mouseWorld - AimOrigin;
+        SetPointerAim(mouseWorld);
+    }
+
+    private void SetPointerAim(Vector2 pointerWorld)
+    {
+        AimTarget = pointerWorld;
+        Vector2 fromPlayer = pointerWorld - AimOrigin;
         if (fromPlayer.sqrMagnitude < 0.0001f)
             return;
 
         AimDirection = fromPlayer.normalized;
-        AimTarget = AimOrigin + Vector2.ClampMagnitude(fromPlayer, maxAimDistance);
-
     }
 
     private void OnGUI()

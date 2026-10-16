@@ -6,6 +6,8 @@ using UnityEngine;
 public sealed class CharacterProgression
 {
     public int healthUpgrade;
+    // Additive v2 field: existing saves start with one speed bar (zero purchases).
+    public int speedUpgrade;
     public int[] weaponUpgrades;
     public int[] ammunition;
 
@@ -16,7 +18,7 @@ public sealed class CharacterProgression
 
     public CharacterProgression Copy() => new CharacterProgression
     {
-        healthUpgrade = healthUpgrade, weaponUpgrades = (int[])weaponUpgrades.Clone(),
+        healthUpgrade = healthUpgrade, speedUpgrade = speedUpgrade, weaponUpgrades = (int[])weaponUpgrades.Clone(),
         ammunition = (int[])ammunition.Clone()
     };
 }
@@ -79,6 +81,8 @@ public sealed class ProgressionRepository
     private bool writable = true;
     private ProgressionProfile profile;
     public ProgressionProfile Snapshot => profile.Copy();
+    // Movement reads this every physics frame; return the scalar without cloning the inventory.
+    public int SpeedUpgradeFor(bool cesar) => profile.Character(cesar).speedUpgrade;
     public string LastError { get; private set; }
     public bool CanSave => writable;
 
@@ -153,7 +157,8 @@ public sealed class ProgressionRepository
     {
         if (character == null || character.ammunition == null || character.ammunition.Length != 3 ||
             character.weaponUpgrades == null || character.weaponUpgrades.Length != 3 ||
-            character.healthUpgrade < 0 || character.healthUpgrade > ShopBalance.MaxHealthUpgrade) return false;
+            character.healthUpgrade < 0 || character.healthUpgrade > ShopBalance.MaxHealthUpgrade ||
+            character.speedUpgrade < 0 || character.speedUpgrade >= CharacterStats.MaximumSpeedBars(cesar)) return false;
         for (int i = 0; i < 3; i++)
             if (character.ammunition[i] < 0 || character.ammunition[i] > ShopBalance.Capacity[i] ||
                 character.weaponUpgrades[i] < 0 || character.weaponUpgrades[i] > WeaponDefinition.ForCharacter(i, cesar).MaxUpgrade) return false;
@@ -190,6 +195,17 @@ public sealed class ProgressionRepository
         var next = profile.Copy();
         next.coins -= cost;
         next.Character(cesar).healthUpgrade++;
+        return Commit(next);
+    }
+
+    public bool TryUpgradeSpeed(bool cesar)
+    {
+        int cost = ShopBalance.SpeedCost(profile.Character(cesar).speedUpgrade, cesar);
+        if (cost == 0) { LastError = "Velocidad máxima alcanzada."; return false; }
+        if (profile.coins < cost) { LastError = "No tienes suficientes monedas."; return false; }
+        var next = profile.Copy();
+        next.coins -= cost;
+        next.Character(cesar).speedUpgrade++;
         return Commit(next);
     }
 
