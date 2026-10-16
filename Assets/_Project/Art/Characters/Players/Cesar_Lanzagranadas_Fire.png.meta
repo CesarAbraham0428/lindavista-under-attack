@@ -3,119 +3,26 @@ guid: 9067d3942c59784429a47ca592b4ed48
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8650131851724556127
-    second: Cesar_Lanzagranadas_fire_0
+      213: 5899625636590523370
+    second: Cesar_Lanzagranadas_Fire_0
   - first:
-      213: 3430811268910071632
-    second: Cesar_Lanzagranadas_fire_1
+      213: -4766417204976500034
+    second: Cesar_Lanzagranadas_Fire_1
   - first:
-      213: 3762807772568951887
-    second: Cesar_Lanzagranadas_fire_2
+      213: -3335444003507557767
+    second: Cesar_Lanzagranadas_Fire_2
   - first:
-      213: 1359196980833943958
-    second: Cesar_Lanzagranadas_fire_3
+      213: -6479296439511416078
+    second: Cesar_Lanzagranadas_Fire_3
   - first:
-      213: -2745551076529270336
-    second: Cesar_Lanzagranadas_fire_4
+      213: 7024643519070368666
+    second: Cesar_Lanzagranadas_Fire_4
   - first:
-      213: 5410280490852763744
-    second: Cesar_Lanzagranadas_fire_5
+      213: -3471346564273257227
+    second: Cesar_Lanzagranadas_Fire_5
   - first:
-      213: 5523946376150153052
-    second: Cesar_Lanzagranadas_fire_6
-  - first:
-      213: -7887982448672653683
-    second: Cesar_Lanzagranadas_fire_7
-  - first:
-      213: 1420391496236636480
-    second: Cesar_Lanzagranadas_fire_8
-  - first:
-      213: -5102617411993234659
-    second: Cesar_Lanzagranadas_fire_9
-  - first:
-      213: 2107281989720654022
-    second: Cesar_Lanzagranadas_fire_10
-  - first:
-      213: 8990920889701228066
-    second: Cesar_Lanzagranadas_fire_11
-  - first:
-      213: -6968736657211491403
-    second: Cesar_Lanzagranadas_fire_12
-  - first:
-      213: 4146398106259795916
-    second: Cesar_Lanzagranadas_fire_13
-  - first:
-      213: -271090019754408969
-    second: Cesar_Lanzagranadas_fire_14
-  - first:
-      213: 874308874240215589
-    second: Cesar_Lanzagranadas_fire_15
-  - first:
-      213: 8903092873264040753
-    second: Cesar_Lanzagranadas_fire_16
-  - first:
-      213: 1852410693408029612
-    second: Cesar_Lanzagranadas_fire_17
-  - first:
-      213: -4104901388367988023
-    second: Cesar_Lanzagranadas_fire_18
-  - first:
-      213: 3999420614657209690
-    second: Cesar_Lanzagranadas_fire_19
-  - first:
-      213: 3380295688101769946
-    second: Cesar_Lanzagranadas_fire_20
-  - first:
-      213: -3583052178332809780
-    second: Cesar_Lanzagranadas_fire_21
-  - first:
-      213: 2465288639332962153
-    second: Cesar_Lanzagranadas_fire_22
-  - first:
-      213: -6250746498689316820
-    second: Cesar_Lanzagranadas_fire_23
-  - first:
-      213: -5800664409277061536
-    second: Cesar_Lanzagranadas_fire_24
-  - first:
-      213: -4437184641743781338
-    second: Cesar_Lanzagranadas_fire_25
-  - first:
-      213: 8390213386746066557
-    second: Cesar_Lanzagranadas_fire_26
-  - first:
-      213: -5807886727389048312
-    second: Cesar_Lanzagranadas_fire_27
-  - first:
-      213: -3692901078420005762
-    second: Cesar_Lanzagranadas_fire_28
-  - first:
-      213: 2408941444466801304
-    second: Cesar_Lanzagranadas_fire_29
-  - first:
-      213: 8067002627195735940
-    second: Cesar_Lanzagranadas_fire_30
-  - first:
-      213: -5913844944723544764
-    second: Cesar_Lanzagranadas_fire_31
-  - first:
-      213: -5559340464491925206
-    second: Cesar_Lanzagranadas_fire_32
-  - first:
-      213: 3202869092998874080
-    second: Cesar_Lanzagranadas_fire_33
-  - first:
-      213: 7706186015906368806
-    second: Cesar_Lanzagranadas_fire_34
-  - first:
-      213: -7842511436812182690
-    second: Cesar_Lanzagranadas_fire_35
-  - first:
-      213: 3320575123859221736
-    second: Cesar_Lanzagranadas_fire_36
-  - first:
-      213: 7802122969992439957
-    second: Cesar_Lanzagranadas_fire_37
+      213: 5364433873912397016
+    second: Cesar_Lanzagranadas_Fire_6
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -159,10 +66,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 95.6
+  spritePixelsToUnits: 89.2
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -237,177 +144,177 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cesar_Lanzagranadas_fire_0
+      name: Cesar_Lanzagranadas_Fire_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 577
-        width: 362
-        height: 507
+        y: 512
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.47731754}
+      pivot: {x: 0.48177084, y: 0.47070312}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1a87aa549ee84f780800000000000000
-      internalID: -8650131851724556127
+      spriteID: ae314c8424eafd150800000000000000
+      internalID: 5899625636590523370
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Lanzagranadas_fire_1
+      name: Cesar_Lanzagranadas_Fire_1
       rect:
         serializedVersion: 2
-        x: 362
-        y: 579
-        width: 362
-        height: 507
+        x: 384
+        y: 512
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.47140038}
+      pivot: {x: 0.4622396, y: 0.47070312}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 05fbacefba0bc9f20800000000000000
-      internalID: 3430811268910071632
+      spriteID: eb2c01e3ec84addb0800000000000000
+      internalID: -4766417204976500034
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Lanzagranadas_fire_2
+      name: Cesar_Lanzagranadas_Fire_2
       rect:
         serializedVersion: 2
-        x: 724
-        y: 579
-        width: 355
-        height: 507
+        x: 768
+        y: 512
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.47140038}
-      border: {x: 0, y: 0, z: 7, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f4c1d02abbd283430800000000000000
-      internalID: 3762807772568951887
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Cesar_Lanzagranadas_fire_3
-      rect:
-        serializedVersion: 2
-        x: 1080
-        y: 579
-        width: 368
-        height: 507
-      alignment: 9
-      pivot: {x: 0.5, y: 0.47140038}
+      pivot: {x: 0.44270834, y: 0.47070312}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6910466e376dcd210800000000000000
-      internalID: 1359196980833943958
+      spriteID: 97aa9bac95f16b1d0800000000000000
+      internalID: -3335444003507557767
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Lanzagranadas_fire_4
+      name: Cesar_Lanzagranadas_Fire_3
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.4518229, y: 0.47070312}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f20870973ae416a0800000000000000
+      internalID: -6479296439511416078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Lanzagranadas_Fire_4
       rect:
         serializedVersion: 2
         x: 0
-        y: 1
-        width: 338
-        height: 507
+        y: 0
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.4970414}
-      border: {x: 0, y: 0, z: 4, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0c118caa7d7d5e9d0800000000000000
-      internalID: -2745551076529270336
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Cesar_Lanzagranadas_fire_5
-      rect:
-        serializedVersion: 2
-        x: 338
-        y: 1
-        width: 363
-        height: 503
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5089463}
+      pivot: {x: 0.47135416, y: 0.5058594}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0684188017d251b40800000000000000
-      internalID: 5410280490852763744
+      spriteID: a9370fbff0c8c7160800000000000000
+      internalID: 7024643519070368666
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Lanzagranadas_fire_6
+      name: Cesar_Lanzagranadas_Fire_5
       rect:
         serializedVersion: 2
-        x: 707
-        y: 1
-        width: 378
-        height: 519
+        x: 384
+        y: 0
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.48940268}
+      pivot: {x: 0.4752604, y: 0.5058594}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c577cb446fff8ac40800000000000000
-      internalID: 5523946376150153052
+      spriteID: 5f4483811bc43dfc0800000000000000
+      internalID: -3471346564273257227
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cesar_Lanzagranadas_fire_7
+      name: Cesar_Lanzagranadas_Fire_6
       rect:
         serializedVersion: 2
-        x: 1086
-        y: 1
-        width: 362
-        height: 507
+        x: 768
+        y: 0
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.4990138}
+      pivot: {x: 0.46875, y: 0.5058594}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d8eb95851c1488290800000000000000
-      internalID: -7887982448672653683
+      spriteID: 8dcfe93bf2c427a40800000000000000
+      internalID: 5364433873912397016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Lanzagranadas_Fire_7
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.45572916, y: 0.5058594}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f3da0bf07b23a54f9b1fd55484dcdcc
+      internalID: -1505818246
       vertices: []
       indices: 
       edges: []
@@ -416,7 +323,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 19587dd0a4bba9b448df4a29c5caeb1c
+    spriteID: e239d8d0064d21042b9c2823dd1c4863
     internalID: 0
     vertices: []
     indices: 
@@ -426,16 +333,16 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":2.0},"gridSpriteSize":{"x":362.0,"y":507.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":71.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":2.0},"gridSpriteSize":{"x":384.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Cesar_Lanzagranadas_fire_0: -8650131851724556127
-      Cesar_Lanzagranadas_fire_1: 3430811268910071632
-      Cesar_Lanzagranadas_fire_2: 3762807772568951887
-      Cesar_Lanzagranadas_fire_3: 1359196980833943958
-      Cesar_Lanzagranadas_fire_4: -2745551076529270336
-      Cesar_Lanzagranadas_fire_5: 5410280490852763744
-      Cesar_Lanzagranadas_fire_6: 5523946376150153052
-      Cesar_Lanzagranadas_fire_7: -7887982448672653683
+      Cesar_Lanzagranadas_Fire_0: 5899625636590523370
+      Cesar_Lanzagranadas_Fire_1: -4766417204976500034
+      Cesar_Lanzagranadas_Fire_2: -3335444003507557767
+      Cesar_Lanzagranadas_Fire_3: -6479296439511416078
+      Cesar_Lanzagranadas_Fire_4: 7024643519070368666
+      Cesar_Lanzagranadas_Fire_5: -3471346564273257227
+      Cesar_Lanzagranadas_Fire_6: 5364433873912397016
+      Cesar_Lanzagranadas_Fire_7: -1505818246
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

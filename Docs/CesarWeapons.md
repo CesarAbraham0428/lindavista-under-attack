@@ -36,8 +36,24 @@ Prompt utilizado:
 
 ## Verificación y mantenimiento
 
-`Tools > Lindavista > Set up Cesar weapons` reconstruye los clips, referencias y estados de César desde las hojas existentes. Las definiciones de balance ya creadas se conservan. No modifica el controlador de Marco.
+`Tools > Lindavista > Set up Cesar weapons` reconstruye los recortes, clips, referencias y estados de César desde las hojas existentes de cuatro columnas y dos filas. Conserva los identificadores de los recortes que mantienen su nombre. Normaliza la altura y alinea los pivotes con los pies de cada cuadro, usando el proveedor de sprites de Unity. Las definiciones de balance ya creadas se conservan. No modifica el controlador de Marco.
 
 `Tools > Lindavista > Verify Cesar weapon assets` verifica cuadros, exclusividad de los assets y referencias. En Play Mode, `CesarWeaponChecks.BeginRuntime()` comprueba disparo, consumo de munición, cadencia, recarga completa, sonidos y cancelación al cambiar de arma con personajes temporales y un archivo de progreso aislado.
 
 Verificación realizada: 46 comprobaciones de assets, 46 de integración en Play Mode, 16 comprobaciones existentes de combate y 30 de guardado. Revisión visual de César equipado, su recarga de lanzagranadas y su tienda. Capturas en `Captures/cesar-*.png`. No se realizaron compras en el perfil del jugador durante las pruebas.
+
+### Reparación después de sustituir las hojas
+
+Los clips conservaban referencias a sub-sprites eliminados al reemplazar las imágenes. Además, la recarga del francotirador tenía solo seis recortes, los de escopeta no cubrían el ancho completo y las seis hojas tenían escala/pivotes incompatibles con el personaje.
+
+Se reconstruyeron las seis secuencias de disparo/recarga con ocho cuadros y las tres poses equipadas a partir de los PNG actuales, sin modificar las imágenes. El generador ahora corrige los recortes de las seis hojas antes de enlazar los clips, de modo que también permite reparar futuras sustituciones que conserven esta distribución.
+
+Verificación de esta reparación: 196 comprobaciones de assets y 94 en Play Mode, incluyendo la reproducción de los 48 cuadros mediante el Animator real, disparo, recarga y cambio de arma. Las pruebas usan un perfil temporal. Capturas de las seis acciones en el escenario: `Captures/cesar-fixed-*.png`.
+
+### Audio de recarga de la escopeta
+
+`Escopeta_Recarga_y_Disparo.mp3` contiene primero el mecanismo de recarga y después el disparo. Los WAV preparados conservan esa separación: recarga de 0.00 a 0.36 s del original y disparo a partir de 0.60 s.
+
+La recarga se reproducía con pitch 0.18 para llenar los dos segundos de la animación, lo que deformaba y apagaba el sonido mecánico. La opción `naturalReloads[0]` en `CesarWeaponAudioLibrary` ahora mantiene pitch 1 y programa esos 0.36 s hacia el final de la recarga, coincidiendo con el movimiento de armado. Termina 0.05 s antes de completarse la recarga. Cambiar de arma, interrumpir la recarga o desactivar al jugador cancela también el sonido pendiente. Las demás armas conservan su ajuste de audio.
+
+Verificación: 101 comprobaciones en Play Mode con un perfil temporal, incluyendo tono original, reproducción efectiva en el momento previsto y cancelación del sonido programado al cambiar de arma.

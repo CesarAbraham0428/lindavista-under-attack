@@ -25,3 +25,7 @@ MonoBehaviour:
   - 0.6
   - 0.9
   reloadVolume: 0.7
+  naturalReloads:
+  - 1
+  - 0
+  - 0

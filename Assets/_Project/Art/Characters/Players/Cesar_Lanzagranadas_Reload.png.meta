@@ -29,9 +29,6 @@ TextureImporter:
   - first:
       213: -3689423018353522201
     second: Cesar_Lanzagranadas_Reload_8
-  - first:
-      213: -5577746118774432643
-    second: Cesar_Lanzagranadas_Reload_9
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -75,10 +72,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 96.6
+  spritePixelsToUnits: 89.8
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -157,11 +154,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 543
-        width: 362
-        height: 543
+        y: 512
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.5073665}
+      pivot: {x: 0.48177084, y: 0.46972656}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +175,12 @@ TextureImporter:
       name: Cesar_Lanzagranadas_Reload_1
       rect:
         serializedVersion: 2
-        x: 362
-        y: 543
-        width: 362
-        height: 543
+        x: 384
+        y: 512
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.5073665}
+      pivot: {x: 0.47395834, y: 0.46777344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -200,12 +197,12 @@ TextureImporter:
       name: Cesar_Lanzagranadas_Reload_2
       rect:
         serializedVersion: 2
-        x: 724
-        y: 543
-        width: 362
-        height: 543
+        x: 768
+        y: 512
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.5073665}
+      pivot: {x: 0.4700521, y: 0.46972656}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -222,12 +219,12 @@ TextureImporter:
       name: Cesar_Lanzagranadas_Reload_3
       rect:
         serializedVersion: 2
-        x: 1086
-        y: 543
-        width: 362
-        height: 543
+        x: 1152
+        y: 512
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.5073665}
+      pivot: {x: 0.5182292, y: 0.46777344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -246,10 +243,10 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 362
-        height: 543
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.4742173}
+      pivot: {x: 0.48046875, y: 0.5263672}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -266,12 +263,12 @@ TextureImporter:
       name: Cesar_Lanzagranadas_Reload_5
       rect:
         serializedVersion: 2
-        x: 362
+        x: 384
         y: 0
-        width: 362
-        height: 543
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.4742173}
+      pivot: {x: 0.4778646, y: 0.5263672}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -288,12 +285,12 @@ TextureImporter:
       name: Cesar_Lanzagranadas_Reload_6
       rect:
         serializedVersion: 2
-        x: 724
+        x: 768
         y: 0
-        width: 362
-        height: 543
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.4742173}
+      pivot: {x: 0.484375, y: 0.5263672}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -310,12 +307,12 @@ TextureImporter:
       name: Cesar_Lanzagranadas_Reload_7
       rect:
         serializedVersion: 2
-        x: 1086
+        x: 1152
         y: 0
-        width: 362
-        height: 543
+        width: 384
+        height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0.4742173}
+      pivot: {x: 0.49739584, y: 0.5263672}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -332,7 +329,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: e6f220aecf448384995a38aacc3bc957
     internalID: 0
     vertices: []
     indices: 
@@ -340,7 +337,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":2.0},"gridSpriteSize":{"x":384.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Cesar_Lanzagranadas_Reload_0: 5450155074045401768
       Cesar_Lanzagranadas_Reload_1: 2182838160947422641
@@ -350,8 +349,6 @@ TextureImporter:
       Cesar_Lanzagranadas_Reload_5: 955625750565548856
       Cesar_Lanzagranadas_Reload_6: 7736052749032410678
       Cesar_Lanzagranadas_Reload_7: -7389107610757978150
-      Cesar_Lanzagranadas_Reload_8: -3689423018353522201
-      Cesar_Lanzagranadas_Reload_9: -5577746118774432643
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

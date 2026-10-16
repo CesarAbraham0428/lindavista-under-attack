@@ -2,9 +2,10 @@ using System;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
+using UnityEditor.U2D.Sprites;
 using UnityEngine;
 
-/// <summary>Builds Cesar's assets from the existing slices, retaining sprite IDs and controller GUID.</summary>
+/// <summary>Rebuilds Cesar's eight-frame sheets and clips, retaining existing sprite IDs and controller GUID.</summary>
 public static class CesarWeaponSetup
 {
     private const string Art = "Assets/_Project/Art/Characters/Players/";
@@ -21,7 +22,6 @@ public static class CesarWeaponSetup
         if (!controller.parameters.Any(p => p.name == "WeaponIndex"))
             controller.AddParameter("WeaponIndex", AnimatorControllerParameterType.Float);
         var machine = controller.layers[0].stateMachine;
-        SliceLauncherReload();
         var poses = new AnimationClip[3];
         for (int i = 0; i < Weapons.Length; i++)
         {
@@ -79,25 +79,54 @@ public static class CesarWeaponSetup
     private static void Normalize(string path)
     {
         var importer = (TextureImporter)AssetImporter.GetAtPath(path);
-        Sprite first = Frames(path).First();
+        if (importer == null) throw new InvalidOperationException("Missing sprite sheet: " + path);
         var pixels = new Texture2D(2, 2);
-        pixels.LoadImage(System.IO.File.ReadAllBytes(path));
-        Rect firstBounds = OpaqueBounds(pixels, first.rect);
-        // Five-unit standing body, feet at -2.5, matching the existing walk/colliders.
-        float ppu = firstBounds.height / 5f;
-        importer.spritePixelsPerUnit = ppu;
-#pragma warning disable CS0618
-        var slices = importer.spritesheet;
-        for (int i = 0; i < slices.Length; i++)
+        try
         {
-            slices[i].alignment = (int)SpriteAlignment.Custom;
-            Rect bounds = OpaqueBounds(pixels, slices[i].rect);
-            slices[i].pivot = new Vector2(0.5f, (bounds.yMin + 2.5f * ppu) / slices[i].rect.height);
+            pixels.LoadImage(System.IO.File.ReadAllBytes(path));
+            if (pixels.width % 4 != 0 || pixels.height % 2 != 0)
+                throw new InvalidOperationException("Expected a four-column, two-row sheet: " + path);
+            int width = pixels.width / 4, height = pixels.height / 2;
+            float ppu = OpaqueBounds(pixels, new Rect(0, height, width, height)).height / 5f;
+            importer.textureType = TextureImporterType.Sprite;
+            importer.spriteImportMode = SpriteImportMode.Multiple;
+            importer.spritePixelsPerUnit = ppu;
+            importer.alphaIsTransparency = true;
+            importer.mipmapEnabled = false;
+            importer.textureCompression = TextureImporterCompression.Uncompressed;
+
+            // Re-slice every sheet, including incomplete or incorrectly sized manual slices.
+            // Keep matching IDs so other asset references survive subsequent rebuilds.
+            var factories = new SpriteDataProviderFactories();
+            factories.Init();
+            var provider = factories.GetSpriteEditorDataProviderFromObject(importer);
+            provider.InitSpriteEditorDataProvider();
+            var previous = provider.GetSpriteRects();
+            var slices = new SpriteRect[8];
+            string prefix = System.IO.Path.GetFileNameWithoutExtension(path);
+            for (int i = 0; i < slices.Length; i++)
+            {
+                string name = prefix + "_" + i;
+                Rect rect = new Rect(i % 4 * width, (1 - i / 4) * height, width, height);
+                Rect bounds = OpaqueBounds(pixels, rect);
+                var old = previous.FirstOrDefault(s => s.name == name);
+                slices[i] = new SpriteRect
+                {
+                    name = name, rect = rect,
+                    spriteID = old != null ? old.spriteID : GUID.Generate(),
+                    alignment = SpriteAlignment.Custom,
+                    // Five-unit standing body, feet at -2.5, matching walk/colliders.
+                    pivot = new Vector2(FeetCenter(pixels, rect, bounds) / width,
+                        (bounds.yMin + 2.5f * ppu) / height)
+                };
+            }
+            provider.SetSpriteRects(slices);
+            provider.GetDataProvider<ISpriteNameFileIdDataProvider>().SetNameFileIdPairs(
+                slices.Select(s => new SpriteNameFileIdPair(s.name, s.spriteID)));
+            provider.Apply();
+            importer.SaveAndReimport();
         }
-        importer.spritesheet = slices;
-#pragma warning restore CS0618
-        UnityEngine.Object.DestroyImmediate(pixels);
-        importer.SaveAndReimport();
+        finally { UnityEngine.Object.DestroyImmediate(pixels); }
     }
 
     private static Rect OpaqueBounds(Texture2D texture, Rect rect)
@@ -107,30 +136,20 @@ public static class CesarWeaponSetup
         for (int y = 0; y < (int)rect.height; y++)
             for (int x = 0; x < (int)rect.width; x++)
                 if (pixels[y * (int)rect.width + x].a > 0.1f) { bottom = Mathf.Min(bottom, y); top = Mathf.Max(top, y + 1); }
-        return new Rect(0, bottom, rect.width, Mathf.Max(1, top - bottom));
+        if (top <= bottom) throw new InvalidOperationException("Empty animation cell: " + rect);
+        return new Rect(0, bottom, rect.width, top - bottom);
     }
 
-    private static void SliceLauncherReload()
+    private static float FeetCenter(Texture2D texture, Rect rect, Rect bounds)
     {
-        string path = Art + "Cesar_Lanzagranadas_Reload.png";
-        var importer = (TextureImporter)AssetImporter.GetAtPath(path);
-        if (importer == null) throw new InvalidOperationException("Import the launcher reload sheet first.");
-        if (importer.spriteImportMode == SpriteImportMode.Multiple && Frames(path).Length == 8) return;
-        var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
-        importer.textureType = TextureImporterType.Sprite;
-        importer.spriteImportMode = SpriteImportMode.Multiple;
-        importer.alphaIsTransparency = true;
-        importer.mipmapEnabled = false;
-        importer.textureCompression = TextureImporterCompression.Uncompressed;
-        var slices = new SpriteMetaData[8];
-        for (int i = 0; i < 8; i++)
-            slices[i] = new SpriteMetaData { name = "Cesar_Lanzagranadas_Reload_" + i,
-                rect = new Rect(i % 4 * texture.width / 4, (1 - i / 4) * texture.height / 2, texture.width / 4, texture.height / 2),
-                alignment = (int)SpriteAlignment.Center, pivot = Vector2.one * 0.5f };
-#pragma warning disable CS0618
-        importer.spritesheet = slices;
-#pragma warning restore CS0618
-        importer.SaveAndReimport();
+        int width = (int)rect.width;
+        int height = Mathf.Max(1, (int)(bounds.height * 0.12f));
+        var pixels = texture.GetPixels((int)rect.x, (int)(rect.y + bounds.yMin), width, height);
+        int left = width, right = 0;
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
+                if (pixels[y * width + x].a > 0.1f) { left = Mathf.Min(left, x); right = Mathf.Max(right, x + 1); }
+        return (left + right) * 0.5f;
     }
 
     private static WeaponDefinition Definition(int index)
