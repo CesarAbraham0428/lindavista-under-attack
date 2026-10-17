@@ -73,7 +73,7 @@ public sealed class PlayerHealthHUD : MonoBehaviour
         if (Time.unscaledTime >= nextPlayerRefresh)
         {
             RefreshPlayers();
-            nextPlayerRefresh = Time.unscaledTime + 0.5f;
+            nextPlayerRefresh = Time.unscaledTime + 1f;
         }
     }
 
@@ -97,7 +97,7 @@ public sealed class PlayerHealthHUD : MonoBehaviour
         CanvasScaler scaler = canvasObject.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920f, 1080f);
-        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
         scaler.matchWidthOrHeight = 0.5f;
 
         GameObject safeAreaObject = new GameObject("Safe Area", typeof(RectTransform));
@@ -139,9 +139,9 @@ public sealed class PlayerHealthHUD : MonoBehaviour
         GameObject rowObject = CreateImage("Health " + player.name, safeAreaRoot, PanelColor);
         RectTransform rowRect = rowObject.GetComponent<RectTransform>();
         rowRect.anchorMin = new Vector2(0f, 1f);
-        rowRect.anchorMax = new Vector2(1f / 3f, 1f);
+        rowRect.anchorMax = new Vector2(0f, 1f);
         rowRect.pivot = new Vector2(0f, 1f);
-        rowRect.sizeDelta = new Vector2(-Margin * 2f, RowHeight);
+        rowRect.sizeDelta = new Vector2(592f, RowHeight);
         rowRect.anchoredPosition = new Vector2(Margin, -Margin - index * RowSpacing);
 
         Text label = CreateText("Health Label", rowRect, "VIDA", 26,

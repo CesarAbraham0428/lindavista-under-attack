@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public static class ProgressionUI
 {
+    private static Font fuentePredeterminada;
     public static readonly Color PanelColor = new Color(0.07f, 0.08f, 0.09f, 0.96f);
     public static readonly Color Gold = new Color(1f, 0.78f, 0.26f);
     public static Canvas Canvas(Transform parent, string name, int order)
@@ -18,7 +19,7 @@ public static class ProgressionUI
         var scaler = go.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
-        scaler.matchWidthOrHeight = 0.5f;
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
         return canvas;
     }
     public static Image Image(Transform parent, string name, Color color, bool blocks = false)
@@ -35,7 +36,8 @@ public static class ProgressionUI
         var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
         go.transform.SetParent(parent, false);
         var text = go.GetComponent<Text>();
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        if (fuentePredeterminada == null) fuentePredeterminada = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.font = fuentePredeterminada;
         text.text = value;
         text.color = new Color(0.96f, 0.93f, 0.85f);
         text.fontSize = size;

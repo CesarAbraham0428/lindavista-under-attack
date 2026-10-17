@@ -80,6 +80,7 @@ public sealed class MenuMusicPlayer : MonoBehaviour
     public void SelectTrack(int index)
     {
         if (library == null || index < 0 || index >= library.Count || library.tracks[index] == null) return;
+        if (selectedTrack == index) return;
         selectedTrack = index;
         PlayerPrefs.SetInt(SelectedTrackKey, selectedTrack);
         PlayerPrefs.Save();
@@ -89,7 +90,9 @@ public sealed class MenuMusicPlayer : MonoBehaviour
 
     public void SetMusicVolume(float volume)
     {
-        source.volume = Mathf.Clamp01(volume);
+        float volumen = Mathf.Clamp01(volume);
+        if (Mathf.Approximately(source.volume, volumen)) return;
+        source.volume = volumen;
         PlayerPrefs.SetFloat(MusicVolumeKey, source.volume);
         Changed?.Invoke();
     }

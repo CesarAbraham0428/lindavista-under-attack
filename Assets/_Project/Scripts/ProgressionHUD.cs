@@ -13,6 +13,9 @@ public sealed class ProgressionHUD : MonoBehaviour
     private HUDSpriteVariants coinArtwork;
     private GameObject collection;
     private float refreshAt;
+    private float ultimaFila = -1f;
+    private int ultimasMonedas = -1;
+    private string ultimoAviso;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Register()
@@ -30,8 +33,7 @@ public sealed class ProgressionHUD : MonoBehaviour
     {
         active = this;
         var canvas = ProgressionUI.Canvas(transform, "Progression Canvas", 115);
-        safeArea = new GameObject("Safe Area", typeof(RectTransform)).GetComponent<RectTransform>();
-        safeArea.SetParent(canvas.transform, false);
+        safeArea = AreaSeguraUI.Crear(canvas.transform, "Safe Area");
         walletPanel = ProgressionUI.Image(safeArea, "Wallet Panel",
             new Color(0.07f, 0.08f, 0.07f, 0.94f)).rectTransform;
         ProgressionUI.Top(walletPanel, new Vector2(0, 1),
@@ -51,23 +53,20 @@ public sealed class ProgressionHUD : MonoBehaviour
         wallet.color = ProgressionUI.Gold;
         ProgressionUI.Top(wallet.rectTransform, new Vector2(0, 1), new Vector2(68, -4), new Vector2(WalletWidth - 84f, 56));
         var finish = ProgressionUI.Button(safeArea, "FINALIZAR NIVEL", GameFlowController.FinishLevel);
-        ProgressionUI.Percent((RectTransform)finish.transform, 0.34f, 0.03f, 0.66f, 0.13f);
+        ProgressionUI.Percent((RectTransform)finish.transform, 0.34f, 0.06f, 0.66f, 0.18f);
         collection = finish.gameObject;
         collection.SetActive(false);
         notice = ProgressionUI.Text(safeArea, "Notice", "", 30, TextAnchor.MiddleCenter);
-        ProgressionUI.Percent(notice.rectTransform, 0.15f, 0.14f, 0.85f, 0.21f);
+        ProgressionUI.Percent(notice.rectTransform, 0.28f, 0.27f, 0.72f, 0.36f);
         ProgressionService.Changed += Refresh;
         Refresh();
     }
     private void Update()
     {
-        walletPanel.anchoredPosition = new Vector2(24, -PlayerHealthHUD.SecondaryTop);
-        if (Screen.width > 0 && Screen.height > 0)
+        if (ultimaFila != PlayerHealthHUD.SecondaryTop)
         {
-            Rect area = Screen.safeArea;
-            safeArea.anchorMin = new Vector2(area.xMin / Screen.width, area.yMin / Screen.height);
-            safeArea.anchorMax = new Vector2(area.xMax / Screen.width, area.yMax / Screen.height);
-            safeArea.offsetMin = safeArea.offsetMax = Vector2.zero;
+            ultimaFila = PlayerHealthHUD.SecondaryTop;
+            walletPanel.anchoredPosition = new Vector2(24, -ultimaFila);
         }
         if (Time.unscaledTime >= refreshAt)
         {
@@ -78,13 +77,18 @@ public sealed class ProgressionHUD : MonoBehaviour
     private void Refresh()
     {
         int coins = ProgressionService.Coins;
-        wallet.text = coins.ToString();
-        wallet.color = coins > 0 ? ProgressionUI.Gold : new Color(0.65f, 0.65f, 0.65f);
-        coinIcon.sprite = coins > 0 ? coinArtwork.ColorSprite : coinArtwork.GraySprite;
-        coinIcon.color = coins > 0 ? Color.white : new Color(0.65f, 0.65f, 0.65f);
+        if (ultimasMonedas != coins)
+        {
+            ultimasMonedas = coins;
+            wallet.text = coins.ToString();
+            wallet.color = coins > 0 ? ProgressionUI.Gold : new Color(0.65f, 0.65f, 0.65f);
+            coinIcon.sprite = coins > 0 ? coinArtwork.ColorSprite : coinArtwork.GraySprite;
+            coinIcon.color = coins > 0 ? Color.white : new Color(0.65f, 0.65f, 0.65f);
+        }
         bool collecting = GameFlowController.IsCollectionPhase && !GameFlowController.IsMatchEnded;
-        collection.SetActive(collecting);
-        notice.text = ProgressionService.LastError ?? (collecting ? "¡Oleada eliminada! Recoge tus monedas antes de finalizar." : "");
+        if (collection.activeSelf != collecting) collection.SetActive(collecting);
+        string aviso = ProgressionService.LastError ?? (collecting ? "¡Oleada eliminada! Recoge tus monedas antes de finalizar." : "");
+        if (ultimoAviso != aviso) { ultimoAviso = aviso; notice.text = aviso; }
     }
     private void OnDestroy()
     {

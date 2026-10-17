@@ -103,7 +103,10 @@ public sealed class GrenadeProjectile : MonoBehaviour
         Vector2 normal = Vector2.zero;
         bool hit = false;
         if (distance > 0.0001f)
-            foreach (RaycastHit2D contact in Physics2D.CircleCastAll(start, radius, displacement / distance, distance))
+        {
+            using var consulta = ConsultasFisicasCombate.Obtener();
+            consulta.Barrer(start, radius, displacement / distance, distance);
+            foreach (RaycastHit2D contact in consulta.Impactos)
             {
                 Collider2D collider = contact.collider;
                 // Grenades do not deal contact damage or detonate against an enemy.
@@ -118,6 +121,7 @@ public sealed class GrenadeProjectile : MonoBehaviour
                 fraction = candidate;
                 normal = contact.normal;
             }
+        }
 
         if (displacement.y < 0f && start.y + displacement.y <= groundY + radius)
         {

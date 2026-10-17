@@ -12,7 +12,7 @@ public static class ShotVisualChecks
     public static void VerifyPlayerMuzzles()
     {
         if (!Application.isPlaying) throw new Exception("Enter Play Mode before checking actual player shots.");
-        string folder = Path.Combine(Application.dataPath, "../Temp/ShotMuzzleChecks");
+        string folder = Path.Combine(Application.temporaryCachePath, "ShotMuzzleChecks");
         Directory.CreateDirectory(folder);
         string path = Path.Combine(folder, Guid.NewGuid() + ".json");
         File.WriteAllText(path, JsonUtility.ToJson(new ProgressionProfile
@@ -27,7 +27,8 @@ public static class ShotVisualChecks
         int checkedShots = 0;
         try
         {
-            using (ProgressionService.UseVerificationRepository(new ProgressionRepository(path)))
+            // Igual que en partida: consumir munición no fuerza E/S por cada disparo.
+            using (ProgressionService.UseVerificationRepository(new ProgressionRepository(path, true)))
             {
                 foreach (string character in new[] { "Marco", "Cesar" })
                 for (int weapon = 0; weapon < 3; weapon++)
@@ -65,7 +66,16 @@ public static class ShotVisualChecks
                     var lateUpdate = typeof(PlayerActions).GetMethod("LateUpdate", flags);
                     lateUpdate.Invoke(actions, null);
                     var shots = Projectiles().Where(p => !previousShots.Contains(p)).ToArray();
-                    Require(shots.Length == 1, "Exactly one projectile is emitted per accepted shot");
+                    Require(shots.Length == 1, "Exactly one projectile is emitted per accepted shot. " +
+                        $"Caso: {character}, arma {weapon}, dirección {aim}, distancia {pointerDistance}; " +
+                        $"proyectiles={shots.Length}, puedeDisparar={actions.Weapons.CanFire}, " +
+                        $"cargador={actions.Weapons.Magazine}, reserva={ProgressionService.Ammo(weapon, cesar)}, " +
+                        $"esCesar={actions.Weapons.IsCesar}, bloqueado={actions.IsInputLocked}, " +
+                        $"derrotado={actions.IsDefeated}, pausa={GameFlowController.IsPaused}, " +
+                        $"fin={GameFlowController.IsMatchEnded}, " +
+                        $"errorGuardado={ProgressionService.LastError}, " +
+                        $"ocupado={typeof(PlayerActions).GetMethod("IsBusyExceptFire", flags).Invoke(actions, null)}, " +
+                        $"presupuesto={typeof(CombatProjectile).GetField("activeProjectiles", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null)}");
                     var shot = shots[0];
                     created.Add(shot);
                     string weaponName = CharacterWeapons.State(weapon, cesar);
@@ -128,6 +138,7 @@ public static class ShotVisualChecks
                 if (!existingTracers.Contains(tracer)) UnityEngine.Object.DestroyImmediate(tracer.gameObject);
             File.Delete(path);
             File.Delete(path + ".bak");
+            File.Delete(path + ".tmp");
         }
     }
 

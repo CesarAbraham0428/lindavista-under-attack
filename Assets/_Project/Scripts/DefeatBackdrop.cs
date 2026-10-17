@@ -34,36 +34,40 @@ public sealed class DefeatBackdrop : MonoBehaviour
         // Capture the scene and its HUD, without blurring the wooden signs.
         resultCanvas.enabled = false;
         yield return new WaitForEndOfFrame();
-        Texture2D snapshot = null;
+        RenderTexture captura = null;
+        RenderTexture reducida = null;
+        RenderTexture anterior = RenderTexture.active;
         try
         {
-            snapshot = ScreenCapture.CaptureScreenshotAsTexture();
-            if (snapshot == null || snapshot.width < 1 || snapshot.height < 1) yield break;
-            int width = Mathf.Min(subtle ? 640 : 320, snapshot.width);
-            int height = Mathf.Max(1, Mathf.RoundToInt(width * snapshot.height / (float)snapshot.width));
-            Color32[] source = snapshot.GetPixels32();
-            Color32[] pixels = new Color32[width * height];
-            Color32[] scratch = new Color32[pixels.Length];
-            for (int y = 0; y < height; y++)
-            {
-                int sourceY = Mathf.Min(snapshot.height - 1, (int)((y + 0.5f) * snapshot.height / height));
-                for (int x = 0; x < width; x++)
-                {
-                    int sourceX = Mathf.Min(snapshot.width - 1, (int)((x + 0.5f) * snapshot.width / width));
-                    pixels[y * width + x] = source[sourceY * snapshot.width + sourceX];
-                }
-            }
-            for (int pass = 0; pass < (subtle ? 1 : 2); pass++)
-            {
-                Blur(pixels, scratch, width, height, true, subtle ? 2 : 5);
-                Blur(scratch, pixels, width, height, false, subtle ? 2 : 5);
-            }
+            if (Screen.width < 1 || Screen.height < 1) yield break;
+            int width = Mathf.Min(subtle ? 640 : 320, Screen.width);
+            int height = Mathf.Max(1, Mathf.RoundToInt(width * Screen.height / (float)Screen.width));
+            // Reducir en GPU antes de leer: una pantalla 4K ya no crea un array
+            // de millones de píxeles administrados al mostrar el resultado.
+            captura = RenderTexture.GetTemporary(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
+            reducida = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+            ScreenCapture.CaptureScreenshotIntoRenderTexture(captura);
+            // La captura usa el origen de la API gráfica; ReadPixels y RawImage
+            // esperan el origen inferior izquierdo. Normalizar al reducir en GPU.
+            bool invertirY = SystemInfo.graphicsUVStartsAtTop;
+            Graphics.Blit(captura, reducida,
+                invertirY ? new Vector2(1f, -1f) : Vector2.one,
+                invertirY ? new Vector2(0f, 1f) : Vector2.zero);
+            RenderTexture.active = reducida;
             blurred = new Texture2D(width, height, TextureFormat.RGBA32, false)
             {
                 name = "Result Background Snapshot",
                 filterMode = FilterMode.Bilinear,
                 wrapMode = TextureWrapMode.Clamp
             };
+            blurred.ReadPixels(new Rect(0, 0, width, height), 0, 0, false);
+            Color32[] pixels = blurred.GetPixels32();
+            Color32[] scratch = new Color32[pixels.Length];
+            for (int pass = 0; pass < (subtle ? 1 : 2); pass++)
+            {
+                Blur(pixels, scratch, width, height, true, subtle ? 2 : 5);
+                Blur(scratch, pixels, width, height, false, subtle ? 2 : 5);
+            }
             blurred.SetPixels32(pixels);
             blurred.Apply(false, true);
             background.texture = blurred;
@@ -71,7 +75,9 @@ public sealed class DefeatBackdrop : MonoBehaviour
         }
         finally
         {
-            if (snapshot != null) Destroy(snapshot);
+            RenderTexture.active = anterior;
+            if (reducida != null) RenderTexture.ReleaseTemporary(reducida);
+            if (captura != null) RenderTexture.ReleaseTemporary(captura);
             if (resultCanvas != null) resultCanvas.enabled = true;
         }
     }

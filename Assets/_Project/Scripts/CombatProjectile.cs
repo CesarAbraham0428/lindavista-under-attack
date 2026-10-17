@@ -129,13 +129,14 @@ public sealed class CombatProjectile : MonoBehaviour
         float noseOffset = weaponIndex == 2 ? Mathf.Max(0f, ShotVisual.RocketWidth - radius) : 0f;
         Vector2 origin = tail + direction * noseOffset;
         float castDistance = flightCamera != null ? Mathf.Min(distance + noseOffset, remainingRange) : distance + noseOffset;
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(tail, radius, direction, castDistance);
+        using var consulta = ConsultasFisicasCombate.Obtener();
+        consulta.Barrer(tail, radius, direction, castDistance);
         float nearestDistance = float.PositiveInfinity;
         float nearestCastDistance = float.PositiveInfinity;
         Collider2D nearestCollider = null;
         Vector2 contact = Vector2.zero, normal = Vector2.zero;
 
-        foreach (RaycastHit2D hit in hits)
+        foreach (RaycastHit2D hit in consulta.Impactos)
         {
             Collider2D collider = hit.collider;
             if (collider == null || collider.transform == owner ||
@@ -218,18 +219,12 @@ public sealed class CombatProjectile : MonoBehaviour
 
     private void SweepSniper(Vector2 start, float distance)
     {
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(start, radius, direction, distance);
         // Resolve every contact along this step, nearest first. A wall wins a tie
         // so overlapping enemy hitboxes cannot carry a shot through solid scenery.
-        System.Array.Sort(hits, (a, b) =>
-        {
-            int order = a.distance.CompareTo(b.distance);
-            if (order != 0) return order;
-            bool aWall = a.collider != null && !a.collider.isTrigger && a.collider.GetComponentInParent<EnemyHealth>() == null;
-            bool bWall = b.collider != null && !b.collider.isTrigger && b.collider.GetComponentInParent<EnemyHealth>() == null;
-            return bWall.CompareTo(aWall);
-        });
-        foreach (RaycastHit2D hit in hits)
+        using var consulta = ConsultasFisicasCombate.Obtener();
+        consulta.Barrer(start, radius, direction, distance);
+        consulta.OrdenarPenetracion();
+        foreach (RaycastHit2D hit in consulta.Impactos)
         {
             Collider2D collider = hit.collider;
             if (collider == null || collider.transform == owner ||
@@ -285,9 +280,11 @@ public sealed class CombatProjectile : MonoBehaviour
     internal static void ApplySplashDamage(Vector2 position, int damage, Vector2 direction,
         Transform owner, EnemyHealth direct = null)
     {
-        var damaged = new HashSet<EnemyHealth>();
+        using var consulta = ConsultasFisicasCombate.Obtener();
+        var damaged = consulta.EnemigosDanados;
         if (direct != null) damaged.Add(direct);
-        foreach (Collider2D nearby in Physics2D.OverlapCircleAll(position, RocketSplashRadius))
+        consulta.Solapar(position, RocketSplashRadius);
+        foreach (Collider2D nearby in consulta.Solapamientos)
         {
             EnemyHealth enemy = nearby.GetComponentInParent<EnemyHealth>();
             if (enemy == null || enemy.IsDead || damaged.Contains(enemy)) continue;
@@ -301,7 +298,9 @@ public sealed class CombatProjectile : MonoBehaviour
 
     private static bool IsSplashBlocked(Vector2 origin, Vector2 target, Transform owner)
     {
-        foreach (RaycastHit2D hit in Physics2D.LinecastAll(origin, target))
+        using var consulta = ConsultasFisicasCombate.Obtener();
+        consulta.TrazarLinea(origin, target);
+        foreach (RaycastHit2D hit in consulta.Impactos)
         {
             Collider2D collider = hit.collider;
             if (collider == null || collider.isTrigger || collider.GetComponentInParent<EnemyHealth>() != null ||

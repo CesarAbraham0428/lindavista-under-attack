@@ -12,7 +12,8 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
     private readonly Image[] icons = new Image[3];
     private readonly Button[] buttons = new Button[3];
     private readonly Text[] ammoCounts = new Text[3];
-    private Image[] cartridges = new Image[0];
+    private readonly System.Collections.Generic.List<Image> cartridges = new System.Collections.Generic.List<Image>();
+    private int capacidadCartuchos;
     private readonly HUDSpriteVariants[] ammoArtwork = new HUDSpriteVariants[3];
     private RectTransform ammoStrip;
     private RectTransform ammoPanel;
@@ -28,6 +29,9 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
     private PlayerActions player;
     private int selected;
     private float nextPlayerRefresh;
+    private float ultimaFila = -1f;
+    private bool ultimaSeleccionPermitida = true;
+    private bool arteCesar;
 
     public static int SelectedWeapon => active != null ? active.selected : 0;
 
@@ -49,14 +53,13 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
     {
         active = this;
         ProgressionUI.EnsureEventSystem();
-        var artwork = CharacterWeapons.Artwork(CharacterWeapons.SelectedCesar);
+        arteCesar = CharacterWeapons.SelectedCesar;
+        var artwork = CharacterWeapons.Artwork(arteCesar);
         for (int i = 0; i < ammoArtwork.Length; i++)
             ammoArtwork[i] = new HUDSpriteVariants(artwork != null ? artwork.AmmoAt(i) : null);
         circle = MakeCircle();
         var canvas = ProgressionUI.Canvas(transform, "Weapon Selection Canvas", 116);
-        safeArea = new GameObject("Safe Area", typeof(RectTransform)).GetComponent<RectTransform>();
-        safeArea.SetParent(canvas.transform, false);
-        UpdateSafeArea();
+        safeArea = AreaSeguraUI.Crear(canvas.transform, "Safe Area");
 
         string[] names = { "Pistol", "SMG", "RPG" };
         Vector2[] sizes = { new Vector2(124, 96), new Vector2(148, 96), new Vector2(158, 74) };
@@ -116,11 +119,13 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
 
     private void Update()
     {
-        UpdateSafeArea();
-        ammoPanel.anchoredPosition = new Vector2(AmmoLeft, -PlayerHealthHUD.SecondaryTop);
-        for (int i = 0; i < rims.Length; i++)
-            rims[i].rectTransform.anchoredPosition = new Vector2(32,
-                -PlayerHealthHUD.SecondaryTop - WeaponTopGap - i * 164);
+        if (ultimaFila != PlayerHealthHUD.SecondaryTop)
+        {
+            ultimaFila = PlayerHealthHUD.SecondaryTop;
+            ammoPanel.anchoredPosition = new Vector2(AmmoLeft, -ultimaFila);
+            for (int i = 0; i < rims.Length; i++)
+                rims[i].rectTransform.anchoredPosition = new Vector2(32, -ultimaFila - WeaponTopGap - i * 164);
+        }
         if (Time.unscaledTime >= nextPlayerRefresh)
         {
             if (player == null || !player.gameObject.activeInHierarchy)
@@ -130,8 +135,11 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
         }
 
         bool canSelect = CanSelect();
-        foreach (Button button in buttons)
-            button.interactable = canSelect;
+        if (ultimaSeleccionPermitida != canSelect)
+        {
+            ultimaSeleccionPermitida = canSelect;
+            foreach (Button button in buttons) button.interactable = canSelect;
+        }
         if (!canSelect || Keyboard.current == null) return;
         if (Keyboard.current.digit1Key.wasPressedThisFrame) Select(0);
         else if (Keyboard.current.digit2Key.wasPressedThisFrame) Select(1);
@@ -171,13 +179,18 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
         if (weapons != null) weapons.Changed -= RefreshAmmo;
         weapons = current;
         if (weapons != null) weapons.Changed += RefreshAmmo;
-        var artwork = CharacterWeapons.Artwork(weapons != null ? weapons.IsCesar : CharacterWeapons.SelectedCesar);
-        for (int i = 0; i < icons.Length; i++)
+        bool cesar = weapons != null ? weapons.IsCesar : CharacterWeapons.SelectedCesar;
+        if (arteCesar != cesar)
         {
-            icons[i].sprite = artwork != null ? artwork.IconAt(i) : null;
-            icons[i].enabled = icons[i].sprite != null;
-            ammoArtwork[i]?.Dispose();
-            ammoArtwork[i] = new HUDSpriteVariants(artwork != null ? artwork.AmmoAt(i) : null);
+            arteCesar = cesar;
+            var artwork = CharacterWeapons.Artwork(cesar);
+            for (int i = 0; i < icons.Length; i++)
+            {
+                icons[i].sprite = artwork != null ? artwork.IconAt(i) : null;
+                icons[i].enabled = icons[i].sprite != null;
+                ammoArtwork[i]?.Dispose();
+                ammoArtwork[i] = new HUDSpriteVariants(artwork != null ? artwork.AmmoAt(i) : null);
+            }
         }
         RefreshAmmo();
     }
@@ -197,9 +210,9 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
 
         bool available = weapons != null && weapons.EquippedWeapon == selected;
         int capacity = available ? Mathf.Max(1, weapons.Definition.MagazineSize) : 0;
-        if (cartridges.Length != capacity) BuildCartridges(capacity);
+        if (capacidadCartuchos != capacity) BuildCartridges(capacity);
         int remaining = available ? weapons.Magazine : 0;
-        for (int i = 0; i < cartridges.Length; i++)
+        for (int i = 0; i < capacidadCartuchos; i++)
         {
             bool filled = i >= capacity - remaining;
             cartridges[i].sprite = filled ? ammoArtwork[selected].ColorSprite : ammoArtwork[selected].GraySprite;
@@ -216,31 +229,22 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
 
     private void BuildCartridges(int capacity)
     {
-        foreach (Transform child in ammoStrip)
+        capacidadCartuchos = capacity;
+        while (cartridges.Count < capacity)
         {
-            child.gameObject.SetActive(false);
-            Destroy(child.gameObject);
+            var cartucho = ProgressionUI.Image(ammoStrip, "Cartridge " + (cartridges.Count + 1), Color.white);
+            cartucho.preserveAspect = true;
+            cartridges.Add(cartucho);
         }
-        cartridges = new Image[capacity];
+        for (int i = 0; i < cartridges.Count; i++) cartridges[i].gameObject.SetActive(i < capacity);
         if (capacity == 0) return;
         float step = Mathf.Min(34f, AmmoWidth / capacity);
         float gap = Mathf.Min(3f, step * 0.15f);
         for (int i = 0; i < capacity; i++)
         {
-            cartridges[i] = ProgressionUI.Image(ammoStrip, "Cartridge " + (i + 1), Color.white);
-            cartridges[i].preserveAspect = true;
             ProgressionUI.Top(cartridges[i].rectTransform, new Vector2(0, 1),
                 new Vector2(i * step, 0), new Vector2(step - gap, 44));
         }
-    }
-
-    private void UpdateSafeArea()
-    {
-        if (Screen.width <= 0 || Screen.height <= 0) return;
-        Rect area = Screen.safeArea;
-        safeArea.anchorMin = new Vector2(area.xMin / Screen.width, area.yMin / Screen.height);
-        safeArea.anchorMax = new Vector2(area.xMax / Screen.width, area.yMax / Screen.height);
-        safeArea.offsetMin = safeArea.offsetMax = Vector2.zero;
     }
 
     private static void Center(RectTransform rect, Vector2 size)

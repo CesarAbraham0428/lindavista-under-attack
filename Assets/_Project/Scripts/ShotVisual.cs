@@ -5,6 +5,7 @@ public sealed class ShotVisual : MonoBehaviour
 {
     public const float RocketWidth = 1.96f;
     private static readonly Sprite[] sprites = new Sprite[4];
+    private static bool atlasPreparado;
     private static Sprite softDot;
     private int weapon;
     private float nextSmoke;
@@ -123,16 +124,31 @@ public sealed class ShotVisual : MonoBehaviour
 
     public static Sprite GetSprite(int index)
     {
-        if (sprites[index] != null) return sprites[index];
+        index = Mathf.Clamp(index, 0, sprites.Length - 1);
+        PrepararAtlas();
+        return sprites[index] != null ? sprites[index] : ProgressionVisuals.Projectile;
+    }
+
+    private static void PrepararAtlas()
+    {
+        if (atlasPreparado) return;
+        atlasPreparado = true;
         var texture = Resources.Load<Texture2D>("ShotProjectileAtlas");
-        if (texture == null) return ProgressionVisuals.Projectile;
+        if (texture == null || !texture.isReadable) return;
+        // Una sola copia temporal de píxeles sirve para recortar los cuatro efectos.
+        var pixels = texture.GetPixels32();
+        for (int indice = 0; indice < sprites.Length; indice++)
+            RecortarSprite(texture, pixels, indice);
+    }
+
+    private static void RecortarSprite(Texture2D texture, Color32[] pixels, int index)
+    {
         // The rocket is wider than half the generated atlas; regions keep it intact.
         Rect region = index == 0 ? new Rect(0, .5f, .5f, .5f) : index == 1 ? new Rect(.5f, .5f, .5f, .5f) :
             index == 2 ? new Rect(0, 0, .57f, .5f) : new Rect(.58f, 0, .42f, .5f);
         int left = (int)(region.xMin * texture.width), right = (int)(region.xMax * texture.width);
         int bottom = (int)(region.yMin * texture.height), top = (int)(region.yMax * texture.height);
         int minX = right, minY = top, maxX = left, maxY = bottom;
-        var pixels = texture.GetPixels32();
         for (int y = bottom; y < top; y++)
             for (int x = left; x < right; x++)
                 if (pixels[y * texture.width + x].a > 24)
@@ -140,10 +156,18 @@ public sealed class ShotVisual : MonoBehaviour
                     minX = Mathf.Min(minX, x); maxX = Mathf.Max(maxX, x);
                     minY = Mathf.Min(minY, y); maxY = Mathf.Max(maxY, y);
                 }
-        if (maxX <= minX || maxY <= minY) return ProgressionVisuals.Projectile;
+        if (maxX <= minX || maxY <= minY) return;
         sprites[index] = Sprite.Create(texture, new Rect(minX, minY, maxX - minX + 1, maxY - minY + 1),
             new Vector2(0, .5f), 256f);
-        return sprites[index];
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void RevisarAtlasAlIniciar()
+    {
+        atlasPreparado = true;
+        // Al entrar en Play sin recargar el dominio pueden persistir referencias destruidas.
+        for (int indice = 0; indice < sprites.Length; indice++)
+            if (sprites[indice] == null) { atlasPreparado = false; break; }
     }
 }
 

@@ -68,8 +68,10 @@ public static class CameraFollowChecks
                 Read<float>(camera, "framingVelocity") == pausedVelocity,
                 "A paused frame does not move the camera or invalidate pan velocity");
 
+            ComprobarLimitesPantalla(camera, owner);
+
             string result = "CAMERA_FOLLOW_CHECKS_OK: quick framing at 30/60/120 fps, bounded pan speed, " +
-                "input jitter, interrupted reversals and pause verified.";
+                "input jitter, interrupted reversals, pause and narrow-screen entrance bounds verified.";
             Debug.Log(result);
             return result;
         }
@@ -83,6 +85,38 @@ public static class CameraFollowChecks
         Write(camera, "framingVelocity", 0f);
         Write(camera, "pendingDirection", 0);
         Write(camera, "pendingDirectionTime", 0f);
+    }
+
+    private static void ComprobarLimitesPantalla(CameraFollow2D seguimiento, GameObject objeto)
+    {
+        var camara = objeto.AddComponent<Camera>();
+        camara.orthographic = true;
+        camara.orthographicSize = 6f;
+        Write(seguimiento, "attachedCamera", camara);
+        Write(seguimiento, "normalOrthographicSize", 6f);
+        Write(seguimiento, "startCameraX", 0f);
+        var minimo = typeof(CameraFollow2D).GetProperty("MinimoCamaraX", PrivateInstance);
+        float bordeReferencia = -6f * 16f / 9f;
+        foreach (float proporcion in new[] { 4f / 3f, 3f / 2f, 16f / 9f, 20f / 9f, 4f / 3f })
+        {
+            camara.aspect = proporcion;
+            float limite = (float)minimo.GetValue(seguimiento);
+            Require(limite <= 0f, "El ajuste conserva el inicio original en pantallas anchas");
+            if (proporcion < 16f / 9f)
+                Require(Mathf.Approximately(limite - 6f * proporcion, bordeReferencia),
+                    "Una pantalla estrecha conserva el borde izquierdo de referencia 16:9");
+            else
+                Require(Mathf.Approximately(limite, 0f), "16:9 y panorámico conservan la cámara original");
+            Require(Mathf.Approximately(Read<float>(seguimiento, "startCameraX"), 0f),
+                "Cambiar la proporción no acumula desplazamiento en el origen");
+        }
+
+        camara.orthographicSize = 18f;
+        Require(Mathf.Approximately((float)minimo.GetValue(seguimiento), 6f * (4f / 3f - 16f / 9f)),
+            "El retorno de introducción usa el tamaño normal aunque el zoom siga ampliado");
+        Write(seguimiento, "startCameraX", 10f);
+        Require(Mathf.Approximately((float)minimo.GetValue(seguimiento), 10f + 6f * (4f / 3f - 16f / 9f)),
+            "Una posición inicial distinta conserva su borde de referencia");
     }
 
     private static void Step(CameraFollow2D camera, float input, float deltaTime) =>

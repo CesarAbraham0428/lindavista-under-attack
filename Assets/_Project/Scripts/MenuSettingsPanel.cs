@@ -38,10 +38,28 @@ public sealed class MenuSettingsPanel : MonoBehaviour
 
     private void OnEnable()
     {
+        ConfigurarControlesMoviles(Application.isMobilePlatform);
         ShowSection(false);
         if (!bound || player == null) return;
         player.Changed += Refresh;
         Refresh();
+    }
+
+    public void ConfigurarControlesMoviles(bool movil)
+    {
+        if (controlsContent == null) return;
+        var teclado = controlsContent.transform.Find("Keyboard and Mouse");
+        var tactil = controlsContent.transform.Find("Touch Controls");
+        if (teclado != null) teclado.gameObject.SetActive(!movil);
+        if (tactil == null) return;
+        ProgressionUI.Percent((RectTransform)tactil, movil ? 0f : .595f, 0f, 1f, 1f);
+        if (!movil) return;
+        foreach (var texto in tactil.GetComponentsInChildren<Text>(true))
+        {
+            int tamano = texto.gameObject.name == "Hint" ? 30 : 35;
+            texto.fontSize = texto.resizeTextMaxSize = tamano;
+            texto.resizeTextMinSize = 24;
+        }
     }
 
     private void OnDisable()

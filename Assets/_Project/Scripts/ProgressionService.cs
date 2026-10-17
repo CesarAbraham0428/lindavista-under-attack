@@ -8,23 +8,26 @@ public static class ProgressionService
     private static ProgressionRepository repository;
     public static event Action Changed;
     private static ProgressionRepository Repository => repository ??=
-        new ProgressionRepository(Path.Combine(Application.persistentDataPath, "progression-v1.json"));
-    public static int Coins => Repository.Snapshot.coins;
+        new ProgressionRepository(Path.Combine(Application.persistentDataPath, "progression-v1.json"), true);
+    public static int Coins => Repository.Monedas;
+    public static int HealthConsumables(bool cesar) => Repository.HealthConsumables(cesar);
+    public static bool TryBuyHealthConsumable(bool cesar) => Publish(Repository.TryBuyHealthConsumable(cesar));
+    public static bool TryConsumeHealthConsumable(bool cesar) => Publish(Repository.TryConsumeHealthConsumable(cesar));
     public static int PistolUpgrade => WeaponUpgrade(0);
     public static string LastError => Repository.LastError;
     public static bool CanSave => Repository.CanSave;
     public static bool OwnsWeapon(int index) => OwnsWeapon(index, CharacterWeapons.SelectedCesar);
     public static bool OwnsWeapon(int index, bool cesar) => index >= 0 && index < 3;
     public static int HealthUpgrade => HealthUpgradeFor(CharacterWeapons.SelectedCesar);
-    public static int HealthUpgradeFor(bool cesar) => Repository.Snapshot.Character(cesar).healthUpgrade;
+    public static int HealthUpgradeFor(bool cesar) => Repository.MejoraVida(cesar);
     public static int MaxHealthFor(bool cesar) => CharacterStats.BaseHealth(cesar) + HealthUpgradeFor(cesar);
     public static int SpeedUpgrade => SpeedUpgradeFor(CharacterWeapons.SelectedCesar);
     public static int SpeedUpgradeFor(bool cesar) => Repository.SpeedUpgradeFor(cesar);
     public static int SpeedBarsFor(bool cesar) => 1 + SpeedUpgradeFor(cesar);
     public static int WeaponUpgrade(int index) => WeaponUpgrade(index, CharacterWeapons.SelectedCesar);
-    public static int WeaponUpgrade(int index, bool cesar) => Repository.Snapshot.Character(cesar).weaponUpgrades[index];
+    public static int WeaponUpgrade(int index, bool cesar) => Repository.MejoraArma(index, cesar);
     public static int Ammo(int index) => Ammo(index, CharacterWeapons.SelectedCesar);
-    public static int Ammo(int index, bool cesar) => Repository.Snapshot.Character(cesar).ammunition[index];
+    public static int Ammo(int index, bool cesar) => Repository.Municion(index, cesar);
     public static bool TryUpgradeWeapon(int index) => TryUpgradeWeapon(index, CharacterWeapons.SelectedCesar);
     public static bool TryUpgradeWeapon(int index, bool cesar) => Publish(Repository.TryUpgradeWeapon(index, cesar));
     public static bool TryUpgradeHealth() => TryUpgradeHealth(CharacterWeapons.SelectedCesar);
@@ -48,6 +51,16 @@ public static class ProgressionService
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() { repository = null; Changed = null; }
+
+    public static bool GuardarPendientes() => repository == null || repository.GuardarPendientes();
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void PrepararGuardado()
+    {
+        var objeto = new GameObject("Guardado de progreso");
+        UnityEngine.Object.DontDestroyOnLoad(objeto);
+        objeto.AddComponent<GuardadoProgreso>();
+    }
 
 #if UNITY_EDITOR
     // Scoped verification never writes the player's real profile.

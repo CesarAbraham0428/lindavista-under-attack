@@ -34,6 +34,13 @@ public class CameraFollow2D : MonoBehaviour
     private float pendingDirectionTime;
     private float currentScreenX;
     private float framingVelocity;
+    private float proximaBusquedaJugador;
+
+    // Mantiene el borde de entrada de la vista 16:9 al usar una pantalla más estrecha.
+    // Se calcula siempre desde la posición original, sin acumular ajustes al rotar.
+    private float MinimoCamaraX => attachedCamera != null && attachedCamera.orthographic
+        ? startCameraX + normalOrthographicSize * Mathf.Min(0f, attachedCamera.aspect - 16f / 9f)
+        : startCameraX;
 
     private void Awake()
     {
@@ -45,6 +52,7 @@ public class CameraFollow2D : MonoBehaviour
         currentScreenX = targetScreenX;
         if (attachedCamera != null && attachedCamera.orthographic)
             normalOrthographicSize = attachedCamera.orthographicSize;
+        transform.position = new Vector3(MinimoCamaraX, fixedY, fixedZ);
 
         FindActivePlayer();
         if (FindFirstObjectByType<LevelOneEnemySpawner>() != null)
@@ -109,7 +117,7 @@ public class CameraFollow2D : MonoBehaviour
             elapsed += Time.deltaTime;
             float normalizedTime = Mathf.Clamp01(elapsed / duration);
             float easedTime = normalizedTime * normalizedTime * (3f - 2f * normalizedTime);
-            float cameraX = Mathf.Lerp(lineupPosition.x, startCameraX, easedTime);
+            float cameraX = Mathf.Lerp(lineupPosition.x, MinimoCamaraX, easedTime);
             transform.position = new Vector3(cameraX, fixedY, fixedZ);
 
             if (attachedCamera != null && attachedCamera.orthographic)
@@ -122,7 +130,7 @@ public class CameraFollow2D : MonoBehaviour
             yield return null;
         }
 
-        transform.position = new Vector3(startCameraX, fixedY, fixedZ);
+        transform.position = new Vector3(MinimoCamaraX, fixedY, fixedZ);
         if (attachedCamera != null && attachedCamera.orthographic)
             attachedCamera.orthographicSize = normalOrthographicSize;
 
@@ -135,10 +143,13 @@ public class CameraFollow2D : MonoBehaviour
         if (introInProgress)
             return;
 
-        if (target == null || !target.gameObject.activeInHierarchy)
+        if ((target == null || !target.gameObject.activeInHierarchy) && Time.unscaledTime >= proximaBusquedaJugador)
+        {
             FindActivePlayer();
+            proximaBusquedaJugador = Time.unscaledTime + 0.5f;
+        }
 
-        if (target == null)
+        if (target == null || !target.gameObject.activeInHierarchy)
             return;
 
         UpdateDirectionFraming();
@@ -152,9 +163,10 @@ public class CameraFollow2D : MonoBehaviour
 
         // The start boundary holds the entrance view until the player reaches
         // the desired screen position, so following begins without a catch-up pan.
+        float minimoX = MinimoCamaraX;
         float desiredX = Mathf.Clamp(
             target.position.x - worldOffsetFromCenter,
-            startCameraX,
+            minimoX,
             maximumCameraX
         );
 
@@ -165,7 +177,7 @@ public class CameraFollow2D : MonoBehaviour
             Mathf.Max(0.01f, smoothTime)
         );
 
-        nextX = Mathf.Clamp(nextX, startCameraX, maximumCameraX);
+        nextX = Mathf.Clamp(nextX, minimoX, maximumCameraX);
         transform.position = new Vector3(nextX, fixedY, fixedZ);
     }
 

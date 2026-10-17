@@ -6,6 +6,7 @@ using UnityEngine;
 public sealed class BasicEnemy : MonoBehaviour
 {
     private enum AttackStyle { Melee, Pistol, ShieldMelee, SMG }
+    private static readonly int movimiento = Animator.StringToHash("IsMoving");
 
     [Header("Basic enemy stats")]
     [SerializeField, Min(0)] private int damage = 1;
@@ -52,6 +53,7 @@ public sealed class BasicEnemy : MonoBehaviour
         health = GetComponent<EnemyHealth>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
+        health.Died += DetenerAlMorir;
         animator.ResetTrigger("Attack");
         animator.ResetTrigger("TakeDamage");
         animator.ResetTrigger("Defeat");
@@ -63,7 +65,7 @@ public sealed class BasicEnemy : MonoBehaviour
     {
         if (health.IsDead)
         {
-            animator.SetBool("IsMoving", false);
+            animator.SetBool(movimiento, false);
             return;
         }
 
@@ -82,7 +84,7 @@ public sealed class BasicEnemy : MonoBehaviour
         }
         if (shieldBroken)
         {
-            animator.SetBool("IsMoving", false);
+            animator.SetBool(movimiento, false);
             nextAttack = Time.time + 0.5f;
             return;
         }
@@ -111,7 +113,7 @@ public sealed class BasicEnemy : MonoBehaviour
 
         if (target == null || target.IsDefeated)
         {
-            animator.SetBool("IsMoving", false);
+            animator.SetBool(movimiento, false);
             return;
         }
 
@@ -123,12 +125,12 @@ public sealed class BasicEnemy : MonoBehaviour
             Vector3 position = transform.position;
             float stopAt = target.transform.position.x - Mathf.Sign(delta.x) * reach;
             position.x = Mathf.MoveTowards(position.x, stopAt, speed * Time.deltaTime);
-            animator.SetBool("IsMoving", !Mathf.Approximately(position.x, transform.position.x));
+            animator.SetBool(movimiento, !Mathf.Approximately(position.x, transform.position.x));
             transform.position = position;
             return;
         }
 
-        animator.SetBool("IsMoving", false);
+        animator.SetBool(movimiento, false);
         if (Mathf.Abs(delta.y) <= 1.5f && Time.time >= nextAttack)
         {
             nextAttack = Time.time + attackCooldown;
@@ -143,7 +145,7 @@ public sealed class BasicEnemy : MonoBehaviour
         float destinationX = entranceTarget != null ? entranceTarget.position.x : fixedEntranceX;
         Face(destinationX - position.x);
         position.x = Mathf.MoveTowards(position.x, destinationX, speed * Time.deltaTime);
-        animator.SetBool("IsMoving", !Mathf.Approximately(position.x, transform.position.x));
+        animator.SetBool(movimiento, !Mathf.Approximately(position.x, transform.position.x));
         transform.position = position;
 
         if (!hasReachedEntrance && Mathf.Abs(position.x - destinationX) <= 0.001f)
@@ -157,8 +159,17 @@ public sealed class BasicEnemy : MonoBehaviour
     {
         StopAllCoroutines();
         if (animator != null)
-            animator.SetBool("IsMoving", false);
+            animator.SetBool(movimiento, false);
         enabled = false;
+    }
+
+    private void DetenerAlMorir(EnemyHealth enemigo) => StopForGameOver();
+
+    private void OnDisable() => StopAllCoroutines();
+
+    private void OnDestroy()
+    {
+        if (health != null) health.Died -= DetenerAlMorir;
     }
 
     private void LateUpdate()
@@ -172,9 +183,9 @@ public sealed class BasicEnemy : MonoBehaviour
     {
         target = null;
         float nearest = float.PositiveInfinity;
-        foreach (PlayerActions player in FindObjectsByType<PlayerActions>(FindObjectsSortMode.None))
+        foreach (PlayerActions player in ObjetivosCombate.Obtener())
         {
-            if (player.IsDefeated)
+            if (player == null || !player.isActiveAndEnabled || player.IsDefeated)
                 continue;
             float distance = ((Vector2)(player.transform.position - transform.position)).sqrMagnitude;
             if (distance < nearest)
@@ -216,7 +227,7 @@ public sealed class BasicEnemy : MonoBehaviour
     {
         return !health.IsDead &&
                !(attackStyle == AttackStyle.ShieldMelee && health.IsShieldBroken) &&
-               victim != null && !victim.IsDefeated &&
+               victim != null && victim.isActiveAndEnabled && !victim.IsDefeated &&
                Mathf.Abs(victim.transform.position.x - transform.position.x) <= EffectiveAttackRange &&
                Mathf.Abs(victim.transform.position.y - transform.position.y) <= 1.5f;
     }
@@ -232,10 +243,11 @@ public sealed class BasicEnemy : MonoBehaviour
         direction /= distance;
         origin += direction * 0.35f;
 
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(origin, 0.06f, direction, distance);
         Collider2D nearest = null;
         float nearestDistance = float.PositiveInfinity;
-        foreach (RaycastHit2D hit in hits)
+        using var consulta = ConsultasFisicasCombate.Obtener();
+        consulta.Barrer(origin, 0.06f, direction, distance);
+        foreach (RaycastHit2D hit in consulta.Impactos)
         {
             if (hit.collider == null || hit.collider.GetComponentInParent<EnemyHealth>() != null)
                 continue;

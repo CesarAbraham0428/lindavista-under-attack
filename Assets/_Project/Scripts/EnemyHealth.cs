@@ -34,11 +34,10 @@ public sealed class EnemyHealth : MonoBehaviour
         hitbox = GetComponent<Collider2D>();
         if (hitbox == null)
         {
-            SpriteRenderer sprite = GetComponent<SpriteRenderer>();
             BoxCollider2D box = gameObject.AddComponent<BoxCollider2D>();
-            if (sprite != null && sprite.sprite != null)
+            if (spriteRenderer != null && spriteRenderer.sprite != null)
             {
-                Bounds bounds = sprite.sprite.bounds;
+                Bounds bounds = spriteRenderer.sprite.bounds;
                 box.offset = bounds.center;
                 box.size = new Vector2(Mathf.Max(0.2f, bounds.size.x * 0.8f),
                     Mathf.Max(0.3f, bounds.size.y * 0.85f));

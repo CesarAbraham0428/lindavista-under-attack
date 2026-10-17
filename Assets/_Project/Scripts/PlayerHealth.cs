@@ -12,6 +12,7 @@ public sealed class PlayerHealth : MonoBehaviour
     public int MaxHealth => maxHealth;
     public bool IsDead { get; private set; }
     public bool IsCesar => isCesar;
+    public bool CanHeal => !IsDead && CurrentHealth < maxHealth && !GameFlowController.IsMatchEnded;
     public event Action<int, int> HealthChanged;
     public event Action Damaged;
     public event Action Died;
@@ -53,6 +54,14 @@ public sealed class PlayerHealth : MonoBehaviour
         HealthChanged?.Invoke(CurrentHealth, maxHealth);
         if (IsDead) Died?.Invoke();
         else Damaged?.Invoke();
+        return true;
+    }
+
+    public bool Heal(int amount)
+    {
+        if (amount <= 0 || !CanHeal) return false;
+        CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
+        HealthChanged?.Invoke(CurrentHealth, maxHealth);
         return true;
     }
 }

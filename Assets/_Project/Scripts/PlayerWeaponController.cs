@@ -8,7 +8,21 @@ public sealed class PlayerWeaponController : MonoBehaviour
     private float nextShotTime;
     private Coroutine reload;
     private PlayerWeaponAudio weaponAudio;
-    public bool IsCesar => CharacterWeapons.IsCesar(gameObject);
+    private bool identidadResuelta;
+    private bool esCesar;
+    private Camera camaraDisparo;
+    public bool IsCesar
+    {
+        get
+        {
+            if (!identidadResuelta)
+            {
+                esCesar = CharacterWeapons.IsCesar(gameObject);
+                identidadResuelta = true;
+            }
+            return esCesar;
+        }
+    }
     public string AnimationWeapon => CharacterWeapons.State(EquippedWeapon, IsCesar);
     public WeaponDefinition Definition => !IsCesar && EquippedWeapon == 0 && definition != null
         ? definition : WeaponDefinition.ForCharacter(EquippedWeapon, IsCesar);
@@ -40,12 +54,15 @@ public sealed class PlayerWeaponController : MonoBehaviour
     public bool TryFire(Vector2 origin, Vector2 direction, Transform owner)
     {
         if (!CanFire) return false;
-        if (!CombatProjectile.TrySpawn(origin, direction, Damage, Definition.ProjectileSpeed,
-            Definition.ProjectileRadius, Definition.Range, owner, EquippedWeapon,
-            Definition.TargetsAt(ProgressionService.WeaponUpgrade(EquippedWeapon, IsCesar)),
-            IsCesar && EquippedWeapon == 2, Camera.main)) return false;
+        WeaponDefinition arma = Definition;
+        if (arma == null) return false;
+        int mejora = ProgressionService.WeaponUpgrade(EquippedWeapon, IsCesar);
+        if (camaraDisparo == null || !camaraDisparo.isActiveAndEnabled) camaraDisparo = Camera.main;
+        if (!CombatProjectile.TrySpawn(origin, direction, arma.DamageAt(mejora), arma.ProjectileSpeed,
+            arma.ProjectileRadius, arma.Range, owner, EquippedWeapon,
+            arma.TargetsAt(mejora), IsCesar && EquippedWeapon == 2, camaraDisparo)) return false;
         Magazine--;
-        nextShotTime = Time.time + Definition.FireInterval;
+        nextShotTime = Time.time + arma.FireInterval;
         weaponAudio.PlayShot(EquippedWeapon);
         Changed?.Invoke();
         return true;

@@ -6,8 +6,6 @@ using UnityEngine;
 /// <summary>Shows a small stage 5 preview, then creates the remaining wave gradually.</summary>
 public sealed class LevelOneEnemySpawner : MonoBehaviour
 {
-    private const string SelectedLevelKey = "Lindavista.SelectedLevel";
-
     [Serializable]
     private sealed class WaveComposition
     {

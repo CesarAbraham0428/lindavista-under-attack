@@ -8,6 +8,8 @@ public sealed class CharacterProgression
     public int healthUpgrade;
     // Additive v2 field: existing saves start with one speed bar (zero purchases).
     public int speedUpgrade;
+    // Additive field: profiles created before consumables start with zero pills.
+    public int healthConsumables;
     public int[] weaponUpgrades;
     public int[] ammunition;
 
@@ -18,7 +20,8 @@ public sealed class CharacterProgression
 
     public CharacterProgression Copy() => new CharacterProgression
     {
-        healthUpgrade = healthUpgrade, speedUpgrade = speedUpgrade, weaponUpgrades = (int[])weaponUpgrades.Clone(),
+        healthUpgrade = healthUpgrade, speedUpgrade = speedUpgrade, healthConsumables = healthConsumables,
+        weaponUpgrades = (int[])weaponUpgrades.Clone(),
         ammunition = (int[])ammunition.Clone()
     };
 }
@@ -78,20 +81,33 @@ public sealed class ProgressionRepository
     }
 
     private readonly string path;
+    private readonly bool diferirMunicion;
+    private bool municionPendiente;
+    private bool principalValido;
+    private bool directorioPreparado;
     private bool writable = true;
     private ProgressionProfile profile;
     public ProgressionProfile Snapshot => profile.Copy();
+    // Las lecturas frecuentes no necesitan copiar los inventarios de ambos personajes.
+    public int Monedas => profile.coins;
+    public int MejoraVida(bool cesar) => profile.Character(cesar).healthUpgrade;
+    public int HealthConsumables(bool cesar) => profile.Character(cesar).healthConsumables;
+    public int MejoraArma(int indice, bool cesar) => profile.Character(cesar).weaponUpgrades[indice];
+    public int Municion(int indice, bool cesar) => profile.Character(cesar).ammunition[indice];
     // Movement reads this every physics frame; return the scalar without cloning the inventory.
     public int SpeedUpgradeFor(bool cesar) => profile.Character(cesar).speedUpgrade;
     public string LastError { get; private set; }
     public bool CanSave => writable;
 
-    public ProgressionRepository(string savePath)
+    public ProgressionRepository(string savePath, bool diferirMunicion = false)
     {
         path = savePath;
+        this.diferirMunicion = diferirMunicion;
         bool mainExists = File.Exists(path);
         bool backupExists = File.Exists(path + ".bak");
-        profile = Read(path) ?? Read(path + ".bak");
+        profile = Read(path);
+        principalValido = profile != null;
+        profile ??= Read(path + ".bak");
         if (profile == null)
         {
             profile = new ProgressionProfile();
@@ -158,7 +174,8 @@ public sealed class ProgressionRepository
         if (character == null || character.ammunition == null || character.ammunition.Length != 3 ||
             character.weaponUpgrades == null || character.weaponUpgrades.Length != 3 ||
             character.healthUpgrade < 0 || character.healthUpgrade > ShopBalance.MaxHealthUpgrade ||
-            character.speedUpgrade < 0 || character.speedUpgrade >= CharacterStats.MaximumSpeedBars(cesar)) return false;
+            character.speedUpgrade < 0 || character.speedUpgrade >= CharacterStats.MaximumSpeedBars(cesar) ||
+            character.healthConsumables < 0 || character.healthConsumables > ShopBalance.MaxHealthConsumables) return false;
         for (int i = 0; i < 3; i++)
             if (character.ammunition[i] < 0 || character.ammunition[i] > ShopBalance.Capacity[i] ||
                 character.weaponUpgrades[i] < 0 || character.weaponUpgrades[i] > WeaponDefinition.ForCharacter(i, cesar).MaxUpgrade) return false;
@@ -210,6 +227,28 @@ public sealed class ProgressionRepository
     }
 
     public bool TryBuyAmmo(int index) => TryBuyAmmo(index, false);
+
+    public bool TryBuyHealthConsumable(bool cesar)
+    {
+        if (HealthConsumables(cesar) >= ShopBalance.MaxHealthConsumables)
+        { LastError = "Ya tienes diez pastillas para este personaje."; return false; }
+        if (profile.coins < ShopBalance.HealthConsumableCost)
+        { LastError = "No tienes suficientes monedas."; return false; }
+        var next = profile.Copy();
+        next.coins -= ShopBalance.HealthConsumableCost;
+        next.Character(cesar).healthConsumables++;
+        return Commit(next);
+    }
+
+    public bool TryConsumeHealthConsumable(bool cesar)
+    {
+        if (HealthConsumables(cesar) <= 0)
+        { LastError = "No quedan pastillas para este personaje."; return false; }
+        var next = profile.Copy();
+        next.Character(cesar).healthConsumables--;
+        return Commit(next);
+    }
+
     public bool TryBuyAmmo(int index, bool cesar)
     {
         if (index < 0 || index > 2) return false;
@@ -225,7 +264,13 @@ public sealed class ProgressionRepository
     public bool TryConsumeAmmo(int index) => TryConsumeAmmo(index, false);
     public bool TryConsumeAmmo(int index, bool cesar)
     {
-        if (index < 0 || index > 2 || profile.Character(cesar).ammunition[index] <= 0) return false;
+        if (!writable || index < 0 || index > 2 || profile.Character(cesar).ammunition[index] <= 0) return false;
+        if (diferirMunicion)
+        {
+            profile.Character(cesar).ammunition[index]--;
+            municionPendiente = true;
+            return true;
+        }
         var next = profile.Copy();
         next.Character(cesar).ammunition[index]--;
         return Commit(next);
@@ -237,24 +282,40 @@ public sealed class ProgressionRepository
     public bool TryCompleteLevel(int level)
     {
         if (!IsLevelUnlocked(level)) return false;
+        if ((profile.completedLevelsMask & (1 << level)) != 0) return GuardarPendientes();
         var next = profile.Copy();
         next.completedLevelsMask |= 1 << level;
         return Commit(next);
     }
+
+    // Solo los consumos se agrupan; compras, monedas y niveles siguen confirmándose en disco.
+    public bool GuardarPendientes() => !municionPendiente || Commit(profile);
 
     private bool Commit(ProgressionProfile next)
     {
         if (!writable) return false;
         try
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            if (!directorioPreparado)
+            {
+                string directorio = Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(directorio)) Directory.CreateDirectory(directorio);
+                directorioPreparado = true;
+            }
             string temporary = path + ".tmp";
-            File.WriteAllText(temporary, JsonUtility.ToJson(next, true));
+            File.WriteAllText(temporary, JsonUtility.ToJson(next));
             // Never copy a corrupt primary over a valid backup during recovery.
-            if (Read(path) != null) File.Copy(path, path + ".bak", true);
-            if (File.Exists(path)) File.Replace(temporary, path, null);
+            if (File.Exists(path))
+            {
+                // Copiar el respaldo por separado evita borrar/reemplazar un .bak
+                // que un sincronizador de Windows puede mantener abierto.
+                if (principalValido) File.Copy(path, path + ".bak", true);
+                File.Replace(temporary, path, null);
+            }
             else File.Move(temporary, path);
             profile = next;
+            principalValido = true;
+            municionPendiente = false;
             LastError = null;
             return true;
         }

@@ -29,6 +29,8 @@ public sealed class GameFlowController : MonoBehaviour
     private bool paused;
     private float previousTimeScale;
     private bool previousAudioPause;
+    private Vector2 ultimoEspacioPausa;
+    private Vector2 ultimoEspacioResultado;
 
     // Compatibility for existing terminal checks in movement and enemy AI.
     public static bool IsDefeatActive => IsMatchEnded;
@@ -66,9 +68,21 @@ public sealed class GameFlowController : MonoBehaviour
 
     private void Update()
     {
-        pauseButton.gameObject.SetActive(!IsMatchEnded && !paused && !PistolUpgradeShop.IsOpen);
+        bool mostrarPausa = !IsMatchEnded && !paused && !PistolUpgradeShop.IsOpen;
+        if (pauseButton.gameObject.activeSelf != mostrarPausa)
+            pauseButton.gameObject.SetActive(mostrarPausa);
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             TogglePause();
+    }
+
+    private void OnApplicationPause(bool enSegundoPlano)
+    {
+        if (enSegundoPlano && Application.isMobilePlatform) PauseGame();
+    }
+
+    private void OnApplicationFocus(bool tieneFoco)
+    {
+        if (!tieneFoco && Application.isMobilePlatform) PauseGame();
     }
 
     public void TogglePause()
@@ -89,7 +103,8 @@ public sealed class GameFlowController : MonoBehaviour
         pauseCanvas.gameObject.SetActive(true);
         pauseButton.gameObject.SetActive(false);
         Canvas.ForceUpdateCanvases();
-        EventSystem.current.SetSelectedGameObject(pauseContent.Find("Pause Sign").gameObject);
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(pauseContent.Find("Pause Sign").gameObject);
     }
 
     public void ResumeGame()
@@ -107,8 +122,7 @@ public sealed class GameFlowController : MonoBehaviour
     {
         EnsureEventSystem();
         Canvas hud = ProgressionUI.Canvas(transform, "Pause HUD Canvas", 130);
-        pauseSafeArea = new GameObject("Pause Safe Area", typeof(RectTransform)).GetComponent<RectTransform>();
-        pauseSafeArea.SetParent(hud.transform, false);
+        pauseSafeArea = AreaSeguraUI.Crear(hud.transform, "Pause Safe Area");
         var artwork = Resources.Load<ResultScreenAssets>("ResultScreenAssets");
         Sprite wood = artwork != null ? artwork.WoodSign : null;
         pauseButton = CreateCartoonButton(pauseSafeArea, "Pause Button", "PAUSA", wood,
@@ -119,8 +133,7 @@ public sealed class GameFlowController : MonoBehaviour
         pauseCanvas = ProgressionUI.Canvas(transform, "Pause Canvas", 240);
         Image dimmer = ProgressionUI.Image(pauseCanvas.transform, "Dim Background", new Color(0f, 0f, 0f, 0.65f), true);
         StretchToParent(dimmer.rectTransform);
-        var panelSafeArea = new GameObject("Safe Area", typeof(RectTransform)).GetComponent<RectTransform>();
-        panelSafeArea.SetParent(pauseCanvas.transform, false);
+        var panelSafeArea = AreaSeguraUI.Crear(pauseCanvas.transform);
         pauseContent = new GameObject("Pause Content", typeof(RectTransform)).GetComponent<RectTransform>();
         pauseContent.SetParent(panelSafeArea, false);
         SetCentered(pauseContent, Vector2.zero, new Vector2(1120f, 820f));
@@ -144,15 +157,10 @@ public sealed class GameFlowController : MonoBehaviour
     private void UpdatePauseLayout()
     {
         if (pauseSafeArea == null || Screen.width <= 0 || Screen.height <= 0) return;
-        Rect area = Screen.safeArea;
-        pauseSafeArea.anchorMin = new Vector2(area.xMin / Screen.width, area.yMin / Screen.height);
-        pauseSafeArea.anchorMax = new Vector2(area.xMax / Screen.width, area.yMax / Screen.height);
-        pauseSafeArea.offsetMin = pauseSafeArea.offsetMax = Vector2.zero;
         var panelSafeArea = (RectTransform)pauseContent.parent;
-        panelSafeArea.anchorMin = pauseSafeArea.anchorMin;
-        panelSafeArea.anchorMax = pauseSafeArea.anchorMax;
-        panelSafeArea.offsetMin = panelSafeArea.offsetMax = Vector2.zero;
         Vector2 available = panelSafeArea.rect.size;
+        if (available == ultimoEspacioPausa) return;
+        ultimoEspacioPausa = available;
         pauseContent.localScale = Vector3.one * Mathf.Max(0.01f,
             Mathf.Min(1.15f, available.x / 1120f, available.y / 820f));
     }
@@ -234,6 +242,7 @@ public sealed class GameFlowController : MonoBehaviour
 
     private void LockActors()
     {
+        MobileControlsHUD.CancelActiveTouches();
 
         foreach (PlayerActions actions in FindObjectsByType<PlayerActions>(
                      FindObjectsInactive.Include, FindObjectsSortMode.None))
@@ -263,8 +272,7 @@ public sealed class GameFlowController : MonoBehaviour
             victoryActive ? new Color(0f, 0f, 0f, 0.16f) : new Color(0.28f, 0.008f, 0.018f, 0.75f), true);
         StretchToParent(dimmer.rectTransform);
 
-        defeatSafeArea = new GameObject("Safe Area", typeof(RectTransform)).GetComponent<RectTransform>();
-        defeatSafeArea.SetParent(canvas.transform, false);
+        defeatSafeArea = AreaSeguraUI.Crear(canvas.transform);
         defeatContent = new GameObject("Result Content", typeof(RectTransform)).GetComponent<RectTransform>();
         defeatContent.SetParent(defeatSafeArea, false);
         SetCentered(defeatContent, Vector2.zero, new Vector2(1120f, 820f));
@@ -343,11 +351,9 @@ public sealed class GameFlowController : MonoBehaviour
     private void UpdateDefeatLayout()
     {
         if (defeatSafeArea == null || Screen.width <= 0 || Screen.height <= 0) return;
-        Rect area = Screen.safeArea;
-        defeatSafeArea.anchorMin = new Vector2(area.xMin / Screen.width, area.yMin / Screen.height);
-        defeatSafeArea.anchorMax = new Vector2(area.xMax / Screen.width, area.yMax / Screen.height);
-        defeatSafeArea.offsetMin = defeatSafeArea.offsetMax = Vector2.zero;
         Vector2 available = defeatSafeArea.rect.size;
+        if (available == ultimoEspacioResultado) return;
+        ultimoEspacioResultado = available;
         float scale = Mathf.Min(1.15f, available.x / 1120f, available.y / 820f);
         defeatContent.localScale = Vector3.one * Mathf.Max(0.01f, scale);
     }
