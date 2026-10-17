@@ -20,6 +20,7 @@ public sealed class CharacterLevelSelectionController : MonoBehaviour
 
     private void Awake()
     {
+        AdaptacionMenusUI.Configurar(GetComponent<Canvas>());
         if (characterButtons != null)
         {
             for (int i = 0; i < characterButtons.Length; i++)

@@ -34,11 +34,10 @@ public sealed class EnemyHealth : MonoBehaviour
         hitbox = GetComponent<Collider2D>();
         if (hitbox == null)
         {
-            SpriteRenderer sprite = GetComponent<SpriteRenderer>();
             BoxCollider2D box = gameObject.AddComponent<BoxCollider2D>();
-            if (sprite != null && sprite.sprite != null)
+            if (spriteRenderer != null && spriteRenderer.sprite != null)
             {
-                Bounds bounds = sprite.sprite.bounds;
+                Bounds bounds = spriteRenderer.sprite.bounds;
                 box.offset = bounds.center;
                 box.size = new Vector2(Mathf.Max(0.2f, bounds.size.x * 0.8f),
                     Mathf.Max(0.3f, bounds.size.y * 0.85f));
@@ -82,6 +81,18 @@ public sealed class EnemyHealth : MonoBehaviour
             return true;
         return animator.IsInTransition(0) &&
                animator.GetNextAnimatorStateInfo(0).IsName("Enemy3_HeavyPunch");
+    }
+
+    /// <summary>Blast pressure damages through the shield regardless of impact direction or firing cadence.</summary>
+    public void TakeExplosionDamage(int amount)
+    {
+        if (IsDead || amount <= 0 || GameFlowController.IsMatchEnded)
+            return;
+
+        consecutiveShieldHits = 0;
+        if (shieldBlocksFront)
+            shieldBrokenUntil = Time.time + shieldBreakDuration;
+        TakeDamage(amount);
     }
 
     public void TakeDamage(int amount)

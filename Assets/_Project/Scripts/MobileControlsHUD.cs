@@ -21,6 +21,8 @@ public sealed class MobileControlsHUD : MonoBehaviour
     private int screenWidth;
     private int screenHeight;
     private Rect lastSafeArea;
+    private bool vistaSolicitada;
+    private float proximaBusquedaJugador;
 
     private static readonly Color ButtonColor = new Color(0.08f, 0.15f, 0.22f, 0.70f);
     private static readonly Color AimColor = new Color(0.07f, 0.19f, 0.24f, 0.48f);
@@ -28,9 +30,14 @@ public sealed class MobileControlsHUD : MonoBehaviour
     public static bool IsVisible => active != null && active.canvas != null &&
                                     active.canvas.gameObject.activeInHierarchy;
 
+    public bool PuedeRecibirEntrada => actions != null && movement != null &&
+        !actions.IsInputLocked && !actions.IsDefeated && !GameFlowController.IsPaused &&
+        !GameFlowController.IsMatchEnded && !PistolUpgradeShop.IsOpen;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Register()
     {
+        active = null;
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -63,12 +70,16 @@ public sealed class MobileControlsHUD : MonoBehaviour
 #if UNITY_EDITOR
         // F9 previews the Android controls with a mouse inside the Unity Editor.
         if (Keyboard.current != null && Keyboard.current.f9Key.wasPressedThisFrame)
-            SetVisible(!IsVisible);
+            SetVisible(!vistaSolicitada);
 #endif
 
-        if (IsVisible && (movement == null || actions == null ||
-                          !movement.gameObject.activeInHierarchy))
+        ActualizarVisibilidad();
+        if (IsVisible && Time.unscaledTime >= proximaBusquedaJugador &&
+            (movement == null || actions == null || !movement.gameObject.activeInHierarchy))
+        {
             FindActivePlayer();
+            proximaBusquedaJugador = Time.unscaledTime + 0.5f;
+        }
 
         if (screenWidth != Screen.width || screenHeight != Screen.height ||
             lastSafeArea != Screen.safeArea)
@@ -96,7 +107,7 @@ public sealed class MobileControlsHUD : MonoBehaviour
 
     public void Press(TouchControlKind kind, bool pressed)
     {
-        if (pressed && GameFlowController.IsPaused) return;
+        if (pressed && !PuedeRecibirEntrada) return;
         switch (kind)
         {
             case TouchControlKind.MoveLeft:
@@ -122,7 +133,7 @@ public sealed class MobileControlsHUD : MonoBehaviour
 
     public void AimAndFire(Vector2 direction, bool pressed)
     {
-        if (actions == null)
+        if (actions == null || (pressed && !PuedeRecibirEntrada))
             return;
 
         if (pressed)
@@ -170,9 +181,17 @@ public sealed class MobileControlsHUD : MonoBehaviour
 
     private void SetVisible(bool visible)
     {
+        vistaSolicitada = visible;
+        ActualizarVisibilidad();
+    }
+
+    private void ActualizarVisibilidad()
+    {
         if (canvas == null)
             return;
-
+        bool visible = vistaSolicitada && !GameFlowController.IsPaused &&
+            !GameFlowController.IsMatchEnded && !PistolUpgradeShop.IsOpen;
+        if (canvas.gameObject.activeSelf == visible) return;
         if (!visible)
             ClearTouches();
         canvas.gameObject.SetActive(visible);
@@ -214,7 +233,7 @@ public sealed class MobileControlsHUD : MonoBehaviour
         CanvasScaler scaler = canvasObject.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920f, 1080f);
-        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
         scaler.matchWidthOrHeight = 0.5f;
 
         GameObject safeRoot = new GameObject("Safe Area", typeof(RectTransform));
@@ -231,7 +250,7 @@ public sealed class MobileControlsHUD : MonoBehaviour
 
         CreateControl("Reload", "REC", TouchControlKind.Reload,
             new Vector2(1f, 0f), new Vector2(-465f, 145f),
-            new Vector2(125f, 110f), ButtonColor, 34);
+            new Vector2(150f, 145f), ButtonColor, 34);
         CreateControl("Aim and Fire", "APUNTA\nDISPARA", TouchControlKind.AimAndFire,
             new Vector2(1f, 0f), new Vector2(-185f, 170f),
             new Vector2(300f, 300f), AimColor, 34);

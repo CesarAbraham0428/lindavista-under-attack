@@ -12,15 +12,22 @@ public sealed class HUDSpriteVariants : IDisposable
         if (source == null) return;
         var rect = source.textureRect;
         var colorTexture = new Texture2D((int)rect.width, (int)rect.height, TextureFormat.RGBA32, false);
-        var target = RenderTexture.GetTemporary(source.texture.width, source.texture.height,
+        // Recortar en GPU evita reservar y leer todo el atlas para un icono pequeño.
+        var target = RenderTexture.GetTemporary(colorTexture.width, colorTexture.height,
             0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
         var previous = RenderTexture.active;
         try
         {
-            Graphics.Blit(source.texture, target);
+            var escala = new Vector2(rect.width / source.texture.width, rect.height / source.texture.height);
+            var desplazamiento = new Vector2(rect.x / source.texture.width, rect.y / source.texture.height);
+            Graphics.Blit(source.texture, target, escala, desplazamiento);
             RenderTexture.active = target;
-            colorTexture.ReadPixels(rect, 0, 0);
-            colorTexture.Apply();
+            colorTexture.ReadPixels(new Rect(0, 0, colorTexture.width, colorTexture.height), 0, 0, false);
+        }
+        catch
+        {
+            UnityEngine.Object.Destroy(colorTexture);
+            throw;
         }
         finally
         {
@@ -28,6 +35,7 @@ public sealed class HUDSpriteVariants : IDisposable
             RenderTexture.ReleaseTemporary(target);
         }
         var pixels = colorTexture.GetPixels32();
+        colorTexture.Apply(false, true);
         int left = colorTexture.width, bottom = colorTexture.height, right = 0, top = 0;
         for (int y = 0; y < colorTexture.height; y++)
             for (int x = 0; x < colorTexture.width; x++)
@@ -44,13 +52,13 @@ public sealed class HUDSpriteVariants : IDisposable
             }
         var grayTexture = new Texture2D(colorTexture.width, colorTexture.height, TextureFormat.RGBA32, false);
         grayTexture.SetPixels32(pixels);
-        grayTexture.Apply();
+        grayTexture.Apply(false, true);
         colorTexture.filterMode = grayTexture.filterMode = FilterMode.Bilinear;
         colorTexture.wrapMode = grayTexture.wrapMode = TextureWrapMode.Clamp;
         var bounds = right > left && top > bottom ? new Rect(left, bottom, right - left, top - bottom) :
             new Rect(0, 0, colorTexture.width, colorTexture.height);
-        ColorSprite = Sprite.Create(colorTexture, bounds, Vector2.one * 0.5f, 100f);
-        GraySprite = Sprite.Create(grayTexture, bounds, Vector2.one * 0.5f, 100f);
+        ColorSprite = Sprite.Create(colorTexture, bounds, Vector2.one * 0.5f, 100f, 0, SpriteMeshType.FullRect);
+        GraySprite = Sprite.Create(grayTexture, bounds, Vector2.one * 0.5f, 100f, 0, SpriteMeshType.FullRect);
     }
 
     public void Dispose()
@@ -59,11 +67,13 @@ public sealed class HUDSpriteVariants : IDisposable
         {
             UnityEngine.Object.Destroy(ColorSprite.texture);
             UnityEngine.Object.Destroy(ColorSprite);
+            ColorSprite = null;
         }
         if (GraySprite != null)
         {
             UnityEngine.Object.Destroy(GraySprite.texture);
             UnityEngine.Object.Destroy(GraySprite);
+            GraySprite = null;
         }
     }
 }

@@ -13,9 +13,17 @@ public static class PlayerMuzzle
     };
     private static readonly Vector2[][] cesar =
     {
-        new[] { P(375,119), P(365,118), P(334,111), P(343,110), P(359,123), P(359,123), P(351,123), P(359,122) },
+        // Shotgun frame 2 is horizontal; its barrel is at (334, 228), not above the head.
+        new[] { P(325,361), P(365,118), P(334,228), P(343,110), P(359,123), P(359,123), P(351,123), P(359,122) },
         new[] { P(370,139), P(332,135), P(328,136), P(314,137), P(315,120), P(316,123), P(315,125), P(338,129) },
-        new[] { P(355,149), P(336,147), P(241,150), P(187,156), P(302,151), P(337,151), P(340,151), P(335,151) }
+        new[] { P(373,182), P(336,147), P(241,150), P(187,156), P(302,151), P(337,151), P(340,151), P(335,151) }
+    };
+    // The newer sniper sheet has its own barrel positions; the legacy SMG
+    // sockets above belong to a different drawing and sit above this rifle.
+    private static readonly Vector2[] cesarSniper =
+    {
+        P(348,352), P(367,192), P(367,223), P(322,224),
+        P(383,176), P(381,170), P(347,323), P(342,321)
     };
 
     public static Vector2 WorldPosition(SpriteRenderer renderer, int weaponIndex)
@@ -26,10 +34,12 @@ public static class PlayerMuzzle
         Sprite sprite = renderer.sprite;
         int frame = 0;
         int separator = sprite.name.LastIndexOf('_');
-        if (sprite.name.Contains("_Fire_8f_") && separator >= 0)
+        if (sprite.name.Contains("_Fire_") && separator >= 0)
             int.TryParse(sprite.name.Substring(separator + 1), out frame);
-        Vector2 pixel = (sprite.name.StartsWith("Cesar_") ? cesar : marco)
-            [Mathf.Clamp(weaponIndex, 0, 2)][Mathf.Clamp(frame, 0, 7)];
+        Vector2 pixel = sprite.name.StartsWith("Cesar_Francotirador_Fire_") ?
+            cesarSniper[Mathf.Clamp(frame, 0, 7)] :
+            (sprite.name.StartsWith("Cesar_") ? cesar : marco)
+                [Mathf.Clamp(weaponIndex, 0, 2)][Mathf.Clamp(frame, 0, 7)];
         Vector2 local = (Vector2.Scale(pixel, sprite.rect.size) - sprite.pivot) / sprite.pixelsPerUnit;
         if (renderer.flipX) local.x = -local.x;
         if (renderer.flipY) local.y = -local.y;

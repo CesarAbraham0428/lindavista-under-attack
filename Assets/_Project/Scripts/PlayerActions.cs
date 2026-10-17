@@ -18,11 +18,32 @@ public class PlayerActions : MonoBehaviour
     private bool inputLocked;
     private bool defeated;
     private bool fireRequested;
+    private int estadoDisparo;
+    private int estadoRecarga;
+    private int estadoDano;
+    private int estadoDerrota;
+    private int estadoReposo;
+    private string nombreRecarga;
+    private float duracionRecarga;
+    private RuntimeAnimatorController controladorAnterior;
+    private int armaAnterior = -1;
+    private int estadoPastilla;
+    private float duracionPastilla;
+    private float tiempoPastilla;
+    private bool pastillaAplicada;
+
+    public bool IsUsingHealthConsumable { get; private set; }
+    public bool CanUseHealthConsumable => isActiveAndEnabled && !inputLocked && !defeated &&
+        !GameFlowController.IsMatchEnded && !GameFlowController.IsPaused && !PistolUpgradeShop.IsOpen &&
+        health != null && health.CanHeal && weapons != null && !IsBusyExceptFire() &&
+        ProgressionService.HealthConsumables(health.IsCesar) > 0 &&
+        animator != null && animator.runtimeAnimatorController != null &&
+        duracionPastilla > 0f && animator.HasState(0, estadoPastilla);
 
     public bool IsDefeated => defeated;
     public bool IsInputLocked => inputLocked;
     public int CurrentHealth => health != null ? health.CurrentHealth : 0;
-    public int MaxHealth => health != null ? health.MaxHealth : 5;
+    public int MaxHealth => health != null ? health.MaxHealth : CharacterStats.BaseHealth(CharacterWeapons.IsCesar(gameObject));
     public PlayerHealth Health => health;
     public PlayerWeaponController Weapons => weapons;
     public Vector2 AimDirection { get; private set; } = Vector2.right;
@@ -37,6 +58,7 @@ public class PlayerActions : MonoBehaviour
         if (!locked)
             return;
 
+        CancelHealthConsumable();
         hasAimInViewport = false;
         touchAimActive = false;
         touchFireHeld = false;
@@ -60,11 +82,21 @@ public class PlayerActions : MonoBehaviour
         aimCamera = Camera.main;
         if (animator != null)
             animator.SetBool("IsAiming", false);
+        weapons.Changed += OnWeaponChanged;
+        OnWeaponChanged();
     }
 
     private void Update()
     {
         fireRequested = false;
+        if (IsUsingHealthConsumable)
+        {
+            if (inputLocked || defeated || GameFlowController.IsMatchEnded || PistolUpgradeShop.IsOpen)
+                CancelHealthConsumable();
+            else if (!GameFlowController.IsPaused)
+                AdvanceHealthConsumable(Time.deltaTime);
+            return;
+        }
         if (inputLocked || GameFlowController.IsPaused || PistolUpgradeShop.IsOpen)
             return;
 
@@ -75,6 +107,7 @@ public class PlayerActions : MonoBehaviour
 
         if (Keyboard.current != null)
         {
+            if (Keyboard.current.hKey.wasPressedThisFrame && TryUseHealthConsumable()) return;
             if (Keyboard.current.digit1Key.wasPressedThisFrame)
                 EquipWeapon(0);
             else if (Keyboard.current.digit2Key.wasPressedThisFrame)
@@ -113,11 +146,11 @@ public class PlayerActions : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (inputLocked || GameFlowController.IsPaused || defeated || spriteRenderer == null)
+        if (inputLocked || IsUsingHealthConsumable || GameFlowController.IsPaused || defeated || spriteRenderer == null)
             return;
 
         // Firing poses must face the target, even while walking the other way.
-        bool firingPose = IsPlaying("Pistol_Fire") || IsPlaying("SMG_Fire") || IsPlaying("RPG_Fire");
+        bool firingPose = animator != null && animator.GetCurrentAnimatorStateInfo(0).shortNameHash == estadoDisparo;
         float direction = fireRequested || firingPose ? AimDirection.x :
             movement != null ? movement.HorizontalInput : 0f;
         if (direction != 0f)
@@ -132,21 +165,55 @@ public class PlayerActions : MonoBehaviour
             EquipWeapon(index);
     }
 
-    private void EquipWeapon(int index)
+    public void EquipWeapon(int index)
     {
-        bool wasReloading = weapons.IsReloading;
-        if (!weapons.TryEquip(index) || !wasReloading || animator == null ||
+        if (IsUsingHealthConsumable) return;
+        int previous = weapons.EquippedWeapon;
+        if (!weapons.TryEquip(index) || previous == index || animator == null ||
             animator.runtimeAnimatorController == null) return;
 
         ResetFireTriggers();
-        string character = animator.runtimeAnimatorController.name.Contains("Cesar") ? "Cesar" : "Marco";
-        animator.Play(character + "_Idle", 0, 0f);
+        animator.Play(estadoReposo, 0, 0f);
         animator.Update(0f);
+    }
+
+    private void OnWeaponChanged()
+    {
+        maxAimDistance = weapons.Definition.Range;
+        ActualizarEstadosAnimacion();
+        if (animator != null && weapons.IsCesar)
+            animator.SetFloat("WeaponIndex", weapons.EquippedWeapon);
+    }
+
+    private void ActualizarEstadosAnimacion()
+    {
+        RuntimeAnimatorController controlador = animator != null ? animator.runtimeAnimatorController : null;
+        if (armaAnterior == weapons.EquippedWeapon && controladorAnterior == controlador) return;
+        armaAnterior = weapons.EquippedWeapon;
+        controladorAnterior = controlador;
+        string personaje = weapons.IsCesar ? "Cesar" : "Marco";
+        string arma = weapons.AnimationWeapon;
+        estadoDisparo = Animator.StringToHash(personaje + "_" + arma + "_Fire");
+        nombreRecarga = personaje + "_" + arma + "_Reload";
+        estadoRecarga = Animator.StringToHash(nombreRecarga);
+        estadoDano = Animator.StringToHash(personaje + "_Damage");
+        estadoDerrota = Animator.StringToHash(personaje + "_Defeat");
+        estadoReposo = Animator.StringToHash(personaje + "_Idle");
+        string nombrePastilla = personaje + "_UseHealthConsumable";
+        estadoPastilla = Animator.StringToHash(nombrePastilla);
+        duracionPastilla = 0f;
+        duracionRecarga = 0f;
+        if (animator == null || animator.runtimeAnimatorController == null) return;
+        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        {
+            if (clip.name == nombreRecarga) duracionRecarga = clip.length;
+            if (clip.name == nombrePastilla) duracionPastilla = clip.length;
+        }
     }
 
     public void ReloadTouchWeapon()
     {
-        if (!inputLocked && !GameFlowController.IsPaused)
+        if (!inputLocked && !GameFlowController.IsPaused && !PistolUpgradeShop.IsOpen)
             TryReload();
     }
 
@@ -155,17 +222,74 @@ public class PlayerActions : MonoBehaviour
         health?.TakeDamage(amount);
     }
 
+    public bool TryUseHealthConsumable()
+    {
+        if (!CanUseHealthConsumable) return false;
+        StopTouchAimAndFire();
+        fireRequested = false;
+        IsUsingHealthConsumable = true;
+        tiempoPastilla = 0f;
+        pastillaAplicada = false;
+        movement?.SetMovementLocked(true);
+        animator.SetBool("IsAiming", false);
+        animator.Play(estadoPastilla, 0, 0f);
+        animator.Update(0f);
+        return true;
+    }
+
+    private void AdvanceHealthConsumable(float deltaTime)
+    {
+        tiempoPastilla += deltaTime;
+        // The sixth frame is the swallow pose. Charge one unit only when healing.
+        if (!pastillaAplicada && tiempoPastilla >= duracionPastilla * 5f / 8f)
+        {
+            if (!health.CanHeal || !ProgressionService.TryConsumeHealthConsumable(health.IsCesar))
+            {
+                CancelHealthConsumable();
+                return;
+            }
+            pastillaAplicada = true;
+            health.Heal(1);
+        }
+        if (tiempoPastilla >= duracionPastilla) CancelHealthConsumable();
+    }
+
+    private void CancelHealthConsumable()
+    {
+        if (!IsUsingHealthConsumable) return;
+        IsUsingHealthConsumable = false;
+        movement?.SetMovementLocked(false);
+        if (animator != null && animator.runtimeAnimatorController != null)
+            animator.Play(estadoReposo, 0, 0f);
+    }
+
     private void OnDamaged()
     {
+        // An interrupted swallow before the healing frame does not spend a pill.
+        CancelHealthConsumable();
         weapons?.CancelReload();
         if (animator != null) animator.SetTrigger("TakeDamage");
     }
 
     private void OnDestroy()
     {
+        if (weapons != null) weapons.Changed -= OnWeaponChanged;
         if (health == null) return;
         health.Damaged -= OnDamaged;
         health.Died -= Defeat;
+    }
+
+    private void OnDisable()
+    {
+        CancelHealthConsumable();
+        fireRequested = false;
+        hasAimInViewport = false;
+        StopTouchAimAndFire();
+    }
+
+    private void OnApplicationFocus(bool tieneFoco)
+    {
+        if (!tieneFoco) OnDisable();
     }
 
     private void Defeat()
@@ -174,6 +298,7 @@ public class PlayerActions : MonoBehaviour
             return;
 
         defeated = true;
+        CancelHealthConsumable();
         hasAimInViewport = false;
         touchFireHeld = false;
         weapons?.CancelReload();
@@ -188,7 +313,7 @@ public class PlayerActions : MonoBehaviour
 
     public void SetTouchAimAndFire(Vector2 direction)
     {
-        if (inputLocked || GameFlowController.IsPaused || defeated)
+        if (inputLocked || IsUsingHealthConsumable || GameFlowController.IsPaused || PistolUpgradeShop.IsOpen || defeated)
             return;
 
         touchAimActive = true;
@@ -220,16 +345,9 @@ public class PlayerActions : MonoBehaviour
     private void PlayReloadAnimation()
     {
         if (animator == null || animator.runtimeAnimatorController == null) return;
-        string character = animator.runtimeAnimatorController.name.Contains("Cesar") ? "Cesar" : "Marco";
-        string weapon = weapons.EquippedWeapon == 0 ? "Pistol" : weapons.EquippedWeapon == 1 ? "SMG" : "RPG";
-        string stateName = character + "_" + weapon + "_Reload";
-        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
-        {
-            if (clip.name != stateName) continue;
-            animator.SetFloat("ReloadSpeed", clip.length / weapons.Definition.ReloadDuration);
-            break;
-        }
-        animator.Play(stateName, 0, 0f);
+        if (duracionRecarga > 0f)
+            animator.SetFloat("ReloadSpeed", duracionRecarga / weapons.Definition.ReloadDuration);
+        animator.Play(estadoRecarga, 0, 0f);
         animator.Update(0f);
     }
 
@@ -241,20 +359,42 @@ public class PlayerActions : MonoBehaviour
         if (weapons.Magazine == 0) { TryReload(); return; }
         if (!weapons.CanFire) return;
 
+        Vector2 aimOrigin = AimOrigin;
         // Evaluate the firing sprite before locating its barrel. A trigger alone
         // blends for 80 ms and would emit while the previous idle/walk pose is visible.
         if (animator != null && animator.runtimeAnimatorController != null)
         {
             ResetFireTriggers();
-            string character = animator.runtimeAnimatorController.name.Contains("Cesar") ? "Cesar" : "Marco";
-            string weapon = weapons.EquippedWeapon == 0 ? "Pistol" : weapons.EquippedWeapon == 1 ? "SMG" : "RPG";
-            animator.Play(character + "_" + weapon + "_Fire", 0, 0f);
+            // Cesar's shotgun starts lowered: its third frame is the horizontal
+            // firing pose. The sniper is ready on its fourth frame.
+            float firingPoseTime = weapons.IsCesar
+                ? weapons.EquippedWeapon == 0 ? 0.25f : weapons.Definition.IsPiercing ? 0.38f : 0f
+                : 0f;
+            animator.Play(estadoDisparo, 0, firingPoseTime);
             animator.Update(0f);
         }
         Vector2 spawnPosition = PlayerMuzzle.WorldPosition(spriteRenderer, weapons.EquippedWeapon);
         Vector2 shotDirection = AimTarget - spawnPosition;
-        if (shotDirection.sqrMagnitude < 0.0001f)
+        // Distant mouse shots pass through the crosshair and continue to the camera edge.
+        // A pointer behind the barrel must not reverse the intended direction;
+        // touch aiming already supplies a direction without a world-space target.
+        bool reversesHorizontalAim = Mathf.Abs(AimDirection.x) > 0.0001f && shotDirection.x * AimDirection.x < 0f;
+        if (touchAimActive || shotDirection.sqrMagnitude < 0.0001f ||
+            Vector2.Dot(shotDirection, AimDirection) <= 0f || reversesHorizontalAim)
             shotDirection = AimDirection;
+        else
+        {
+            // A nearby cursor just beyond the barrel otherwise turns a horizontal
+            // aim almost vertical. This is especially visible when firing left,
+            // where the camera leaves less space behind the player. Keep nearby
+            // shots parallel to the player's aim, then ease into precise distant aim.
+            float muzzleReach = Vector2.Distance(aimOrigin, spawnPosition);
+            float pointerDistance = Vector2.Distance(aimOrigin, AimTarget);
+            float preciseAim = muzzleReach > 0.0001f
+                ? Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(muzzleReach * 2f, muzzleReach * 4f, pointerDistance))
+                : 1f;
+            shotDirection = Vector2.Lerp(AimDirection, shotDirection.normalized, preciseAim);
+        }
         weapons.TryFire(spawnPosition, shotDirection.normalized, transform);
     }
 
@@ -301,13 +441,17 @@ public class PlayerActions : MonoBehaviour
         Vector3 mouseWorld = aimCamera.ScreenToWorldPoint(
             new Vector3(mousePosition.x, mousePosition.y, distanceFromCamera));
 
-        Vector2 fromPlayer = (Vector2)mouseWorld - AimOrigin;
+        SetPointerAim(mouseWorld);
+    }
+
+    private void SetPointerAim(Vector2 pointerWorld)
+    {
+        AimTarget = pointerWorld;
+        Vector2 fromPlayer = pointerWorld - AimOrigin;
         if (fromPlayer.sqrMagnitude < 0.0001f)
             return;
 
         AimDirection = fromPlayer.normalized;
-        AimTarget = AimOrigin + Vector2.ClampMagnitude(fromPlayer, maxAimDistance);
-
     }
 
     private void OnGUI()
@@ -332,18 +476,10 @@ public class PlayerActions : MonoBehaviour
 
     private bool IsBusyExceptFire()
     {
-        return IsPlaying("Pistol_Reload") ||
-               IsPlaying("SMG_Reload") ||
-               IsPlaying("RPG_Reload") ||
-               IsPlaying("Damage") ||
-               IsPlaying("Defeat");
-    }
-
-    private bool IsPlaying(string stateSuffix)
-    {
+        if (IsUsingHealthConsumable) return true;
+        if (weapons.IsReloading) return true;
         if (animator == null) return false;
-        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
-        return state.IsName($"Cesar_{stateSuffix}") ||
-               state.IsName($"Marco_{stateSuffix}");
+        int estado = animator.GetCurrentAnimatorStateInfo(0).shortNameHash;
+        return estado == estadoRecarga || estado == estadoDano || estado == estadoDerrota;
     }
 }

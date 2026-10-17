@@ -12,6 +12,11 @@ public sealed class WeaponDefinition : ScriptableObject
     [SerializeField, Min(1)] private int magazineSize = 12;
     [SerializeField, Min(0.1f)] private float reloadDuration = 1.2f;
     [SerializeField] private int[] upgradeCosts = { 25, 60 };
+    [Header("Piercing sniper shot")]
+    [SerializeField] private bool piercingShot;
+    [SerializeField, Range(2, 4)] private int basePiercingTargets = 2;
+    [SerializeField, Range(2, 4)] private int maxPiercingTargets = 4;
+    [SerializeField, Min(1)] private int upgradesPerExtraTarget = 2;
     private static WeaponDefinition pistol;
 
     public static WeaponDefinition Pistol
@@ -32,6 +37,16 @@ public sealed class WeaponDefinition : ScriptableObject
     }
 
     private static WeaponDefinition smg, rpg;
+    private static readonly WeaponDefinition[] cesarWeapons = new WeaponDefinition[3];
+    public static WeaponDefinition ForCharacter(int index, bool cesar)
+    {
+        if (!cesar) return At(index);
+        if (index < 0 || index >= 3) throw new System.ArgumentOutOfRangeException(nameof(index));
+        if (cesarWeapons[index] == null)
+            cesarWeapons[index] = Resources.Load<WeaponDefinition>("Cesar" + CharacterWeapons.State(index, true) + "Definition");
+        return cesarWeapons[index];
+    }
+
     public static WeaponDefinition At(int index)
     {
         if (index == 0) return Pistol;
@@ -56,6 +71,10 @@ public sealed class WeaponDefinition : ScriptableObject
     public int MagazineSize => magazineSize;
     public float ReloadDuration => reloadDuration;
     public int MaxUpgrade => upgradeCosts.Length;
+    public bool IsPiercing => piercingShot;
+    public int TargetsAt(int upgrade) => !piercingShot ? 1 : Mathf.Clamp(
+        basePiercingTargets + Mathf.Clamp(upgrade, 0, MaxUpgrade) / Mathf.Max(1, upgradesPerExtraTarget),
+        2, Mathf.Clamp(maxPiercingTargets, 2, 4));
     public int DamageAt(int upgrade) => baseDamage + Mathf.Clamp(upgrade, 0, MaxUpgrade);
     public int UpgradeCost(int currentUpgrade) => currentUpgrade >= 0 && currentUpgrade < MaxUpgrade
         ? Mathf.Max(1, upgradeCosts[currentUpgrade]) : 0;

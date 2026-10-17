@@ -1,0 +1,506 @@
+fileFormatVersion: 2
+guid: 071563ece786d3c43a00e0918ec05c2f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 616042963889767564
+    second: Cesar_Escopeta_Fire_0
+  - first:
+      213: -7190487330621016720
+    second: Cesar_Escopeta_Fire_1
+  - first:
+      213: -5228677355184281297
+    second: Cesar_Escopeta_Fire_2
+  - first:
+      213: 6116679187848286467
+    second: Cesar_Escopeta_Fire_3
+  - first:
+      213: -9032802002356707888
+    second: Cesar_Escopeta_Fire_4
+  - first:
+      213: -6920341111998938214
+    second: Cesar_Escopeta_Fire_5
+  - first:
+      213: 7992218517627835012
+    second: Cesar_Escopeta_Fire_6
+  - first:
+      213: 1562469731110914386
+    second: Cesar_Escopeta_Fire_7
+  - first:
+      213: 5519941876306947073
+    second: Cesar_Escopeta_Fire_8
+  - first:
+      213: -4630561580487028062
+    second: Cesar_Escopeta_Fire_9
+  - first:
+      213: -3464919223673603041
+    second: Cesar_Escopeta_Fire_10
+  - first:
+      213: -4084392144570811271
+    second: Cesar_Escopeta_Fire_11
+  - first:
+      213: -7439279590374464165
+    second: Cesar_Escopeta_Fire_12
+  - first:
+      213: -2649015733611980426
+    second: Cesar_Escopeta_Fire_13
+  - first:
+      213: 2164350805618615974
+    second: Cesar_Escopeta_Fire_14
+  - first:
+      213: -7372226201796517884
+    second: Cesar_Escopeta_Fire_15
+  - first:
+      213: 7884146518177257681
+    second: Cesar_Escopeta_Fire_16
+  - first:
+      213: -7597971550380559945
+    second: Cesar_Escopeta_Fire_17
+  - first:
+      213: -4638463164215744874
+    second: Cesar_Escopeta_Fire_18
+  - first:
+      213: -7756912316745255791
+    second: Cesar_Escopeta_Fire_19
+  - first:
+      213: -536505308569284719
+    second: Cesar_Escopeta_Fire_20
+  - first:
+      213: 6271526346122057694
+    second: Cesar_Escopeta_Fire_21
+  - first:
+      213: -1952766956977381721
+    second: Cesar_Escopeta_Fire_22
+  - first:
+      213: 874374781699812341
+    second: Cesar_Escopeta_Fire_23
+  - first:
+      213: 7385120459439555218
+    second: Cesar_Escopeta_Fire_24
+  - first:
+      213: 5408738232669200197
+    second: Cesar_Escopeta_Fire_25
+  - first:
+      213: 4128155050481248820
+    second: Cesar_Escopeta_Fire_26
+  - first:
+      213: 4337331891192347101
+    second: Cesar_Escopeta_Fire_27
+  - first:
+      213: -551524485138660478
+    second: Cesar_Escopeta_Fire_28
+  - first:
+      213: -2969067984388439348
+    second: Cesar_Escopeta_Fire_29
+  - first:
+      213: 3015947765183969439
+    second: Cesar_Escopeta_Fire_30
+  - first:
+      213: -4559702286235473856
+    second: Cesar_Escopeta_Fire_31
+  - first:
+      213: 4548420420928952322
+    second: Cesar_Escopeta_Fire_32
+  - first:
+      213: 3780312013001852135
+    second: Cesar_Escopeta_Fire_33
+  - first:
+      213: 5761806373616374513
+    second: Cesar_Escopeta_Fire_34
+  - first:
+      213: -3332186942365661884
+    second: Cesar_Escopeta_Fire_35
+  - first:
+      213: -2626597385329301160
+    second: Cesar_Escopeta_Fire_36
+  - first:
+      213: -9213238006698528334
+    second: Cesar_Escopeta_Fire_37
+  - first:
+      213: -7685912262844049629
+    second: Cesar_Escopeta_Fire_38
+  - first:
+      213: 4176180926142396378
+    second: Cesar_Escopeta_Fire_39
+  - first:
+      213: 8386983747361122807
+    second: Cesar_Escopeta_Fire_40
+  - first:
+      213: 9079611961268023391
+    second: Cesar_Escopeta_Fire_41
+  - first:
+      213: 3810706982985486673
+    second: Cesar_Escopeta_Fire_42
+  - first:
+      213: 3390579585018548004
+    second: Cesar_Escopeta_Fire_43
+  - first:
+      213: 3613488335393333219
+    second: Cesar_Escopeta_Fire_44
+  - first:
+      213: -2266207789517203192
+    second: Cesar_Escopeta_Fire_45
+  - first:
+      213: 7267944053132061333
+    second: Cesar_Escopeta_Fire_46
+  - first:
+      213: -2677607113971720704
+    second: Cesar_Escopeta_Fire_47
+  - first:
+      213: 5175738444762073462
+    second: Cesar_Escopeta_Fire_48
+  - first:
+      213: 1929231345486374764
+    second: Cesar_Escopeta_Fire_49
+  - first:
+      213: 1098017619007545567
+    second: Cesar_Escopeta_Fire_50
+  - first:
+      213: -4660493670741842821
+    second: Cesar_Escopeta_Fire_51
+  - first:
+      213: 4045554599473904308
+    second: Cesar_Escopeta_Fire_52
+  - first:
+      213: -4087878175338899829
+    second: Cesar_Escopeta_Fire_53
+  - first:
+      213: 5041129143067729943
+    second: Cesar_Escopeta_Fire_54
+  - first:
+      213: 1251912219408175369
+    second: Cesar_Escopeta_Fire_55
+  - first:
+      213: 2752294697780660512
+    second: Cesar_Escopeta_Fire_56
+  - first:
+      213: -5038888625254876150
+    second: Cesar_Escopeta_Fire_57
+  - first:
+      213: 4072541526363639176
+    second: Cesar_Escopeta_Fire_58
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 73.2
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Fire_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.45052084, y: 0.39453125}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c84470dcfcf9c8800800000000000000
+      internalID: 616042963889767564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Fire_1
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.3997396, y: 0.39453125}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0753360aed1463c90800000000000000
+      internalID: -7190487330621016720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Fire_2
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.51432294, y: 0.39453125}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f29ac1fe5a10077b0800000000000000
+      internalID: -5228677355184281297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Fire_3
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.32291666, y: 0.39257812}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 301d8b4505fc2e450800000000000000
+      internalID: 6116679187848286467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Fire_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.4466146, y: 0.45703125}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0dd571bcf6a05a280800000000000000
+      internalID: -9032802002356707888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Fire_5
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.39453125, y: 0.45703125}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9385c69c6206ff90800000000000000
+      internalID: -6920341111998938214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Fire_6
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.3671875, y: 0.45703125}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 482918ea5601aee60800000000000000
+      internalID: 7992218517627835012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Escopeta_Fire_7
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.44921875, y: 0.45703125}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2598a2f21f10fa510800000000000000
+      internalID: 1562469731110914386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: bb0dd904aa8cd5949b55b8fb389f800e
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":2.0},"gridSpriteSize":{"x":380.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Cesar_Escopeta_Fire_0: 616042963889767564
+      Cesar_Escopeta_Fire_1: -7190487330621016720
+      Cesar_Escopeta_Fire_2: -5228677355184281297
+      Cesar_Escopeta_Fire_3: 6116679187848286467
+      Cesar_Escopeta_Fire_4: -9032802002356707888
+      Cesar_Escopeta_Fire_5: -6920341111998938214
+      Cesar_Escopeta_Fire_6: 7992218517627835012
+      Cesar_Escopeta_Fire_7: 1562469731110914386
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

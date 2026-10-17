@@ -6,8 +6,10 @@ public static class CartoonUI
     public static readonly Color Cream = new Color(1f, .94f, .76f);
     public static readonly Color Ink = new Color(.10f, .065f, .045f);
     private static Sprite rounded;
-    public static Font Font => Resources.Load<Font>("UI/LilitaOne");
-    public static Sprite Wood => Resources.Load<Sprite>("UI/WoodSign");
+    private static Font fuente;
+    private static Sprite madera;
+    public static Font Font => fuente != null ? fuente : fuente = Resources.Load<Font>("UI/LilitaOne");
+    public static Sprite Wood => madera != null ? madera : madera = Resources.Load<Sprite>("UI/WoodSign");
     public static Sprite FrameSprite
     {
         get
@@ -22,7 +24,7 @@ public static class CartoonUI
                 float d = new Vector2(Mathf.Max(0, dx), Mathf.Max(0, dy)).magnitude;
                 pixels[y * size + x] = d > 12 ? Color.clear : d > 8 || x < 4 || x > 59 || y < 4 || y > 59 ? new Color(.22f,.18f,.12f) : Color.white;
             }
-            texture.SetPixels(pixels); texture.Apply(); texture.filterMode = FilterMode.Bilinear;
+            texture.SetPixels(pixels); texture.Apply(false, true); texture.filterMode = FilterMode.Bilinear;
             rounded = Sprite.Create(texture, new Rect(0,0,size,size), Vector2.one*.5f, 100, 0, SpriteMeshType.FullRect, Vector4.one*16);
             rounded.name = "Cartoon rounded frame";
             return rounded;
@@ -31,7 +33,7 @@ public static class CartoonUI
     public static void Frame(Image image, Color color)
     {
         image.sprite = FrameSprite; image.type = Image.Type.Sliced; image.color = color;
-        var shadow = image.gameObject.AddComponent<Shadow>(); shadow.effectColor = new Color(0,0,0,.5f); shadow.effectDistance = new Vector2(0,-6);
+        var shadow = image.GetComponent<Shadow>() ?? image.gameObject.AddComponent<Shadow>(); shadow.effectColor = new Color(0,0,0,.5f); shadow.effectDistance = new Vector2(0,-6);
     }
     public static void Typography(Text text, bool heading = false)
     {

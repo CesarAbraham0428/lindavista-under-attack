@@ -73,6 +73,8 @@ public sealed class SelectedLevelEnvironment : MonoBehaviour
     private Sprite runtimeGradientSprite;
     private Transform runtimeSkyTransform;
     private Camera runtimeSkyCamera;
+    private float ultimoAltoCielo;
+    private float ultimaProporcionCielo;
 
     private void Awake()
     {
@@ -175,12 +177,12 @@ public sealed class SelectedLevelEnvironment : MonoBehaviour
             wrapMode = TextureWrapMode.Clamp
         };
         runtimeGradientTexture.SetPixels(pixels);
-        runtimeGradientTexture.Apply(false, false);
+        runtimeGradientTexture.Apply(false, true);
         runtimeGradientSprite = Sprite.Create(
             runtimeGradientTexture,
             new Rect(0f, 0f, textureWidth, textureHeight),
             new Vector2(0.5f, 0.5f),
-            1f);
+            1f, 0, SpriteMeshType.FullRect);
 
         GameObject skyObject = new GameObject(objectName);
         skyObject.transform.SetParent(gameplayCamera.transform, false);
@@ -188,6 +190,8 @@ public sealed class SelectedLevelEnvironment : MonoBehaviour
         skyObject.transform.localScale = new Vector3(viewWidth / textureWidth, viewHeight / textureHeight, 1f);
         runtimeSkyTransform = skyObject.transform;
         runtimeSkyCamera = gameplayCamera;
+        ultimoAltoCielo = viewHeight;
+        ultimaProporcionCielo = gameplayCamera.aspect;
 
         SpriteRenderer spriteRenderer = skyObject.AddComponent<SpriteRenderer>();
         spriteRenderer.sprite = runtimeGradientSprite;
@@ -201,8 +205,13 @@ public sealed class SelectedLevelEnvironment : MonoBehaviour
 
         // The intro changes the camera zoom; the sky must continue to fill its viewport.
         float height = runtimeSkyCamera.orthographicSize * 2f;
+        float proporcion = runtimeSkyCamera.aspect;
+        if (Mathf.Approximately(height, ultimoAltoCielo) && Mathf.Approximately(proporcion, ultimaProporcionCielo))
+            return;
+        ultimoAltoCielo = height;
+        ultimaProporcionCielo = proporcion;
         runtimeSkyTransform.localScale = new Vector3(
-            height * runtimeSkyCamera.aspect / runtimeGradientSprite.rect.width,
+            height * proporcion / runtimeGradientSprite.rect.width,
             height / runtimeGradientSprite.rect.height, 1f);
     }
 
@@ -223,6 +232,9 @@ public sealed class SelectedLevelEnvironment : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (runtimeSkyTransform != null)
+            Destroy(runtimeSkyTransform.gameObject);
+
         if (runtimeGradientSprite != null)
             Destroy(runtimeGradientSprite);
 

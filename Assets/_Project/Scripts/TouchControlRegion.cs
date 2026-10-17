@@ -14,7 +14,7 @@ public enum TouchControlKind
 }
 
 public sealed class TouchControlRegion : MonoBehaviour,
-    IPointerDownHandler, IDragHandler, IPointerUpHandler
+    IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerExitHandler
 {
     private const int NoPointer = int.MinValue;
 
@@ -46,7 +46,7 @@ public sealed class TouchControlRegion : MonoBehaviour,
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (pointerId != NoPointer || hud == null)
+        if (pointerId != NoPointer || hud == null || !hud.PuedeRecibirEntrada)
             return;
 
         pointerId = eventData.pointerId;
@@ -67,6 +67,13 @@ public sealed class TouchControlRegion : MonoBehaviour,
     public void OnPointerUp(PointerEventData eventData)
     {
         if (eventData.pointerId == pointerId)
+            Cancel();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        // El apuntado admite arrastrar fuera; una flecha deja de mover al salir.
+        if (kind != TouchControlKind.AimAndFire && eventData.pointerId == pointerId)
             Cancel();
     }
 

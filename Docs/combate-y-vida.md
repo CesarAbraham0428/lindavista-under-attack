@@ -50,6 +50,8 @@ Los conteos iniciales, editables en el componente del spawner, son: Nivel 1 (ín
 
 La formación empieza en X=93 con 1,2 unidades entre enemigos; la cámara ajusta temporalmente el zoom para encuadrar la fila y vuelve al tamaño normal durante el paneo. Al activarse, cada `BasicEnemy` avanza hacia la posición inicial del jugador activo (X=-6,72 en la escena actual) y conserva su comportamiento de ataque hasta que llega o termina la partida.
 
+Durante ese avance solo puede atacar a jugadores que siguen delante, en dirección a la entrada. Cuando rebasa al jugador, continúa hacia la entrada sin girarse ni iniciar ataques contra él. La misma comprobación se repite después de la preparación del ataque y antes de cada disparo de una ráfaga, para cancelar el daño y los efectos si el jugador quedó detrás. Los enemigos sin objetivo de entrada conservan su persecución normal. `EnemyApproachChecks.RunRuntime()` verifica los cuatro tipos de enemigo, ambos sentidos de avance y el cruce durante ataques pendientes con un inventario temporal.
+
 Los prefabs reutilizables están en `Assets/_Project/Prefabs/Enemy1_Base.prefab` a `Enemy4_Base.prefab`; mantienen el sprite, el controlador de animación, salud y estilo de ataque de cada enemigo. Los sprites estáticos de muestra bajo `Enemigos` se ocultan para que la composición seleccionada no se duplique.
 
 ## Alcance actual

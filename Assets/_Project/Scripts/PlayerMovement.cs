@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
+    [SerializeField] private float minHorizontalPosition = -6.72f;
     [SerializeField] private float maxHorizontalPosition = 117f;
 
     private Rigidbody2D rb;
@@ -11,8 +12,10 @@ public class PlayerMovement : MonoBehaviour
     private float horizontal;
     private float touchHorizontal;
     private bool movementLocked;
+    private bool isCesar;
 
     public float HorizontalInput => horizontal;
+    public float MovementSpeed => speed * CharacterStats.SpeedMultiplier(isCesar);
 
     public void SetMovementLocked(bool locked)
     {
@@ -33,18 +36,27 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetTouchHorizontal(float direction)
     {
-        touchHorizontal = movementLocked ? 0f : Mathf.Clamp(direction, -1f, 1f);
+        touchHorizontal = movementLocked || GameFlowController.IsPaused || PistolUpgradeShop.IsOpen
+            ? 0f : Mathf.Clamp(direction, -1f, 1f);
     }
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        isCesar = CharacterWeapons.IsCesar(gameObject);
     }
 
     private void Update()
     {
         if (GameFlowController.IsPaused) return;
+        if (PistolUpgradeShop.IsOpen)
+        {
+            horizontal = touchHorizontal = 0f;
+            if (rb != null) rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            if (animator != null) animator.SetBool("IsMoving", false);
+            return;
+        }
         if (movementLocked)
         {
             if (animator != null)
@@ -67,10 +79,12 @@ public class PlayerMovement : MonoBehaviour
 
         horizontal = keyboardHorizontal != 0f ? keyboardHorizontal : touchHorizontal;
 
-        if (horizontal > 0f && rb.position.x >= maxHorizontalPosition)
+        if ((horizontal < 0f && rb.position.x <= minHorizontalPosition) ||
+            (horizontal > 0f && rb.position.x >= maxHorizontalPosition))
             horizontal = 0f;
 
-        animator.SetBool("IsMoving", horizontal != 0f);
+        if (animator != null)
+            animator.SetBool("IsMoving", horizontal != 0f);
     }
 
     private void FixedUpdate()
@@ -82,25 +96,25 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        float nextX = rb.position.x + horizontal * speed * Time.fixedDeltaTime;
-
-        if (horizontal > 0f && nextX >= maxHorizontalPosition)
+        // Clamp the body as well as input, so a physics step or external push cannot
+        // move the player behind the entrance or beyond the end of the street.
+        Vector2 position = rb.position;
+        position.x = Mathf.Clamp(position.x, minHorizontalPosition, maxHorizontalPosition);
+        float nextX = position.x + horizontal * MovementSpeed * Time.fixedDeltaTime;
+        bool reachesEntrance = horizontal < 0f && nextX <= minHorizontalPosition;
+        bool reachesEnd = horizontal > 0f && nextX >= maxHorizontalPosition;
+        if (reachesEntrance || reachesEnd)
         {
-            Vector2 position = rb.position;
-            position.x = maxHorizontalPosition;
-            rb.position = position;
+            position.x = reachesEntrance ? minHorizontalPosition : maxHorizontalPosition;
             horizontal = 0f;
-            animator.SetBool("IsMoving", false);
+            if (animator != null)
+                animator.SetBool("IsMoving", false);
         }
-        else if (rb.position.x > maxHorizontalPosition)
-        {
-            Vector2 position = rb.position;
-            position.x = maxHorizontalPosition;
+        if (position != rb.position)
             rb.position = position;
-        }
 
         rb.linearVelocity = new Vector2(
-            horizontal * speed,
+            horizontal * MovementSpeed,
             rb.linearVelocity.y
         );
     }
@@ -109,5 +123,16 @@ public class PlayerMovement : MonoBehaviour
     {
         SetMovementLocked(true);
         rb.bodyType = RigidbodyType2D.Kinematic;
+    }
+
+    private void OnDisable()
+    {
+        horizontal = touchHorizontal = 0f;
+        if (rb != null) rb.linearVelocity = Vector2.zero;
+    }
+
+    private void OnApplicationFocus(bool tieneFoco)
+    {
+        if (!tieneFoco) OnDisable();
     }
 }

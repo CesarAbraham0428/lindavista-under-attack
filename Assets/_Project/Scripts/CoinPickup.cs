@@ -12,17 +12,24 @@ public sealed class CoinPickup : MonoBehaviour
 
     private void Awake()
     {
-        gameObject.layer = 2; // Ignore Raycast: loot must never stop a shot.
-        GetComponent<CircleCollider2D>().isTrigger = true;
-        var body = GetComponent<Rigidbody2D>();
-        body.bodyType = RigidbodyType2D.Kinematic;
-        body.gravityScale = 0f;
+        LootPickupPlacement.ConfigurePickup(gameObject);
         if (GetComponent<SpriteRenderer>() == null)
         {
             var visual = gameObject.AddComponent<SpriteRenderer>();
             visual.sprite = ProgressionVisuals.Coin;
             visual.sortingOrder = 20;
         }
+    }
+
+    private void Start()
+    {
+        transform.position = LootPickupPlacement.PositionAtGround(transform.position);
+    }
+
+    private void FixedUpdate()
+    {
+        if (!collected && !collecting && Time.unscaledTime >= nextAttempt && !GameFlowController.IsPaused)
+            TryCollect(LootPickupPlacement.FindNearbyPlayer(transform.position));
     }
 
     public void Initialize(int amount) { value = Mathf.Max(1, amount); }
@@ -34,8 +41,8 @@ public sealed class CoinPickup : MonoBehaviour
 
     public bool TryCollect(PlayerHealth player)
     {
-        if (collected || collecting || player == null || !player.gameObject.activeInHierarchy ||
-            player.IsDead || GameFlowController.IsMatchEnded) return false;
+        if (collected || collecting || !isActiveAndEnabled || player == null || !player.isActiveAndEnabled ||
+            player.IsDead || GameFlowController.IsMatchEnded || GameFlowController.IsPaused) return false;
         collecting = true;
         if (!ProgressionService.TryCredit(value))
         {

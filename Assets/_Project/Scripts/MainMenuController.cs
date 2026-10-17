@@ -21,6 +21,7 @@ public sealed class MainMenuController : MonoBehaviour
     private void Awake()
     {
         CartoonMenuStyle.Apply(transform);
+        AdaptacionMenusUI.Configurar(GetComponent<Canvas>());
         if (playButton != null)
             playButton.onClick.AddListener(OpenCharacterSelection);
 

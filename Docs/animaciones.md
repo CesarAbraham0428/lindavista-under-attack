@@ -10,8 +10,11 @@ Ambos controladores contienen clips para:
 - `Damage` y `Defeat`.
 - Fuego y recarga de pistola, SMG y RPG.
 - Un clip `Aim`.
+- `Marco_UseHealthConsumable` y `Cesar_UseHealthConsumable`: ocho fotogramas existentes de `Art/UI/Health`, en orden de lectura, durante 1,2 segundos y sin bucle.
 
 `PlayerMovement` cambia el booleano `IsMoving` cuando hay desplazamiento. `PlayerActions` evalúa directamente el estado de fuego del arma actual antes de emitir cada proyectil, para que el sprite con el arma ya sea visible al disparar; usa triggers para recarga, `TakeDamage` y `Defeat`. Después de la derrota, el movimiento queda bloqueado.
+
+`PlayerActions.TryUseHealthConsumable()` reproduce directamente el estado de consumo. El sexto fotograma aplica +1 de vida y descuenta una pastilla mediante una transacción guardada; al terminar vuelve al reposo. Daño, derrota, tienda y bloqueo de entrada cancelan el consumo pendiente. `HealthConsumableSetup.Generate()` permite reconstruir los clips y los enlaces de ambos controladores conservando los rectángulos e identificadores de los recortes. Ajusta sus píxeles por unidad y pivotes para mantener el cuerpo de cinco unidades y los pies en el mismo suelo.
 
 Durante el disparo, el sprite se voltea hacia el objetivo, incluso si el jugador camina en sentido contrario. Fuera del disparo conserva la orientación del movimiento. `PlayerMuzzle` localiza el cañón en el sprite de cada personaje y arma, considerando fotograma, pivote, escala y reflejo; las balas y el fogonazo salen de ese punto. El cohete del RPG mide 1,1 unidades. El cursor define el punto de apuntado y la cruz de pantalla, pero el script no pone `IsAiming` en `true` (lo inicializa en `false`); el clip `Aim` no se activa desde este flujo.
 
