@@ -41,12 +41,11 @@ public static class EnemyAnimationGenerator
         new EnemySpec
         {
             Id = "Enemy3",
-            BaseTexture = "Enemy3_Base.png",
-            BasePixelsPerUnit = 277f,
             ActionTexture = "Enemy3_Shield_HeavyPunch_8f.png",
-            DefeatTexture = "Enemy3_Defeat_8f.png",
+            DefeatTexture = "Enemy3_Unshielded_Defeat_8f.png",
             ActionName = "HeavyPunch",
-            ActionFps = 8f
+            ActionFps = 8f,
+            UseActionFirstFrameAsIdle = true
         },
         new EnemySpec
         {

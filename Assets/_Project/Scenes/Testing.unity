@@ -2416,7 +2416,6 @@ MonoBehaviour:
   shotsPerAttack: 1
   timeBetweenShots: 0.15
   entranceTarget: {fileID: 1563053346}
-  exposedSprite: {fileID: 909496970199998171, guid: f71e1ddd13591784fb96a86eb6a1267c, type: 3}
 --- !u!114 &244367206
 MonoBehaviour:
   m_ObjectHideFlags: 0

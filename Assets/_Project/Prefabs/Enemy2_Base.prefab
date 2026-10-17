@@ -151,9 +151,9 @@ MonoBehaviour:
   speed: 1.25
   sizeMultiplier: 1
   attackStyle: 1
-  attackRange: 6
+  attackRange: 10
   meleeHitRange: 1.5
-  attackCooldown: 1.8
+  attackCooldown: 1.5
   attackWindup: 0.3
   shotsPerAttack: 1
   timeBetweenShots: 0.15
@@ -175,3 +175,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyLootDrop
   coinValue: 10
   coinPrefab: {fileID: 1000794032613621786, guid: 9fec02da960de064fa9e59736ac3709b, type: 3}
+  ammoDropChance: 0.4
+  healthDropChance: 0.15
+  pickupSpacing: 0.9

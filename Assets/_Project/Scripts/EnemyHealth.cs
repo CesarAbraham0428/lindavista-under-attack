@@ -17,16 +17,17 @@ public sealed class EnemyHealth : MonoBehaviour
     private int currentHealth;
     private int consecutiveShieldHits;
     private float lastShieldHitTime;
-    private float shieldBrokenUntil;
+    private bool shieldBroken;
 
     public bool IsDead { get; private set; }
     public int CurrentHealth => Mathf.Max(0, currentHealth);
     public int MaxHealth => maxHealth;
     public event Action<int, int> HealthChanged;
     public event Action<EnemyHealth> Died;
-    public bool IsShieldBroken => shieldBlocksFront && !IsDead && Time.time < shieldBrokenUntil;
+    public event Action ShieldBroken;
+    public bool IsShieldBroken => shieldBlocksFront && shieldBroken;
 
-    /// <summary>Applies a wave-specific shield opening without changing the shared prefab or health.</summary>
+    /// <summary>Applies wave-specific shield durability. A broken shield never regenerates.</summary>
     public void ConfigureShieldOpening(int hits, float duration)
     {
         if (!shieldBlocksFront || IsDead) return;
@@ -73,7 +74,7 @@ public sealed class EnemyHealth : MonoBehaviour
             if (consecutiveShieldHits >= hitsToBreakShield)
             {
                 consecutiveShieldHits = 0;
-                shieldBrokenUntil = Time.time + shieldBreakDuration;
+                BreakShield();
             }
             return;
         }
@@ -92,6 +93,14 @@ public sealed class EnemyHealth : MonoBehaviour
                animator.GetNextAnimatorStateInfo(0).IsName("Enemy3_HeavyPunch");
     }
 
+    private void BreakShield()
+    {
+        if (!shieldBlocksFront || shieldBroken) return;
+        shieldBroken = true;
+        consecutiveShieldHits = 0;
+        ShieldBroken?.Invoke();
+    }
+
     /// <summary>Blast pressure damages through the shield regardless of impact direction or firing cadence.</summary>
     public void TakeExplosionDamage(int amount)
     {
@@ -99,8 +108,7 @@ public sealed class EnemyHealth : MonoBehaviour
             return;
 
         consecutiveShieldHits = 0;
-        if (shieldBlocksFront)
-            shieldBrokenUntil = Time.time + shieldBreakDuration;
+        BreakShield();
         TakeDamage(amount);
     }
 
@@ -119,7 +127,7 @@ public sealed class EnemyHealth : MonoBehaviour
                 animator.ResetTrigger("TakeDamage");
                 animator.SetTrigger("Defeat");
             }
-            Destroy(gameObject, defeatDespawnDelay);
+            Destroy(gameObject, GetDefeatDespawnDelay());
             HealthChanged?.Invoke(currentHealth, maxHealth);
             Died?.Invoke(this);
         }
@@ -128,5 +136,17 @@ public sealed class EnemyHealth : MonoBehaviour
             animator.SetTrigger("TakeDamage");
         }
         if (!IsDead) HealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+    private float GetDefeatDespawnDelay()
+    {
+        float delay = defeatDespawnDelay;
+        if (!IsShieldBroken || animator == null || animator.runtimeAnimatorController == null)
+            return delay;
+        // Let the exposed actor finish falling and hold the grounded pose.
+        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+            if (clip.name.EndsWith("_Defeat", StringComparison.Ordinal))
+                delay = Mathf.Max(delay, clip.length + .4f);
+        return delay;
     }
 }

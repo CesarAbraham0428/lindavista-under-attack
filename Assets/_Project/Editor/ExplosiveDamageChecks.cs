@@ -63,14 +63,16 @@ public static class ExplosiveDamageChecks
 
         shield = Shield(flipped);
         for (int hit = 0; hit < 6; hit++) shield.TakeDamage(2, front);
-        Check(shield.CurrentHealth == 30 && shield.IsShieldBroken, "six rapid frontal bullets open the existing shield window");
+        Check(shield.CurrentHealth == 30 && shield.IsShieldBroken, "six rapid frontal bullets break the shield without hurting the body");
+        ExpireShieldHitWindow(shield);
+        Check(shield.IsShieldBroken, "the broken shield remains lost after the hit window expires");
         shield.TakeDamage(2, front);
-        Check(shield.CurrentHealth == 28, "ordinary frontal bullet damages during the open window");
+        Check(shield.CurrentHealth == 28, "ordinary frontal bullet damages after the shield breaks permanently");
         Clear();
 
         shield = Shield(flipped);
         Set(shield, "consecutiveShieldHits", 5);
-        ExpireShieldWindow(shield);
+        ExpireShieldHitWindow(shield);
         shield.TakeDamage(2, front);
         Check(shield.CurrentHealth == 30 && !shield.IsShieldBroken &&
             (int)typeof(EnemyHealth).GetField("consecutiveShieldHits", Private).GetValue(shield) == 1,
@@ -94,18 +96,18 @@ public static class ExplosiveDamageChecks
         int damage = WeaponDefinition.At(2).DamageAt(0);
         for (int hit = 1; hit <= 3; hit++)
         {
-            // Model reload gaps longer than both shield timers without spending wall-clock seconds.
-            ExpireShieldWindow(shield);
+            // Model reload gaps without spending wall-clock seconds. A broken shield never resets.
+            ExpireShieldHitWindow(shield);
             Physics2D.SyncTransforms();
             Bounds bounds = shield.GetComponent<Collider2D>().bounds;
             Vector2 origin = (Vector2)bounds.center - direction * (bounds.extents.x + 3f);
             CombatProjectile shot = Fire(origin, direction, damage);
             Step(shot);
             Check(shield.CurrentHealth == Mathf.Max(0, 30 - hit * damage),
-                "actual " + (frontal ? "front" : "rear") + " RPG hit " + hit + " damages after shield recovery");
+                "actual " + (frontal ? "front" : "rear") + " RPG hit " + hit + " damages across reload gaps");
             Check(notifications == hit && defeats == (hit == 3 ? 1 : 0),
                 "direct plus splash and duplicate colliders report exactly one damage event per rocket");
-            if (hit < 3) Check(shield.IsShieldBroken, "surviving a blast briefly opens the shield");
+            if (hit < 3) Check(shield.IsShieldBroken, "surviving a blast permanently breaks the shield");
             Step(shot);
             Check(shield.CurrentHealth == Mathf.Max(0, 30 - hit * damage) && notifications == hit,
                 "spent rocket cannot damage again");
@@ -210,9 +212,8 @@ public static class ExplosiveDamageChecks
             .Invoke(null, new object[] { position, damage, direction, null, null });
     }
 
-    private static void ExpireShieldWindow(EnemyHealth shield)
+    private static void ExpireShieldHitWindow(EnemyHealth shield)
     {
-        Set(shield, "shieldBrokenUntil", Time.time - 1f);
         Set(shield, "lastShieldHitTime", Time.time - 10f);
     }
 

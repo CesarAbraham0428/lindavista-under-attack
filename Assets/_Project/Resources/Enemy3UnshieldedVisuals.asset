@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0900f3ba1439ec40af1b6719f7def66, type: 3}
+  m_Name: Enemy3UnshieldedVisuals
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyShieldVisualLibrary
+  controller: {fileID: 22100000, guid: 571199966be871a49ae5c4e5a8fec462, type: 2}
+  brokenShield: {fileID: 21300000, guid: b26b4f08702a7d34684dea98736a4f74, type: 3}

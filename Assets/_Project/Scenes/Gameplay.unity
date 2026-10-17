@@ -2925,14 +2925,14 @@ MonoBehaviour:
     enemy2Count: 4
     enemy3Count: 0
     enemy4Count: 0
-  - enemy1Count: 6
-    enemy2Count: 5
+  - enemy1Count: 0
+    enemy2Count: 11
     enemy3Count: 3
     enemy4Count: 0
-  - enemy1Count: 6
-    enemy2Count: 5
-    enemy3Count: 4
-    enemy4Count: 3
+  - enemy1Count: 0
+    enemy2Count: 0
+    enemy3Count: 10
+    enemy4Count: 8
   - enemy1Count: 8
     enemy2Count: 6
     enemy3Count: 5
@@ -2944,7 +2944,6 @@ MonoBehaviour:
   delayBetweenSpawns: 3.2
   minimumSpawnClearance: 3
   entranceX: -6.72
-  levelTwoOpeningEnemies: 4
   levelTwoEnemiesBetweenShields: 3
   levelTwoMaximumAlive: 6
   levelTwoSpawnDelay: 3.6
@@ -6938,7 +6937,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 909496970199998171, guid: f71e1ddd13591784fb96a86eb6a1267c, type: 3}
+  m_Sprite: {fileID: 4981232451082520710, guid: 46a88c4dbe0546647b6b7273568317fd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

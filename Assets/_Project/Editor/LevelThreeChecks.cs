@@ -42,16 +42,15 @@ public static class LevelThreeChecks
             var composition = compositions.GetValue(2);
             int[] configured = Enumerable.Range(1, 4).Select(i =>
                 (int)composition.GetType().GetField("enemy" + i + "Count").GetValue(composition)).ToArray();
-            Check(configured.SequenceEqual(new[] { 6, 5, 4, 3 }), "18 original enemies retained");
-            var method = typeof(LevelOneEnemySpawner).GetMethod("BuildLevelThreeSpawnOrder", Private);
+            Check(configured.SequenceEqual(new[] { 0, 0, 10, 8 }), "18 enemies from the level-three roster");
+            var method = typeof(LevelOneEnemySpawner).GetMethod("BuildInterleavedSpawnOrder", Private);
             var order = (List<GameObject>)method.Invoke(spawner, new object[] { prefabs, configured });
             Check(order.Count == 18, "complete level-three wave");
-            Check(order.Take(3).All(p => p != prefabs[2] && p != prefabs[3]), "familiar intro preview");
-            Check(order.Take(6).All(p => p != prefabs[3]) && order[6] == prefabs[3], "SMG introduced seventh");
-            Check(order[11] == prefabs[3] && order[17] == prefabs[3], "SMG encounters spread across wave");
-            for (int i = 1; i < order.Count; i++)
-                Check(!IsSpecial(order[i]) || !IsSpecial(order[i - 1]), "normal enemy separates special encounters");
-            bool IsSpecial(GameObject prefab) => prefab == prefabs[2] || prefab == prefabs[3];
+            Check(order[0] == prefabs[2] && order[1] == prefabs[3] && order[2] == prefabs[2],
+                "intro preview shows shield and SMG enemies");
+            Check(order.All(p => p == prefabs[2] || p == prefabs[3]), "no level-one or level-two enemies");
+            for (int i = 0; i < 16; i++)
+                Check(order[i] == prefabs[2 + i % 2], "shield and SMG alternate while both remain");
 
             foreach (int[] counts in new[] { configured, new[] { 0, 0, 0, 0 }, new[] { 0, 0, 0, 5 },
                 new[] { 0, 0, 6, 0 }, new[] { 2, 0, 1, 1 }, new[] { 12, 8, 7, 6 } })
