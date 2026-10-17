@@ -1,0 +1,459 @@
+fileFormatVersion: 2
+guid: 70ed06392eb3a0347b8ad1ec1797bf1f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6921205711641466103
+    second: Enemy3_Unshielded_Defeat_8f_0
+  - first:
+      213: -7527377536104969327
+    second: Enemy3_Unshielded_Defeat_8f_1
+  - first:
+      213: 7803306119904516542
+    second: Enemy3_Unshielded_Defeat_8f_2
+  - first:
+      213: -7359254986919455889
+    second: Enemy3_Unshielded_Defeat_8f_3
+  - first:
+      213: -5615169651022174538
+    second: Enemy3_Unshielded_Defeat_8f_4
+  - first:
+      213: 1462557145190854211
+    second: Enemy3_Unshielded_Defeat_8f_5
+  - first:
+      213: 3404359937922496074
+    second: Enemy3_Unshielded_Defeat_8f_6
+  - first:
+      213: -5263158119131942336
+    second: Enemy3_Unshielded_Defeat_8f_7
+  - first:
+      213: 4441320987869253122
+    second: Enemy3_Unshielded_Defeat_8f_8
+  - first:
+      213: -8717357426135634172
+    second: Enemy3_Unshielded_Defeat_8f_9
+  - first:
+      213: -9196775230160698519
+    second: Enemy3_Unshielded_Defeat_8f_10
+  - first:
+      213: 3165029530255377273
+    second: Enemy3_Unshielded_Defeat_8f_11
+  - first:
+      213: 1427732145774960264
+    second: Enemy3_Unshielded_Defeat_8f_12
+  - first:
+      213: 7904516647036647050
+    second: Enemy3_Unshielded_Defeat_8f_13
+  - first:
+      213: -6177201361884103196
+    second: Enemy3_Unshielded_Defeat_8f_14
+  - first:
+      213: 5126855607259612263
+    second: Enemy3_Unshielded_Defeat_8f_15
+  - first:
+      213: 8134203111183945818
+    second: Enemy3_Unshielded_Defeat_8f_16
+  - first:
+      213: 5405655314170683900
+    second: Enemy3_Unshielded_Defeat_8f_17
+  - first:
+      213: 4479419321091290369
+    second: Enemy3_Unshielded_Defeat_8f_18
+  - first:
+      213: 2967098372166510537
+    second: Enemy3_Unshielded_Defeat_8f_19
+  - first:
+      213: 1385132123148103710
+    second: Enemy3_Unshielded_Defeat_8f_20
+  - first:
+      213: 8709008975199235461
+    second: Enemy3_Unshielded_Defeat_8f_21
+  - first:
+      213: 6473149232217198719
+    second: Enemy3_Unshielded_Defeat_8f_22
+  - first:
+      213: 7453151371960578085
+    second: Enemy3_Unshielded_Defeat_8f_23
+  - first:
+      213: -2658182976673107278
+    second: Enemy3_Unshielded_Defeat_8f_24
+  - first:
+      213: -1512709746653027612
+    second: Enemy3_Unshielded_Defeat_8f_25
+  - first:
+      213: 5201984264799100636
+    second: Enemy3_Unshielded_Defeat_8f_26
+  - first:
+      213: 6008190803251037724
+    second: Enemy3_Unshielded_Defeat_8f_27
+  - first:
+      213: -338308493311746434
+    second: Enemy3_Unshielded_Defeat_8f_28
+  - first:
+      213: 3976127693910578977
+    second: Enemy3_Unshielded_Defeat_8f_29
+  - first:
+      213: -8468590032448569109
+    second: Enemy3_Unshielded_Defeat_8f_30
+  - first:
+      213: 6219907453854515694
+    second: Enemy3_Unshielded_Defeat_8f_31
+  - first:
+      213: -1963325657395380448
+    second: Enemy3_Unshielded_Defeat_8f_32
+  - first:
+      213: 4543960278332328645
+    second: Enemy3_Unshielded_Defeat_8f_33
+  - first:
+      213: -4892809948294477909
+    second: Enemy3_Unshielded_Defeat_8f_34
+  - first:
+      213: 3720175904249715063
+    second: Enemy3_Unshielded_Defeat_8f_35
+  - first:
+      213: -6723754098525788386
+    second: Enemy3_Unshielded_Defeat_8f_36
+  - first:
+      213: 1025142670862686073
+    second: Enemy3_Unshielded_Defeat_8f_37
+  - first:
+      213: 3992990572297450763
+    second: Enemy3_Unshielded_Defeat_8f_38
+  - first:
+      213: -7114019837208810052
+    second: Enemy3_Unshielded_Defeat_8f_39
+  - first:
+      213: 3940123310382204331
+    second: Enemy3_Unshielded_Defeat_8f_40
+  - first:
+      213: 2570446785972312625
+    second: Enemy3_Unshielded_Defeat_8f_41
+  - first:
+      213: -2426384453510378405
+    second: Enemy3_Unshielded_Defeat_8f_42
+  - first:
+      213: 6699899433421377881
+    second: Enemy3_Unshielded_Defeat_8f_43
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 87.128716
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Enemy3_Unshielded_Defeat_8f_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.49319306, y: 0.47054842}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f45bc3bcef0d0060800000000000000
+      internalID: 6921205711641466103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy3_Unshielded_Defeat_8f_1
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.49319306, y: 0.47054842}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19b453e3302698790800000000000000
+      internalID: -7527377536104969327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy3_Unshielded_Defeat_8f_2
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.49319306, y: 0.47054842}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb95a868299ea4c60800000000000000
+      internalID: 7803306119904516542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy3_Unshielded_Defeat_8f_3
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.49319306, y: 0.47054842}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f63d425949caed990800000000000000
+      internalID: -7359254986919455889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy3_Unshielded_Defeat_8f_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.49319306, y: 0.6404703}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b6e44de3f8e212b0800000000000000
+      internalID: -5615169651022174538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy3_Unshielded_Defeat_8f_5
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.49319306, y: 0.6326578}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34e6fce79fb0c4410800000000000000
+      internalID: 1462557145190854211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy3_Unshielded_Defeat_8f_6
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.49319306, y: 0.6443766}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a46f0739357be3f20800000000000000
+      internalID: 3404359937922496074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy3_Unshielded_Defeat_8f_7
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.49319306, y: 0.6463297}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0427d68739185f6b0800000000000000
+      internalID: -5263158119131942336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 88b2795e52d32284da8d9c07656c846d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Enemy3_Unshielded_Defeat_8f_0: 6921205711641466103
+      Enemy3_Unshielded_Defeat_8f_1: -7527377536104969327
+      Enemy3_Unshielded_Defeat_8f_2: 7803306119904516542
+      Enemy3_Unshielded_Defeat_8f_3: -7359254986919455889
+      Enemy3_Unshielded_Defeat_8f_4: -5615169651022174538
+      Enemy3_Unshielded_Defeat_8f_5: 1462557145190854211
+      Enemy3_Unshielded_Defeat_8f_6: 3404359937922496074
+      Enemy3_Unshielded_Defeat_8f_7: -5263158119131942336
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

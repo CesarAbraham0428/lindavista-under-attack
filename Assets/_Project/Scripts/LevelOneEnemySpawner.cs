@@ -6,13 +6,6 @@ using UnityEngine;
 /// <summary>Shows a small stage 5 preview, then creates the remaining wave gradually.</summary>
 public sealed class LevelOneEnemySpawner : MonoBehaviour
 {
-    // Six familiar encounters before the first SMG; alternate normal enemies
-    // between shield/SMG pressure so the player can learn the new threat.
-    private static readonly int[] LevelThreeEncounterOrder =
-    {
-        0, 1, 0, 1, 2, 0, 3, 1, 2, 0, 1, 3, 0, 2, 1, 2, 0, 3
-    };
-
     [Serializable]
     private sealed class WaveComposition
     {
@@ -32,8 +25,8 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
     [SerializeField] private WaveComposition[] levelCompositions =
     {
         new WaveComposition { enemy1Count = 6, enemy2Count = 4 },
-        new WaveComposition { enemy1Count = 6, enemy2Count = 5, enemy3Count = 3 },
-        new WaveComposition { enemy1Count = 6, enemy2Count = 5, enemy3Count = 4, enemy4Count = 3 },
+        new WaveComposition { enemy2Count = 11, enemy3Count = 3 },
+        new WaveComposition { enemy3Count = 10, enemy4Count = 8 },
         new WaveComposition { enemy1Count = 8, enemy2Count = 6, enemy3Count = 5, enemy4Count = 5 }
     };
 
@@ -50,7 +43,6 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
     [SerializeField] private float entranceX = -6.72f;
 
     [Header("Level 2: gradual shield introduction")]
-    [SerializeField, Min(0)] private int levelTwoOpeningEnemies = 4;
     [SerializeField, Min(1)] private int levelTwoEnemiesBetweenShields = 3;
     [SerializeField, Min(3)] private int levelTwoMaximumAlive = 6;
     [SerializeField, Min(0.1f)] private float levelTwoSpawnDelay = 3.6f;
@@ -99,13 +91,13 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
             ? Mathf.Clamp(selectedLevel, 0, levelCompositions.Length - 1) : 0;
         SelectedLevel = compositionIndex;
         WaveComposition composition = levelCompositions[compositionIndex];
-        int[] counts =
+        int[] counts = RestrictCountsToLevel(compositionIndex, new[]
         {
             composition.enemy1Count,
             composition.enemy2Count,
             composition.enemy3Count,
             composition.enemy4Count
-        };
+        });
         GameObject[] prefabs = { enemy1Prefab, enemy2Prefab, enemy3Prefab, enemy4Prefab };
         string[] enemyNames = { "Enemy 1", "Enemy 2", "Enemy 3", "Enemy 4" };
 
@@ -140,14 +132,16 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
         PendingEnemies = total;
         spawnOrder = SelectedLevel == 1
             ? BuildLevelTwoSpawnOrder(prefabs, counts)
-            : SelectedLevel == 2 ? BuildLevelThreeSpawnOrder(prefabs, counts)
             : BuildInterleavedSpawnOrder(prefabs, counts);
         PlayerActions startingPlayer = FindFirstObjectByType<PlayerActions>();
         objectiveX = startingPlayer != null
             ? startingPlayer.transform.position.x
             : entranceX;
 
-        int previewCount = Mathf.Clamp(introEnemyCount, 1, spawnOrder.Count);
+        // Both level-specific types must be visible before the camera returns
+        // to the player, even if an older scene requested only one intro actor.
+        int minimumPreviewCount = SelectedLevel <= 2 ? Mathf.Min(2, spawnOrder.Count) : 1;
+        int previewCount = Mathf.Clamp(introEnemyCount, minimumPreviewCount, spawnOrder.Count);
         previewCount = Mathf.Min(previewCount, MaximumAlive);
         for (int i = 0; i < previewCount; i++)
         {
@@ -295,7 +289,7 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
         {
             int ordinaryLeft = remaining[0] + remaining[1] + remaining[3];
             int requiredGap = introducedShield
-                ? Mathf.Max(1, levelTwoEnemiesBetweenShields) : Mathf.Max(0, levelTwoOpeningEnemies);
+                ? Mathf.Max(1, levelTwoEnemiesBetweenShields) : 1;
             if (remaining[2] > 0 && (ordinaryLeft == 0 || ordinarySinceShield >= requiredGap))
             {
                 order.Add(prefabs[2]);
@@ -305,8 +299,8 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
                 continue;
             }
 
-            // Keep the opening familiar and alternate the remaining non-shield
-            // types, including custom compositions configured in the Inspector.
+            // Introduce the shield in the preview, then leave room between
+            // shield reinforcements throughout the rest of the wave.
             for (int attempt = 0; attempt < 4; attempt++)
             {
                 int type = nextOrdinaryType;
@@ -321,21 +315,34 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
         return order;
     }
 
-    private List<GameObject> BuildLevelThreeSpawnOrder(GameObject[] prefabs, int[] counts)
+    private static int[] RestrictCountsToLevel(int level, int[] configuredCounts)
     {
-        int[] remaining = (int[])counts.Clone();
-        List<GameObject> order = new(counts[0] + counts[1] + counts[2] + counts[3]);
-        foreach (int type in LevelThreeEncounterOrder)
-        {
-            if (remaining[type] <= 0) continue;
-            order.Add(prefabs[type]);
-            remaining[type]--;
-        }
+        int[] counts = (int[])configuredCounts.Clone();
+        for (int type = 0; type < counts.Length; type++)
+            counts[type] = Mathf.Max(0, counts[type]);
 
-        // Counts in the Inspector remain the source of truth: a custom wave
-        // can remove planned encounters or add reinforcements without losing any.
-        order.AddRange(BuildInterleavedSpawnOrder(prefabs, remaining));
-        return order;
+        // Enforce the roster for previews AND reinforcements. Remap old scene
+        // counts to the allowed pair so saved Inspector overrides retain the
+        // full wave size without bringing back enemies from another level.
+        switch (level)
+        {
+            case 0:
+                counts[0] += counts[2];
+                counts[1] += counts[3];
+                counts[2] = counts[3] = 0;
+                break;
+            case 1:
+                counts[1] += counts[0];
+                counts[2] += counts[3];
+                counts[0] = counts[3] = 0;
+                break;
+            case 2:
+                counts[2] += counts[0];
+                counts[3] += counts[1];
+                counts[0] = counts[1] = 0;
+                break;
+        }
+        return counts;
     }
 
     private List<GameObject> BuildInterleavedSpawnOrder(GameObject[] prefabs, int[] counts)
@@ -371,8 +378,8 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
         levelCompositions = new[]
         {
             new WaveComposition { enemy1Count = 6, enemy2Count = 4 },
-            new WaveComposition { enemy1Count = 6, enemy2Count = 5, enemy3Count = 3 },
-            new WaveComposition { enemy1Count = 6, enemy2Count = 5, enemy3Count = 4, enemy4Count = 3 },
+            new WaveComposition { enemy2Count = 11, enemy3Count = 3 },
+            new WaveComposition { enemy3Count = 10, enemy4Count = 8 },
             new WaveComposition { enemy1Count = 8, enemy2Count = 6, enemy3Count = 5, enemy4Count = 5 }
         };
     }

@@ -29,8 +29,6 @@ public sealed class BasicEnemy : MonoBehaviour
     [SerializeField, Min(0.01f)] private float timeBetweenShots = 0.15f;
     [Header("Objective (optional)")]
     [SerializeField] private Transform entranceTarget;
-    [Header("Shield enemy")]
-    [SerializeField] private Sprite exposedSprite;
     [Header("Visual ground anchor (idle sprite, local units)")]
     [SerializeField] private bool hasStandingFootAnchor;
     [SerializeField] private float standingFootY;
@@ -50,10 +48,11 @@ public sealed class BasicEnemy : MonoBehaviour
     private EnemyHealth health;
     private Animator animator;
     private SpriteRenderer sprite;
+    private WeaponAudioLibrary pistolAudioLibrary;
+    private AudioSource pistolShotSource;
     private PlayerActions target;
     private float nextTargetSearch;
     private float nextAttack;
-    private bool wasShieldBroken;
     private bool hasFixedEntranceTarget;
     private bool hasReachedEntrance;
     private float fixedEntranceX;
@@ -88,11 +87,40 @@ public sealed class BasicEnemy : MonoBehaviour
         sprite.sortingOrder = attackStyle == AttackStyle.ShieldMelee || attackStyle == AttackStyle.SMG ? 6 : 8;
         bodyCollider = GetComponent<Collider2D>();
         health.Died += DetenerAlMorir;
+        if (attackStyle == AttackStyle.ShieldMelee)
+        {
+            if (GetComponent<EnemyShieldBreakVisual>() == null)
+                gameObject.AddComponent<EnemyShieldBreakVisual>();
+            health.ShieldBroken += ContinueAfterShieldBreak;
+        }
         animator.ResetTrigger(attack);
         animator.ResetTrigger(takeDamage);
         animator.ResetTrigger(defeat);
         nextAttack = Time.time + attackCooldown;
         transform.localScale *= sizeMultiplier;
+        InitializePistolAudio();
+    }
+
+    private void InitializePistolAudio()
+    {
+        if (attackStyle != AttackStyle.Pistol) return;
+        // Enemy2 shares Marco's pistol clip and stays 10% quieter than his shots.
+        pistolAudioLibrary = Resources.Load<WeaponAudioLibrary>("WeaponAudioLibrary");
+        if (pistolAudioLibrary == null || pistolAudioLibrary.Shot(0) == null)
+        {
+            Debug.LogWarning("Enemy pistol shot is missing from WeaponAudioLibrary.", this);
+            return;
+        }
+        var audioObject = new GameObject("Enemy Pistol Fire Audio");
+        audioObject.transform.SetParent(transform, false);
+        pistolShotSource = audioObject.AddComponent<AudioSource>();
+        pistolShotSource.playOnAwake = false;
+        pistolShotSource.loop = false;
+        pistolShotSource.spatialBlend = 0f;
+        pistolShotSource.dopplerLevel = 0f;
+        pistolShotSource.priority = 96;
+        pistolShotSource.clip = pistolAudioLibrary.Shot(0);
+        pistolShotSource.volume = pistolAudioLibrary.ShotVolume(0) * 0.9f;
     }
 
     private void Update()
@@ -116,20 +144,6 @@ public sealed class BasicEnemy : MonoBehaviour
             return;
         }
 
-        bool shieldBroken = attackStyle == AttackStyle.ShieldMelee && health.IsShieldBroken;
-        if (shieldBroken != wasShieldBroken)
-        {
-            animator.ResetTrigger(attack);
-            animator.Play("Enemy3_Idle", 0, 0f);
-            wasShieldBroken = shieldBroken;
-        }
-        if (shieldBroken)
-        {
-            SetMoving(false);
-            nextAttack = Time.time + 0.5f;
-            return;
-        }
-
         if (Time.time >= nextTargetSearch || (coordinatedCombat && target != null &&
             (!target.isActiveAndEnabled || target.IsDefeated || !IsOnApproach(target))))
         {
@@ -137,7 +151,7 @@ public sealed class BasicEnemy : MonoBehaviour
             nextTargetSearch = Time.time + 0.25f;
         }
 
-        if (coordinatedCombat && attackInProgress)
+        if (coordinatedCombat && attackInProgress && !health.IsShieldBroken)
         {
             SetMoving(false);
             return;
@@ -147,7 +161,7 @@ public sealed class BasicEnemy : MonoBehaviour
         {
             // Hold a useful combat distance instead of walking through the
             // player during the windup. Passing players are never chased back.
-            if (coordinatedCombat && target != null && CanHit(target))
+            if (coordinatedCombat && !health.IsShieldBroken && target != null && CanHit(target))
             {
                 Face(target.transform.position.x - transform.position.x);
                 SetMoving(false);
@@ -193,7 +207,7 @@ public sealed class BasicEnemy : MonoBehaviour
             float stopAt = target.transform.position.x - Mathf.Sign(delta.x) * reach;
             position.x = Mathf.MoveTowards(position.x, stopAt, speed * Time.deltaTime);
             if (coordinatedCombat) position = ConstrainMovement(position);
-            SetMoving(!Mathf.Approximately(position.x, transform.position.x));
+            SetMoving(position.x != transform.position.x);
             transform.position = position;
             return;
         }
@@ -214,7 +228,7 @@ public sealed class BasicEnemy : MonoBehaviour
         Face(destinationX - position.x);
         position.x = Mathf.MoveTowards(position.x, destinationX, speed * Time.deltaTime);
         if (coordinatedCombat) position = ConstrainMovement(position);
-        SetMoving(!Mathf.Approximately(position.x, transform.position.x));
+        SetMoving(position.x != transform.position.x);
         transform.position = position;
 
         if (!hasReachedEntrance && Mathf.Abs(position.x - destinationX) <= 0.001f)
@@ -235,6 +249,16 @@ public sealed class BasicEnemy : MonoBehaviour
 
     private void DetenerAlMorir(EnemyHealth enemigo) => StopForGameOver();
 
+    private void ContinueAfterShieldBreak()
+    {
+        // Losing equipment interrupts the old shield attack, never locomotion.
+        StopAllCoroutines();
+        attackInProgress = false;
+        animator.ResetTrigger(attack);
+        animator.ResetTrigger(takeDamage);
+        movementInitialized = false;
+    }
+
     private void OnEnable()
     {
         activeEnemies.Add(this);
@@ -246,19 +270,17 @@ public sealed class BasicEnemy : MonoBehaviour
         activeEnemies.Remove(this);
         StopAllCoroutines();
         attackInProgress = false;
+        if (pistolShotSource != null) pistolShotSource.Stop();
     }
 
     private void OnDestroy()
     {
         activeEnemies.Remove(this);
-        if (health != null) health.Died -= DetenerAlMorir;
-    }
-
-    private void LateUpdate()
-    {
-        // Animator writes SpriteRenderer.sprite each frame; override it after evaluation.
-        if (attackStyle == AttackStyle.ShieldMelee && health.IsShieldBroken && exposedSprite != null)
-            sprite.sprite = exposedSprite;
+        if (health != null)
+        {
+            health.Died -= DetenerAlMorir;
+            health.ShieldBroken -= ContinueAfterShieldBreak;
+        }
     }
 
     private void FindTarget()
@@ -322,7 +344,6 @@ public sealed class BasicEnemy : MonoBehaviour
     {
         return !health.IsDead && !GameFlowController.IsMatchEnded &&
                !GameFlowController.IsPaused && !PistolUpgradeShop.IsOpen &&
-               !(attackStyle == AttackStyle.ShieldMelee && health.IsShieldBroken) &&
                victim != null && victim.isActiveAndEnabled && !victim.IsDefeated &&
                IsOnApproach(victim) &&
                Mathf.Abs(victim.transform.position.x - transform.position.x) <= EffectiveAttackRange &&
@@ -356,6 +377,7 @@ public sealed class BasicEnemy : MonoBehaviour
         foreach (BasicEnemy ally in activeEnemies)
         {
             if (ally == null || ally == this || !ally.coordinatedCombat || ally.health.IsDead ||
+                health.IsShieldBroken || ally.health.IsShieldBroken ||
                 ally.transform.parent != transform.parent ||
                 Mathf.Abs(ally.StandingGroundY - ground) > 0.65f) continue;
             bool melee = attackStyle == AttackStyle.Melee || attackStyle == AttackStyle.ShieldMelee;
@@ -433,6 +455,11 @@ public sealed class BasicEnemy : MonoBehaviour
             nearest.GetComponentInParent<PlayerActions>()?.TakeDamage(damage);
         ShotVisual.EnemyShot(origin, direction, nearest != null ? nearestDistance : distance,
             attackStyle == AttackStyle.SMG ? 1 : 0, nearest != null);
+        if (attackStyle == AttackStyle.Pistol && pistolShotSource != null)
+        {
+            pistolShotSource.volume = pistolAudioLibrary.ShotVolume(0) * 0.9f;
+            pistolShotSource.PlayOneShot(pistolAudioLibrary.Shot(0));
+        }
         return true;
     }
 }
