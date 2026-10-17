@@ -16,7 +16,9 @@ La munición máxima del lanzagranadas de César es de 20 balas en total; cada r
 
 El disparo de escopeta empieza en el tercer cuadro de la hoja existente (`Cesar_Escopeta_Fire_2`), con el arma horizontal. Se evalúa esa pose antes de emitir el cartucho desde el extremo del cañón, medido en (334, 228) sobre la celda de 384 × 512. Así se evita emitir desde la pose inicial con el arma baja. Se conserva el apuntado hacia el cursor y el reflejo al disparar a la izquierda.
 
-La escopeta usa por ahora un proyectil, sin dispersión nueva. El francotirador tiene una estela dorada propia y atraviesa 2 enemigos distintos de base, 3 desde la segunda mejora y 4 desde la cuarta, dentro de sus 26 unidades de alcance. Se detiene ante obstáculos sólidos y muestra una pequeña salpicadura cartoon al causar daño. Ajustes, assets y prompts en [Art/SniperEffects.md](Art/SniperEffects.md).
+La escopeta usa por ahora un proyectil, sin dispersión nueva. El francotirador tiene una estela dorada propia y atraviesa 2 enemigos distintos de base, 3 desde la segunda mejora y 4 desde la cuarta, dentro de sus 26 unidades de alcance. Se detiene ante obstáculos sólidos y ante un escudo que bloquee el disparo. Cada enemigo dañado muestra un destello legible de contacto y una salpicadura cartoon; el bloqueo tiene un destello azulado, sin sangre. Ajustes del arte original en [Art/SniperEffects.md](Art/SniperEffects.md).
+
+El lanzagranadas detona al contactar enemigos durante el vuelo/rebote. Si falla conserva el rebote y la mecha de 0,5 segundos tras tocar el suelo. Véanse las reglas de impactos y movimiento enemigo en [Impactos e IA](impactos-e-ia.md).
 
 ## Assets
 

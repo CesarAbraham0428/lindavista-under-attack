@@ -42,6 +42,89 @@ La escritura serializa JSON compacto a un temporal. Si el principal previo era v
 
 Estas medidas reducen trabajo conocido y asignaciones evitables. No sustituyen el perfilado de CPU, GPU, memoria, temperatura y almacenamiento en equipos reales. Se conservan los assets y los scripts necesarios para escenas, recursos, migración, verificaciones y alternativas visuales.
 
+## Reutilización de disparos y preparación de los niveles (17 de octubre)
+
+Se conserva el aspecto de los impactos y el balance de los niveles. Reducir trabajo
+por fotograma es el objetivo; tener menos líneas no equivale a ejecutar más rápido.
+
+- `CombatProjectile` reutiliza balas de pistola/escopeta, SMG, cohetes y proyectiles
+  perforantes en pools separados. Reinicia dirección, daño, alcance, escala,
+  cámara, suelo y víctimas antes de activar el objeto. Los `SpriteRenderer`,
+  `TrailRenderer` y conjuntos de penetración también se conservan. Al terminar
+  un disparo se libera su plaza inmediatamente y solo una vez, incluso si después
+  se destruye el objeto. El presupuesto compartido continúa siendo 64 proyectiles.
+- `SniperShotVisual`, `RocketImpact` y los trazos de enemigos también se reutilizan.
+  Se reinician opacidad, edad, fotograma, recorrido y estela. Los disparos enemigos
+  limitan a 64 sus trazos visuales simultáneos; esto no descarta daño ni modifica
+  la cadencia, porque el daño se resuelve antes del efecto. Se mantiene el límite
+  previo de 24 explosiones visibles.
+- `SceneCombatPool` centraliza la reutilización y mantiene los objetos dentro de
+  su escena. Sus reservas inactivas son acotadas y desaparecen al descargar el
+  nivel; no se usa `DontDestroyOnLoad` para retenerlas entre partidas.
+- `CombatWarmup` reparte la preparación en varios fotogramas de la introducción:
+  atlas y partículas, 48 partículas reutilizables, 21 proyectiles de cuatro modos,
+  6 trazos enemigos, 4 trazos de francotirador y 2 explosiones. Los objetos se
+  preparan inactivos, sin disparar, consumir munición ni adelantar la oleada. Si
+  hace falta más capacidad durante el combate, se amplía hasta los límites; no se
+  recorta el número configurado de enemigos. Las granadas balísticas mantienen
+  su implementación de contacto/rebote/mecha y no se mezclan con el pool de cohetes.
+- La geometría de cámara se comparte entre proyectiles y se recalcula cuando
+  cambia la cámara o su matriz, incluido movimiento y zoom dentro del mismo frame.
+- `BasicEnemy` evita búsquedas por fotograma cuando no hay objetivo, escrituras
+  idénticas de movimiento/orientación y consultas de ataque duplicadas cuando no
+  ha cambiado de posición. Las ráfagas comprueban alcance y cobertura una vez por
+  emisión, no dos; los golpes y disparos siguen revalidando al causar daño. No se
+  omiten colisiones ni se alarga el intervalo de simulación física.
+
+### Comprobaciones ejecutadas
+
+En una copia aislada con Unity 6000.3.23f1 se ejecutaron las regresiones de niveles
+2/3 (69/76 comprobaciones de configuración), oleadas de los niveles 1–3 con ambos
+personajes donde corresponde (1628), avance enemigo (138), impactos/IA (105),
+explosivos (133), buffers/partículas y reutilización de proyectiles (3661).
+Pasaron además las comprobaciones completas de francotirador (73) y lanzagranadas
+(40), incluyendo el disparo desde las acciones reales de César, munición, pose,
+pausa/fundido y contacto/rebote/mecha. Se actualizó la aserción de fin del trazo
+para comprobar que queda inactivo después del fundido, en vez de exigir destruir
+un objeto que ahora se reutiliza.
+También se probó la preparación durante varios fotogramas y la descarga de una
+escena mientras ya existe un disparo en la siguiente: el nuevo disparo y su
+presupuesto permanecen válidos.
+
+La prueba nueva está disponible en una **escena vacía en Play Mode**, no durante
+una partida: **Tools > Lindavista > Verify projectile pools (empty Play Mode
+scene)**, método `CombatPoolingChecks.RunRuntime()`. Comprueba reutilización,
+estado reiniciado, límite de 64, destrucción externa, granadas, estelas, fundido,
+explosiones y movimiento/zoom de cámara. Usa disparos sin dueño para no consumir
+munición del perfil; deja reservas inactivas que se liberan al descargar la escena.
+
+Un ensayo sintético local, con recursos calientes y 200 emisiones consecutivas
+por modo, obtuvo lo siguiente. Se midió únicamente `TrySpawn`, sin incluir las
+búsquedas del verificador, destrucción, renderizado, IA ni guardado:
+
+| Modo | Objetos distintos antes / después | CPU acumulada de emisión antes / después |
+| --- | --- | --- |
+| Pistola/escopeta | 200 / 1 | 14.237 / 4.454 ms |
+| SMG | 200 / 1 | 20.147 / 4.248 ms |
+| Cohete | 200 / 1 | 24.411 / 3.850 ms |
+| Perforante | 200 / 1 | 21.902 / 3.184 ms |
+
+Son mediciones locales de una ejecución por versión, **no FPS ni una reducción
+equivalente del tiempo total de la partida**. El contador de asignaciones por hilo
+no proporcionó datos útiles en este entorno Mono; no se afirma «cero GC». La copia
+de validación usa el renderer integrado, no la configuración URP completa del
+proyecto; tampoco equivale a una build Android. El Editor de pruebas registró una
+excepción de su indexador `UnityEditor.Search`, sin impedir las comprobaciones de
+combate; no se presenta el registro como una consola íntegramente libre de errores.
+
+Para comparar fluidez real, dejar recompilar, reiniciar Play y recorrer los tres
+niveles con ambos personajes: disparo sostenido, cambios de arma, grupos de
+enemigos, pausa, derrota y reintento. Repetir en una build del equipo/dispositivo
+objetivo. En el Profiler se añadieron las muestras `Lindavista.ProjectileSweep` y
+`Lindavista.EnemyAI`; comparar CPU Timeline, GC Alloc, GPU y los fotogramas lentos
+con la misma resolución y oleada. El guardado periódico conserva sus garantías y
+no se trasladó a un hilo sin coordinación con las compras.
+
 ## Dependencias y compilación
 
 Se retiró de los archivos de paquetes la dependencia directa `com.unity.ai.inference` 2.6.1 (Sentis), junto con `com.unity.dt.app-ui` 2.1.1, que solo estaba requerida por ella. La revisión del código y los recursos del juego no encontró llamadas a su API ni modelos de inferencia. `com.unity.ai.assistant` no depende de Sentis y se conserva. Burst, Collections, Newtonsoft e ImageConversion también permanecen, porque los requieren otros sistemas del proyecto.

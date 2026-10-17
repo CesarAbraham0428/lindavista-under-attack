@@ -11,19 +11,25 @@ public sealed class SniperShotVisual : MonoBehaviour
     private Vector2 origin, direction;
     private bool released;
     private float fadeAge;
+    private static readonly SceneCombatPool<SniperShotVisual> pool = new("Sniper tracer", 32);
+    private bool retired;
 
     public static SniperShotVisual Create(Vector2 origin, Vector2 direction)
     {
-        var go = new GameObject("Sniper tracer");
+        var effect = pool.Rent();
+        var go = effect.gameObject;
         go.transform.position = origin;
         go.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-        var effect = go.AddComponent<SniperShotVisual>();
         effect.origin = origin;
         effect.direction = direction.normalized;
-        effect.visual = go.AddComponent<SpriteRenderer>();
+        effect.released = effect.retired = false;
+        effect.fadeAge = 0f;
+        if (effect.visual == null) effect.visual = go.AddComponent<SpriteRenderer>();
         effect.visual.sprite = GetTracerSprite();
+        effect.visual.color = Color.white;
         effect.visual.sortingOrder = 30;
         effect.visual.enabled = false;
+        go.SetActive(true);
         return effect;
     }
 
@@ -40,12 +46,25 @@ public sealed class SniperShotVisual : MonoBehaviour
 
     private void Update()
     {
-        if (GameFlowController.IsMatchEnded) { Destroy(gameObject); return; }
+        if (retired) return;
+        if (GameFlowController.IsMatchEnded) { Retire(); return; }
         if (!released) return;
         fadeAge += Time.deltaTime;
-        if (fadeAge >= FadeDuration) { Destroy(gameObject); return; }
+        if (fadeAge >= FadeDuration) { Retire(); return; }
         // Fade at the last valid position: the streak cannot travel past a wall or its range.
         visual.color = new Color(1f, 1f, 1f, 1f - fadeAge / FadeDuration);
+    }
+
+    private void Retire() { retired = true; pool.Return(this); }
+
+    internal static void Prewarm()
+    {
+        GetTracerSprite();
+        GetBloodSprite();
+        pool.Prewarm(4, effect =>
+        {
+            if (effect.visual == null) effect.visual = effect.gameObject.AddComponent<SpriteRenderer>();
+        });
     }
 
     public static void Muzzle(Vector2 position, Vector2 direction)

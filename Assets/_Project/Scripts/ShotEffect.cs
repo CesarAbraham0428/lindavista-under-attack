@@ -79,6 +79,18 @@ public sealed class ShotEffect : MonoBehaviour
         active = Mathf.Max(0, active - 1);
     }
 
+    internal static void Prewarm(int count)
+    {
+        var effects = new List<ShotEffect>(count);
+        for (int i = 0; i < count; i++)
+        {
+            var effect = Create("Prepared shot effect", ShotVisual.GetSprite(3), Vector2.zero,
+                Vector2.zero, Color.white, 0.1f, 0.1f, 1f);
+            if (effect != null) effects.Add(effect);
+        }
+        foreach (var effect in effects) effect.Devolver();
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetCount()
     {

@@ -26,6 +26,15 @@ public sealed class EnemyHealth : MonoBehaviour
     public event Action<EnemyHealth> Died;
     public bool IsShieldBroken => shieldBlocksFront && !IsDead && Time.time < shieldBrokenUntil;
 
+    /// <summary>Applies a wave-specific shield opening without changing the shared prefab or health.</summary>
+    public void ConfigureShieldOpening(int hits, float duration)
+    {
+        if (!shieldBlocksFront || IsDead) return;
+        hitsToBreakShield = Mathf.Max(1, hits);
+        shieldBreakDuration = Mathf.Max(0.1f, duration);
+        consecutiveShieldHits = 0;
+    }
+
     private void Awake()
     {
         currentHealth = maxHealth;

@@ -184,8 +184,8 @@ public static class SniperShotChecks
         EnemyHealth unshielded = Enemy(Vector2.right * 2);
         var shieldShot = Fire(Vector2.right, 2);
         Step(shieldShot);
-        Check(shield.CurrentHealth == 10 && unshielded.CurrentHealth == 7, "shield keeps damage rules and counts as target");
-        Check(Object.FindObjectsByType<ShotEffect>(FindObjectsSortMode.None).Count(e => e.name == "Sniper blood impact") == 1, "no blood when shield blocks");
+        Check(shield.CurrentHealth == 10 && unshielded.CurrentHealth == 10 && Spent(shieldShot), "blocking shield stops penetration");
+        Check(Object.FindObjectsByType<ShotEffect>(FindObjectsSortMode.None).Count(e => e.name == "Sniper blood impact") == 0, "no blood when shield blocks");
         Clear();
 
         EnemyHealth smgFirst = Enemy(Vector2.right);
@@ -211,7 +211,7 @@ public static class SniperShotChecks
         Time.timeScale = 1f;
         float until = Time.time + SniperShotVisual.FadeDuration + .05f;
         while (Time.time < until) yield return null;
-        Check(visual == null, "released streak cleans up");
+        Check(visual == null || !visual.gameObject.activeSelf, "released streak returns to pool after fading");
         Clear();
 
         CapturePreview();

@@ -79,6 +79,7 @@ public class PlayerActions : MonoBehaviour
         animator = GetComponent<Animator>();
         movement = GetComponent<PlayerMovement>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null) spriteRenderer.sortingOrder = 7;
         aimCamera = Camera.main;
         if (animator != null)
             animator.SetBool("IsAiming", false);

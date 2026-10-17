@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 1113763740898696610}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.54, y: -2.36, z: 0}
+  m_LocalPosition: {x: -0.54, y: -1.897597, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 6
+  m_SortingOrder: 8
   m_MaskInteraction: 0
   m_Sprite: {fileID: 5461090731341966484, guid: 5830592580b0b23418f2d416e7f9d9c9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -159,6 +159,8 @@ MonoBehaviour:
   timeBetweenShots: 0.15
   entranceTarget: {fileID: 0}
   exposedSprite: {fileID: 0}
+  hasStandingFootAnchor: 1
+  standingFootY: -2.542403
 --- !u!114 &8707483527406506259
 MonoBehaviour:
   m_ObjectHideFlags: 0

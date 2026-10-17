@@ -2940,11 +2940,23 @@ MonoBehaviour:
   firstSpawnX: 93
   introEnemyCount: 3
   spawnSpacing: 3
-  groundY: -1.88
-  laneOffset: 0.2
+  groundY: -4.44
   delayBetweenSpawns: 3.2
   minimumSpawnClearance: 3
   entranceX: -6.72
+  levelTwoOpeningEnemies: 4
+  levelTwoEnemiesBetweenShields: 3
+  levelTwoMaximumAlive: 6
+  levelTwoSpawnDelay: 3.6
+  levelTwoShieldDelay: 5.5
+  levelTwoHitsToBreakShield: 4
+  levelTwoShieldBreakDuration: 2.5
+  levelThreeMaximumAlive: 7
+  levelThreeSpawnDelay: 3.2
+  levelThreeShieldDelay: 4.8
+  levelThreeSMGDelay: 4.5
+  levelThreeHitsToBreakShield: 5
+  levelThreeShieldBreakDuration: 2
 --- !u!1 &470185268
 GameObject:
   m_ObjectHideFlags: 0

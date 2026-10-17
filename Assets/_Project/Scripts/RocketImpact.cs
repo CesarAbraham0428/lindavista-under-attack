@@ -11,29 +11,38 @@ public sealed class RocketImpact : MonoBehaviour
     private static int active;
     private SpriteRenderer visual;
     private float age;
+    private static readonly SceneCombatPool<RocketImpact> pool = new("RPG impact", MaxActive);
+    private bool counted, retired;
 
     public static RocketImpact Create(Vector2 position)
     {
         if (active >= MaxActive || GameFlowController.IsMatchEnded) return null;
         Sprite first = GetFrame(0);
         if (first == null) return null;
-        var go = new GameObject("RPG impact");
+        var effect = pool.Rent();
+        var go = effect.gameObject;
         go.transform.position = position;
         go.transform.localScale = Vector3.one * Width / first.bounds.size.x;
-        var effect = go.AddComponent<RocketImpact>();
+        effect.age = 0f;
+        effect.retired = false;
+        effect.counted = true;
         active++;
-        effect.visual = go.AddComponent<SpriteRenderer>();
+        if (effect.visual == null) effect.visual = go.AddComponent<SpriteRenderer>();
         effect.visual.sprite = first;
+        effect.visual.color = Color.white;
         effect.visual.sortingOrder = 32;
+        go.SetActive(true);
         return effect;
     }
 
     private void Update()
     {
+        if (retired) return;
         age += Time.deltaTime;
         if (age >= Duration || GameFlowController.IsMatchEnded)
         {
-            Destroy(gameObject);
+            retired = true;
+            pool.Return(this);
             return;
         }
         visual.sprite = GetFrame(Mathf.Min(FrameCount - 1, (int)(age / Duration * FrameCount)));
@@ -60,7 +69,23 @@ public sealed class RocketImpact : MonoBehaviour
         return frames[index];
     }
 
-    private void OnDestroy() { active = Mathf.Max(0, active - 1); }
+    private void OnDisable()
+    {
+        if (!counted) return;
+        counted = false;
+        active = Mathf.Max(0, active - 1);
+    }
+
+    private void OnDestroy() => OnDisable();
+
+    internal static void Prewarm()
+    {
+        for (int i = 0; i < FrameCount; i++) GetFrame(i);
+        pool.Prewarm(2, effect =>
+        {
+            if (effect.visual == null) effect.visual = effect.gameObject.AddComponent<SpriteRenderer>();
+        });
+    }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetCount() { active = 0; }

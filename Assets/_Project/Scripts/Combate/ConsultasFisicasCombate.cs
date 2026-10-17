@@ -31,6 +31,12 @@ internal sealed class ConsultasFisicasCombate : IDisposable
         Physics2D.Linecast(origen, destino, CrearFiltro(Physics2D.DefaultRaycastLayers), Impactos);
     }
 
+    internal void BarrerCaja(Vector2 origen, Vector2 tamano, Vector2 direccion, float distancia)
+    {
+        Physics2D.BoxCast(origen, tamano, 0f, direccion, CrearFiltro(Physics2D.DefaultRaycastLayers),
+            Impactos, distancia);
+    }
+
     internal void Solapar(Vector2 origen, float radio)
     {
         // OverlapCircleAll incluye Ignore Raycast; los barridos y líneas no lo incluyen.

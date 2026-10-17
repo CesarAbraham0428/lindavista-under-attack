@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 9170529911225356927}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.25, y: -1.15, z: 0}
+  m_LocalPosition: {x: 6.25, y: -0.817524, z: 0}
   m_LocalScale: {x: 1.3196467, y: 1.4095238, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -150,6 +150,8 @@ MonoBehaviour:
   damage: 2
   speed: 1
   sizeMultiplier: 1
+  hasStandingFootAnchor: 1
+  standingFootY: -2.57
   attackStyle: 2
   attackRange: 1.8
   meleeHitRange: 1.5

@@ -86,7 +86,7 @@ public static class GrenadeProjectileChecks
             if (EditorApplication.timeSinceStartup > deadline) throw new Exception("Grenade checks timed out.");
             if (routine.MoveNext()) return;
             SessionState.SetString(Key + ".Result", "GRENADE_CHECKS_OK: " + assertions +
-                " assertions; actual ammo art, player routing, separate ammo, arc, enemy pass-through, painted and physical floors, bounce, 0.5s fuse, pause, walls, range, splash and duplicate hitboxes.");
+                " assertions; actual ammo art, player routing, separate ammo, arc, enemy contact detonation, painted and physical floors, bounce, 0.5s fuse, pause, walls, range, splash and duplicate hitboxes.");
             Debug.Log(Result);
         }
         catch (Exception error)
@@ -102,6 +102,8 @@ public static class GrenadeProjectileChecks
     {
         yield return null;
         VerifyPlayerShot();
+        Clear();
+        VerifyContactDetonation();
         Clear();
         VerifyArcFuseAndBlast();
         Clear();
@@ -162,9 +164,24 @@ public static class GrenadeProjectileChecks
         finally { File.Delete(path); File.Delete(path + ".bak"); }
     }
 
-    private static void VerifyArcFuseAndBlast()
+    private static void VerifyContactDetonation()
     {
         EnemyHealth touching = Enemy(new Vector2(0.4f, 2.1f), Vector2.one * 1.4f);
+        var duplicate = Make("duplicate contact hitbox", Vector2.zero);
+        duplicate.transform.SetParent(touching.transform, false);
+        duplicate.AddComponent<BoxCollider2D>().isTrigger = true;
+        var grenade = Fire(Vector2.right);
+        Physics2D.SyncTransforms();
+        Step(grenade);
+        Check(touching.CurrentHealth == 4, "contact detonates and direct/splash damage is applied once");
+        Check(Object.FindObjectsByType<RocketImpact>(FindObjectsSortMode.None).Length == 1,
+            "enemy contact has a visible explosion");
+        Step(grenade);
+        Check(touching.CurrentHealth == 4, "spent contact grenade cannot damage twice");
+    }
+
+    private static void VerifyArcFuseAndBlast()
+    {
         var grenade = Fire(Vector2.right);
         float startY = grenade.transform.position.y;
         Step(grenade);
@@ -172,12 +189,12 @@ public static class GrenadeProjectileChecks
         float previousY = grenade.transform.position.y;
         Step(grenade);
         Check(firstRise > 0f && grenade.transform.position.y - previousY < firstRise, "gravity produces curved rising launch");
-        Check(touching.CurrentHealth == 10 && !grenade.HasLanded, "touching an enemy does not explode or damage");
+        Check(!grenade.HasLanded, "missed grenade continues its arc before reaching floor");
         int steps = 0;
         while (!grenade.HasLanded && steps++ < 200) Step(grenade);
         Check(grenade.HasLanded && steps < 200, "grenade reaches painted floor without floor collider");
         Check(Mathf.Abs(grenade.FuseRemaining - 0.5f) < .001f, "0.5 second fuse starts at first floor contact");
-        Check(touching.CurrentHealth == 10 && Object.FindObjectsByType<RocketImpact>(FindObjectsSortMode.None).Length == 0,
+        Check(Object.FindObjectsByType<RocketImpact>(FindObjectsSortMode.None).Length == 0,
             "flight and first floor contact cause no damage or explosion");
         float landingY = grenade.transform.position.y;
         Step(grenade);

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-/// <summary>Ballistic grenade: one small bounce, then a fuse timed from its first floor contact.</summary>
+/// <summary>Contact detonation against enemies; one bounce and a short fuse for missed shots.</summary>
 public sealed class GrenadeProjectile : MonoBehaviour
 {
     public const float FuseDuration = 0.5f;
@@ -17,6 +17,7 @@ public sealed class GrenadeProjectile : MonoBehaviour
     private float remainingRange;
     private float fuseRemaining = FuseDuration;
     private int damage;
+    private EnemyHealth directHit;
     private bool landed, settled, spent;
 
     public bool HasLanded => landed;
@@ -85,7 +86,7 @@ public sealed class GrenadeProjectile : MonoBehaviour
             if (fuseRemaining <= 0.0001f) { Explode(); return; }
         }
         if (!settled) Move(step);
-        Draw();
+        if (!spent) Draw();
     }
 
     private void Move(float step)
@@ -102,24 +103,27 @@ public sealed class GrenadeProjectile : MonoBehaviour
         float fraction = 1f;
         Vector2 normal = Vector2.zero;
         bool hit = false;
+        EnemyHealth contactedEnemy = null;
         if (distance > 0.0001f)
         {
             using var consulta = ConsultasFisicasCombate.Obtener();
             consulta.Barrer(start, radius, displacement / distance, distance);
+            consulta.OrdenarPenetracion();
             foreach (RaycastHit2D contact in consulta.Impactos)
             {
                 Collider2D collider = contact.collider;
-                // Grenades do not deal contact damage or detonate against an enemy.
-                if (collider == null || collider.isTrigger || collider.transform == owner ||
+                if (collider == null || collider.transform == owner ||
                     (owner != null && collider.transform.IsChildOf(owner)) ||
-                    collider.GetComponentInParent<EnemyHealth>() != null ||
                     collider.GetComponentInParent<PlayerActions>() != null ||
                     collider.GetComponentInParent<CoinPickup>() != null) continue;
+                EnemyHealth enemy = collider.GetComponentInParent<EnemyHealth>();
+                if ((enemy != null && enemy.IsDead) || (collider.isTrigger && enemy == null)) continue;
                 float candidate = Mathf.Clamp01(contact.distance / distance);
                 if (hit && candidate >= fraction) continue;
                 hit = true;
                 fraction = candidate;
                 normal = contact.normal;
+                contactedEnemy = enemy;
             }
         }
 
@@ -131,12 +135,20 @@ public sealed class GrenadeProjectile : MonoBehaviour
                 hit = true;
                 fraction = floorFraction;
                 normal = Vector2.up;
+                contactedEnemy = null;
             }
         }
         Vector2 position = start + displacement * fraction;
         if (hit)
         {
             position += normal * 0.005f;
+            if (contactedEnemy != null)
+            {
+                transform.position = position;
+                directHit = contactedEnemy;
+                Explode();
+                return;
+            }
             if (normal.y > 0.5f && velocity.y <= 0f)
             {
                 groundY = position.y - radius;
@@ -179,7 +191,8 @@ public sealed class GrenadeProjectile : MonoBehaviour
         spent = true;
         Vector2 position = transform.position;
         RocketImpact.Create(position);
-        CombatProjectile.ApplySplashDamage(position, damage, shotDirection, owner);
+        directHit?.TakeExplosionDamage(damage);
+        CombatProjectile.ApplySplashDamage(position, damage, shotDirection, owner, directHit);
         Destroy(gameObject);
     }
 

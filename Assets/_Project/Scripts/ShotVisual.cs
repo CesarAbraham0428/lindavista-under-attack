@@ -12,20 +12,34 @@ public sealed class ShotVisual : MonoBehaviour
     private bool enemyFlight, impactAtEnd;
     private Vector2 flightDirection;
     private float travelRemaining;
+    private static readonly SceneCombatPool<ShotVisual> enemyShots = new("Enemy shot visual", 64);
+    private TrailRenderer trail;
+    private bool pooledEnemy, retired;
+    private static int activeEnemyShots;
 
     public static ShotVisual Attach(GameObject shot, int index)
     {
-        var visual = shot.AddComponent<ShotVisual>();
+        if (!shot.TryGetComponent<ShotVisual>(out var visual)) visual = shot.AddComponent<ShotVisual>();
         visual.weapon = Mathf.Clamp(index, 0, 2);
-        var renderer = shot.AddComponent<SpriteRenderer>();
+        visual.enemyFlight = false;
+        visual.pooledEnemy = false;
+        visual.retired = false;
+        visual.nextSmoke = 0f;
+        visual.enabled = true;
+        if (!shot.TryGetComponent<SpriteRenderer>(out var renderer)) renderer = shot.AddComponent<SpriteRenderer>();
         renderer.sprite = GetSprite(visual.weapon);
+        renderer.color = Color.white;
         renderer.sortingOrder = 30;
         // Keep physical collision radius separate from the size of the art.
         float width = visual.weapon == 2 ? RocketWidth : visual.weapon == 1 ? 0.24f : 0.2f;
         shot.transform.localScale = Vector3.one * width / renderer.sprite.bounds.size.x;
         if (visual.weapon != 2)
         {
-            var trail = shot.AddComponent<TrailRenderer>();
+            if (visual.trail == null) visual.trail = shot.GetComponent<TrailRenderer>();
+            if (visual.trail == null) visual.trail = shot.AddComponent<TrailRenderer>();
+            var trail = visual.trail;
+            trail.Clear();
+            trail.emitting = true;
             trail.sharedMaterial = renderer.sharedMaterial;
             trail.time = visual.weapon == 1 ? 0.035f : 0.025f;
             trail.startWidth = 0.025f;
@@ -40,20 +54,32 @@ public sealed class ShotVisual : MonoBehaviour
 
     public static void EnemyShot(Vector2 origin, Vector2 direction, float distance, int weapon, bool hit)
     {
-        var shot = new GameObject("Enemy shot visual");
+        if (activeEnemyShots >= 64 || GameFlowController.IsMatchEnded) return;
+        var visual = enemyShots.Rent();
+        var shot = visual.gameObject;
         shot.transform.position = origin;
         shot.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-        var visual = Attach(shot, weapon);
+        Attach(shot, weapon);
+        visual.enabled = true;
+        visual.pooledEnemy = true;
         visual.enemyFlight = true;
         visual.flightDirection = direction;
         visual.travelRemaining = Mathf.Max(0f, distance);
         visual.impactAtEnd = hit;
+        activeEnemyShots++;
+        shot.SetActive(true);
         Muzzle(origin, direction, weapon);
     }
 
     private void Update()
     {
-        if (GameFlowController.IsMatchEnded) { Destroy(gameObject); return; }
+        if (retired) return;
+        if (GameFlowController.IsMatchEnded)
+        {
+            if (pooledEnemy) RetireEnemy();
+            else GetComponent<CombatProjectile>()?.Cancel();
+            return;
+        }
         if (enemyFlight)
         {
             float step = Mathf.Min(32f * Time.deltaTime, travelRemaining);
@@ -62,7 +88,8 @@ public sealed class ShotVisual : MonoBehaviour
             if (travelRemaining <= 0f)
             {
                 if (impactAtEnd) Impact(transform.position, flightDirection, weapon);
-                Destroy(gameObject);
+                RetireEnemy();
+                return;
             }
         }
         if (weapon != 2 || Time.time < nextSmoke) return;
@@ -73,6 +100,28 @@ public sealed class ShotVisual : MonoBehaviour
             new Color(0.55f, 0.54f, 0.5f, 0.45f), 0.13f, 0.38f, 0.4f);
         Puff(rear, -(Vector2)transform.right * 0.2f,
             new Color(1f, 0.5f, 0.12f, 0.85f), 0.12f, 0.025f, 0.07f);
+    }
+
+    private void RetireEnemy()
+    {
+        retired = true;
+        if (pooledEnemy) enemyShots.Return(this);
+        // Player projectile lifetime is owned exclusively by CombatProjectile.
+    }
+
+    private void OnDisable()
+    {
+        if (trail != null) { trail.emitting = false; trail.Clear(); }
+        if (!pooledEnemy) return;
+        pooledEnemy = false;
+        activeEnemyShots = Mathf.Max(0, activeEnemyShots - 1);
+    }
+
+    internal static void Prewarm()
+    {
+        GetSprite(0);
+        GetSoftDot();
+        enemyShots.Prewarm(6, effect => Attach(effect.gameObject, 0));
     }
 
     public static void Muzzle(Vector2 position, Vector2 direction, int weapon)
@@ -101,7 +150,27 @@ public sealed class ShotVisual : MonoBehaviour
         Puff(position, Vector2.up * 0.3f, new Color(0.6f, 0.58f, 0.55f, 0.3f), 0.1f, 0.25f, 0.24f);
     }
 
+    /// <summary>Readable contact flash, not an explosion and never an extra damage event.</summary>
+    public static void TargetImpact(Vector2 position, Vector2 direction, int weapon, bool blocked)
+    {
+        Impact(position, direction, weapon);
+        float size = blocked ? 0.72f : weapon == 1 ? 0.85f : 0.62f;
+        Color tint = blocked ? new Color(0.62f, 0.86f, 1f) : new Color(1f, 0.84f, 0.48f);
+        var flash = ShotEffect.Create(blocked ? "Shield contact flash" : "Enemy contact flash",
+            GetSprite(3), position + direction * 0.12f, Vector2.zero,
+            tint, size, size * 0.65f, 0.18f, 40);
+        if (flash != null)
+            flash.transform.rotation = Quaternion.Euler(0f, 0f,
+                Mathf.Atan2(-direction.y, -direction.x) * Mathf.Rad2Deg);
+    }
+
     private static void Puff(Vector2 position, Vector2 velocity, Color color, float size, float endSize, float lifetime)
+    {
+        ShotEffect.Create("Shot particle", GetSoftDot(), position, velocity, color, size, endSize, lifetime,
+            color.r < 0.8f ? 28 : 31);
+    }
+
+    private static Sprite GetSoftDot()
     {
         if (softDot == null)
         {
@@ -115,11 +184,10 @@ public sealed class ShotVisual : MonoBehaviour
                     pixels[y * 32 + x] = new Color(1, 1, 1, Mathf.Pow(Mathf.Clamp01(1f - r), 1.5f));
                 }
             texture.SetPixels(pixels);
-            texture.Apply();
+            texture.Apply(false, true);
             softDot = Sprite.Create(texture, new Rect(0, 0, 32, 32), Vector2.one * 0.5f, 32);
         }
-        ShotEffect.Create("Shot particle", softDot, position, velocity, color, size, endSize, lifetime,
-            color.r < 0.8f ? 28 : 31);
+        return softDot;
     }
 
     public static Sprite GetSprite(int index)
@@ -164,6 +232,7 @@ public sealed class ShotVisual : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void RevisarAtlasAlIniciar()
     {
+        activeEnemyShots = 0;
         atlasPreparado = true;
         // Al entrar en Play sin recargar el dominio pueden persistir referencias destruidas.
         for (int indice = 0; indice < sprites.Length; indice++)

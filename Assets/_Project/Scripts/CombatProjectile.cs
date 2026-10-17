@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Profiling;
 
 /// <summary>Short-lived projectile swept through 2D physics so fast shots cannot skip enemies.</summary>
 public sealed class CombatProjectile : MonoBehaviour
@@ -8,6 +9,12 @@ public sealed class CombatProjectile : MonoBehaviour
     // Cover the enlarged impact canvas so clustered enemies share the explosion.
     public const float RocketSplashRadius = RocketImpact.Width * 0.5f;
     private static int activeProjectiles;
+    private static readonly ProfilerMarker SweepMarker = new("Lindavista.ProjectileSweep");
+    private static readonly SceneCombatPool<CombatProjectile>[] pools =
+    {
+        new("Projectile", MaxActiveProjectiles), new("Projectile", MaxActiveProjectiles),
+        new("Projectile", MaxActiveProjectiles), new("Projectile", MaxActiveProjectiles)
+    };
 
     private Vector2 direction;
     private Transform owner;
@@ -23,7 +30,11 @@ public sealed class CombatProjectile : MonoBehaviour
     private HashSet<EnemyHealth> piercedEnemies;
     private SniperShotVisual sniperVisual;
     private Camera flightCamera;
-    private readonly Plane[] cameraPlanes = new Plane[6];
+    private SceneCombatPool<CombatProjectile> pool;
+    private bool counted;
+    private static readonly Plane[] cameraPlanes = new Plane[6];
+    private static Camera cachedCamera;
+    private static Matrix4x4 cachedViewProjection;
 
     public int Damage => damage;
 
@@ -38,12 +49,30 @@ public sealed class CombatProjectile : MonoBehaviour
         var weapon = owner != null ? owner.GetComponent<PlayerWeaponController>() : null;
         if (weapon != null && !ProgressionService.TryConsumeAmmo(weapon.EquippedWeapon, weapon.IsCesar)) return false;
 
-        GameObject shot = new GameObject("Projectile");
+        int index = Mathf.Clamp(weaponIndex, 0, 2);
+        bool piercing = !grenadeLauncher && index == 1 && maxTargets > 1;
+        SceneCombatPool<CombatProjectile> pool = grenadeLauncher ? null : pools[piercing ? 3 : index];
+        CombatProjectile projectile;
+        if (pool != null) projectile = pool.Rent();
+        else
+        {
+            var go = new GameObject("Projectile");
+            go.SetActive(false);
+            projectile = go.AddComponent<CombatProjectile>();
+        }
+        GameObject shot = projectile.gameObject;
         shot.transform.position = new Vector3(origin.x, origin.y, 0f);
-        CombatProjectile projectile = shot.AddComponent<CombatProjectile>();
+        shot.transform.localScale = Vector3.one;
+        projectile.enabled = true;
+        projectile.pool = pool;
+        projectile.spent = false;
+        projectile.hasGround = false;
+        projectile.groundY = 0f;
+        projectile.flightCamera = null;
+        projectile.piercedEnemies?.Clear();
         projectile.direction = direction.normalized;
         projectile.owner = owner;
-        projectile.weaponIndex = Mathf.Clamp(weaponIndex, 0, 2);
+        projectile.weaponIndex = index;
         projectile.remainingRange = Mathf.Max(0.1f, maxRange);
 
         projectile.speed = Mathf.Max(0.1f, shotSpeed);
@@ -56,7 +85,9 @@ public sealed class CombatProjectile : MonoBehaviour
             projectile.enabled = false;
             GrenadeProjectile.Attach(shot, origin, projectile.direction, projectile.damage,
                 projectile.speed, projectile.radius, projectile.remainingRange, owner);
+            projectile.counted = true;
             activeProjectiles++;
+            shot.SetActive(true);
             return true;
         }
         // Player bullets span the current view, regardless of pointer distance or
@@ -65,7 +96,7 @@ public sealed class CombatProjectile : MonoBehaviour
         if (IsInCamera(viewCamera, origin) || (owner != null && IsInCamera(viewCamera, owner.position)))
             projectile.flightCamera = viewCamera;
         projectile.targetLimit = projectile.weaponIndex == 1 ? Mathf.Clamp(maxTargets, 1, 4) : 1;
-        if (projectile.targetLimit > 1) projectile.piercedEnemies = new HashSet<EnemyHealth>();
+        if (projectile.targetLimit > 1) projectile.piercedEnemies ??= new HashSet<EnemyHealth>();
         if (projectile.weaponIndex == 2 && owner != null)
         {
             var body = owner.GetComponent<SpriteRenderer>();
@@ -94,21 +125,21 @@ public sealed class CombatProjectile : MonoBehaviour
             ShotVisual.Muzzle(origin, projectile.direction, projectile.weaponIndex);
         }
 
+        projectile.counted = true;
         activeProjectiles++;
+        shot.SetActive(true);
         return true;
     }
 
     private void FixedUpdate()
     {
+        using var sample = SweepMarker.Auto();
+        if (spent) return;
         if (GameFlowController.IsDefeatActive)
         {
-            spent = true;
-            Destroy(gameObject);
+            Retire();
             return;
         }
-
-        if (spent)
-            return;
 
         Vector2 tail = transform.position;
         if (flightCamera != null && flightCamera.isActiveAndEnabled)
@@ -117,8 +148,7 @@ public sealed class CombatProjectile : MonoBehaviour
         {
             // A camera shift may put an in-flight round outside the view.
             // Retire it before even an overlapping off-screen collider is swept.
-            spent = true;
-            Destroy(gameObject);
+            Retire();
             return;
         }
         float distance = Mathf.Min(speed * Time.fixedDeltaTime, remainingRange);
@@ -158,7 +188,7 @@ public sealed class CombatProjectile : MonoBehaviour
                 nearestCastDistance = hit.distance;
                 nearestDistance = Mathf.Max(0f, hit.distance - noseOffset);
                 nearestCollider = collider;
-                contact = hit.point;
+                contact = hit.distance > 0f ? hit.point : collider.ClosestPoint(tail);
                 normal = hit.normal;
             }
         }
@@ -181,9 +211,14 @@ public sealed class CombatProjectile : MonoBehaviour
         {
             spent = true;
             transform.position = tail + direction * nearestDistance;
-            ShotVisual.Impact(contact + normal * (weaponIndex == 2 ? 0.12f : 0f), direction, weaponIndex);
+            EnemyHealth impactedEnemy = nearestCollider != null ? nearestCollider.GetComponentInParent<EnemyHealth>() : null;
+            int healthBefore = impactedEnemy != null ? impactedEnemy.CurrentHealth : 0;
             ApplyImpactDamage(nearestCollider, contact + normal * 0.025f);
-            Destroy(gameObject);
+            if (impactedEnemy != null && weaponIndex != 2)
+                ShotVisual.TargetImpact(contact, direction, weaponIndex, impactedEnemy.CurrentHealth == healthBefore);
+            else
+                ShotVisual.Impact(contact + normal * (weaponIndex == 2 ? 0.12f : 0f), direction, weaponIndex);
+            Retire();
             return;
         }
 
@@ -191,8 +226,7 @@ public sealed class CombatProjectile : MonoBehaviour
         remainingRange -= distance;
         if (remainingRange <= 0f)
         {
-            spent = true;
-            Destroy(gameObject);
+            Retire();
         }
     }
 
@@ -205,7 +239,15 @@ public sealed class CombatProjectile : MonoBehaviour
 
     private float DistanceToCameraEdge(Vector2 origin)
     {
-        GeometryUtility.CalculateFrustumPlanes(flightCamera, cameraPlanes);
+        // All rounds share the same camera geometry. Refresh on matrix changes,
+        // including camera motion/zoom within a frame, rather than once per round.
+        Matrix4x4 viewProjection = flightCamera.projectionMatrix * flightCamera.worldToCameraMatrix;
+        if (cachedCamera != flightCamera || cachedViewProjection != viewProjection)
+        {
+            GeometryUtility.CalculateFrustumPlanes(viewProjection, cameraPlanes);
+            cachedViewProjection = viewProjection;
+            cachedCamera = flightCamera;
+        }
         float distance = float.PositiveInfinity;
         // The first four planes are left/right/bottom/top. The shot travels on
         // the gameplay plane, so near and far clipping are not travel limits.
@@ -245,23 +287,24 @@ public sealed class CombatProjectile : MonoBehaviour
                 piercedEnemies.Add(enemy);
                 int healthBefore = enemy.CurrentHealth;
                 enemy.TakeDamage(damage, direction);
-                if (enemy.CurrentHealth < healthBefore) SniperShotVisual.Blood(contact, direction);
-                else ShotVisual.Impact(contact, direction, 1); // Shield feedback retains the enemy's rules.
-                if (piercedEnemies.Count < targetLimit) continue;
+                bool blocked = enemy.CurrentHealth == healthBefore;
+                ShotVisual.TargetImpact(contact, direction, 1, blocked);
+                if (!blocked) SniperShotVisual.Blood(contact, direction);
+                // A blocked round cannot hit someone behind the shield. The shot
+                // that opens the shield is still blocked; the next round can pierce.
+                if (!blocked && piercedEnemies.Count < targetLimit) continue;
             }
             else ShotVisual.Impact(contact, direction, 1);
 
             MoveSniper(start + direction * Mathf.Clamp(hit.distance, 0f, distance));
-            spent = true;
-            Destroy(gameObject);
+            Retire();
             return;
         }
         MoveSniper(start + direction * distance);
         remainingRange -= distance;
         if (remainingRange <= 0f)
         {
-            spent = true;
-            Destroy(gameObject);
+            Retire();
         }
     }
 
@@ -318,15 +361,48 @@ public sealed class CombatProjectile : MonoBehaviour
         return false;
     }
 
-    private void OnDestroy()
+    private void ReleaseBudget()
     {
-        if (sniperVisual != null) sniperVisual.Release();
+        if (!counted) return;
+        counted = false;
         activeProjectiles = Mathf.Max(0, activeProjectiles - 1);
+        if (sniperVisual != null) sniperVisual.Release();
+        sniperVisual = null;
+    }
+
+    private void Retire()
+    {
+        spent = true;
+        ReleaseBudget();
+        owner = null;
+        flightCamera = null;
+        piercedEnemies?.Clear();
+        if (pool != null) pool.Return(this);
+        else Destroy(gameObject);
+    }
+
+    internal void Cancel() { if (!spent) Retire(); }
+
+    private void OnDisable()
+    {
+        // Disabling just this component is also used by ballistic grenades.
+        if (!gameObject.activeInHierarchy) ReleaseBudget();
+    }
+
+    private void OnDestroy() => ReleaseBudget();
+
+    internal static void Prewarm()
+    {
+        pools[0].Prewarm(6, shot => ShotVisual.Attach(shot.gameObject, 0));
+        pools[1].Prewarm(10, shot => ShotVisual.Attach(shot.gameObject, 1));
+        pools[2].Prewarm(2, shot => ShotVisual.Attach(shot.gameObject, 2));
+        pools[3].Prewarm(3, shot => shot.piercedEnemies ??= new HashSet<EnemyHealth>());
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetProjectiles()
     {
         activeProjectiles = 0;
+        cachedCamera = null;
     }
 }
