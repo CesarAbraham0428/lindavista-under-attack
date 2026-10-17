@@ -103,6 +103,23 @@ public class CameraFollow2D : MonoBehaviour
         playerActions?.SetInputLocked(true);
         playerMovement?.SetMovementLocked(true);
 
+        if (spawner.SelectedLevel == 3)
+        {
+            // Show the actual entrance behind the approved portrait, before anyone moves.
+            Vector3 previewPosition = transform.position;
+            transform.position = new Vector3(MinimoCamaraX, fixedY, fixedZ);
+            if (attachedCamera != null) attachedCamera.orthographicSize = normalOrthographicSize;
+            var art = Resources.Load<LevelFourAssets>("LevelFourAssets");
+            if (art != null && art.Portrait != null)
+            {
+                var introduction = gameObject.AddComponent<BossIntroduction>();
+                yield return introduction.Play(art.Portrait);
+                Destroy(introduction);
+            }
+            transform.position = previewPosition;
+            if (attachedCamera != null) attachedCamera.orthographicSize = lineupOrthographicSize;
+        }
+
         if (lineupHoldDuration > 0f)
             yield return new WaitForSeconds(lineupHoldDuration);
 

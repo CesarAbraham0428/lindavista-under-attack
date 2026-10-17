@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-17T23:24:49.0561391Z",
+  "title": "Design System: LINDAVISTA: UNDER ATTACK",
+  "extensions": {
+    "typographyMeta": {
+      "display": {
+        "displayName": "LilitaOne",
+        "purpose": "Existing cartoon headings and Level 4 sign."
+      },
+      "body": {
+        "displayName": "LilitaOne",
+        "purpose": "Existing cinematic dialogue after CartoonUI.Typography."
+      },
+      "label": {
+        "displayName": "LilitaOne",
+        "purpose": "Existing cinematic and boss HUD labels after CartoonUI.Typography."
+      }
+    },
+    "shadows": [
+      {
+        "name": "cartoon-frame",
+        "value": "Unity UI Shadow: Color(0, 0, 0, 0.5); effectDistance (0, -6)",
+        "purpose": "Existing CartoonUI.Frame depth."
+      }
+    ],
+    "motion": [
+      {
+        "name": "cartoon-button-color-fade",
+        "value": "Unity ColorBlock.fadeDuration = 0.12 seconds",
+        "purpose": "Existing CartoonUI.ButtonStyle state tint fade."
+      }
+    ],
+    "native": {
+      "platform": "UnityEngine.UI game; not HTML",
+      "canvas": {
+        "renderMode": "ScreenSpaceOverlay",
+        "scaleMode": "ScaleWithScreenSize",
+        "referenceResolution": [
+          1920,
+          1080
+        ],
+        "screenMatchMode": "Expand",
+        "source": "Assets/_Project/Scripts/ProgressionUI.cs"
+      },
+      "safeArea": {
+        "helper": "AreaSeguraUI.Crear",
+        "source": "Assets/_Project/Scripts/Interfaz/AreaSeguraUI.cs",
+        "behavior": "Normalizes Screen.safeArea; reapplies on resolution or safe-area changes. Both Level 4 components use it."
+      },
+      "assets": {
+        "font": "Assets/_Project/Resources/UI/LilitaOne.ttf",
+        "wood": "Assets/_Project/Resources/UI/WoodSign.png",
+        "portrait": "Assets/_Project/Art/Characters/Enemies/Boss_Base.png",
+        "constraint": "Keep original portrait and metadata intact. Generated composition is a reference, not shipped art or background."
+      },
+      "evidence": [
+        "Docs/Level4.md",
+        "Assets/_Project/Scripts/CartoonUI.cs",
+        "Assets/_Project/Scripts/ProgressionUI.cs",
+        "Assets/_Project/Scripts/BossIntroduction.cs",
+        "Assets/_Project/Scripts/BossHealthHUD.cs",
+        "Assets/_Project/Scripts/Interfaz/AreaSeguraUI.cs"
+      ],
+      "extractionLimit": "No synthesized tonal ramps, HTML/CSS previews or browser breakpoints. Unity source owns numeric color values; DESIGN.md frontmatter carries their percentage equivalents.",
+      "validationLimit": "Source extraction only. Unity render captures are not actual Android-device proof. No device validation, performance guarantee or finish-review verdict is asserted.",
+      "writeBoundary": [
+        "PRODUCT.md",
+        "DESIGN.md",
+        ".impeccable/design.json"
+      ]
+    }
+  },
+  "components": [],
+  "narrative": {
+    "overview": "Existing Unity cartoon UI uses cream lettering, dark ink and frames, wood signage and gold accents. Game health uses red. This extraction preserves the established art and UI; it introduces no visual system changes.",
+    "dos": [
+      "Do reuse the Unity canvas, safe-area, typography and frame helpers.",
+      "Do keep the original Boss_Base PNG and metadata intact; use the generated composition only as reference.",
+      "Do treat Unity render captures as Unity evidence, not actual Android-device proof."
+    ],
+    "donts": [
+      "Don't translate virtual Unity layout units into CSS pixels or impose HTML components.",
+      "Don't invent palette ramps, typography scales, breakpoints or branding promises.",
+      "Don't edit gameplay scripts, global source, scenes, art or metadata for this documentation handoff."
+    ]
+  }
+}

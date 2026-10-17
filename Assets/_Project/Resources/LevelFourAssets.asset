@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0661b06af883f6265fa135f7d0b81695, type: 3}
+  m_Name: LevelFourAssets
+  m_EditorClassIdentifier: Assembly-CSharp::LevelFourAssets
+  portrait: {fileID: -3655592987064142032, guid: 030dec7c7f626ad4fa5a190d76406003, type: 3}
+  truckPrefab: {fileID: 7642945799836786623, guid: 996d1ae510c116f488da3fd3f6e79624, type: 3}
