@@ -6,6 +6,7 @@ public sealed class EnemyHealth : MonoBehaviour
 {
     [SerializeField, Min(1)] private int maxHealth = 3;
     [SerializeField, Min(0f)] private float defeatDespawnDelay = 1.2f;
+    [SerializeField] private bool playDamageAnimation = true;
     [SerializeField] private bool shieldBlocksFront;
     [SerializeField, Min(1)] private int hitsToBreakShield = 3;
     [SerializeField, Min(0.1f)] private float shieldHitWindow = 1.5f;
@@ -123,7 +124,7 @@ public sealed class EnemyHealth : MonoBehaviour
             HealthChanged?.Invoke(currentHealth, maxHealth);
             Died?.Invoke(this);
         }
-        else if (animator != null)
+        else if (animator != null && playDamageAnimation)
         {
             animator.SetTrigger("TakeDamage");
         }

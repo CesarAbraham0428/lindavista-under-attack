@@ -23,7 +23,7 @@ public sealed class PistolUpgradeShop : MonoBehaviour
     private Sprite fillSprite;
     private ShopCharacterAssets retratos;
     public static bool IsOpen => active != null;
-    public static void Open() { if (active == null) new GameObject("Character and Weapons Shop").AddComponent<PistolUpgradeShop>(); }
+    public static void Open() { if (active == null && !BossIntroduction.IsActive) new GameObject("Character and Weapons Shop").AddComponent<PistolUpgradeShop>(); }
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() { active = null; }
 

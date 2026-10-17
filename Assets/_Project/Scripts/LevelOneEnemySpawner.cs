@@ -66,6 +66,11 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
     [SerializeField, Min(1)] private int levelThreeHitsToBreakShield = 5;
     [SerializeField, Min(0.1f)] private float levelThreeShieldBreakDuration = 2f;
 
+    [Header("Level 4: final wave and truck")]
+    [SerializeField, Min(3)] private int levelFourMaximumAlive = 7;
+    [SerializeField, Min(.1f)] private float levelFourSpawnDelay = 3.2f;
+    [SerializeField, Min(.1f)] private float levelFourBossArrivalDelay = 2f;
+
     private readonly List<BasicEnemy> queuedEnemies = new();
     private List<GameObject> spawnOrder;
     private float objectiveX;
@@ -73,14 +78,18 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
     private bool prepared;
     private bool waveStarted;
     private bool releaseFinished;
+    private bool bossScheduled;
+    private bool bossDefeated;
     private readonly HashSet<EnemyHealth> livingEnemies = new();
     public int SelectedLevel { get; private set; }
     public int TotalEnemies { get; private set; }
     public int PendingEnemies { get; private set; }
     public int AliveEnemies => livingEnemies.Count;
+    public bool IsBossEncounter => SelectedLevel == 3;
 
     private int MaximumAlive => SelectedLevel == 1 ? Mathf.Max(3, levelTwoMaximumAlive)
-        : SelectedLevel == 2 ? Mathf.Max(3, levelThreeMaximumAlive) : int.MaxValue;
+        : SelectedLevel == 2 ? Mathf.Max(3, levelThreeMaximumAlive)
+        : SelectedLevel == 3 ? Mathf.Max(3, levelFourMaximumAlive) : int.MaxValue;
 
     /// <summary>Camera X that centers the visible lineup on stage 5.</summary>
     public float IntroCameraX { get; private set; }
@@ -135,9 +144,19 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
             return false;
         }
 
+        if (IsBossEncounter)
+        {
+            var assets = Resources.Load<LevelFourAssets>("LevelFourAssets");
+            if (assets == null || assets.Portrait == null || assets.TruckPrefab == null)
+            {
+                Debug.LogError("Level 4 needs LevelFourAssets. Run Tools/Lindavista/Prepare level 4 assets.", this);
+                return false;
+            }
+        }
+
         HideLegacyEnemyPreviews();
-        TotalEnemies = total;
-        PendingEnemies = total;
+        TotalEnemies = total + (IsBossEncounter ? 1 : 0);
+        PendingEnemies = TotalEnemies;
         spawnOrder = SelectedLevel == 1
             ? BuildLevelTwoSpawnOrder(prefabs, counts)
             : SelectedLevel == 2 ? BuildLevelThreeSpawnOrder(prefabs, counts)
@@ -178,7 +197,7 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
         livingEnemies.Add(enemyHealth);
         enemyHealth.Died += OnEnemyDied;
         behavior.SetEntranceTargetX(objectiveX);
-        if (SelectedLevel <= 2) behavior.ConfigureTactics();
+        behavior.ConfigureTactics();
         behavior.enabled = startMoving;
         return behavior;
     }
@@ -253,18 +272,61 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
 
     private void CheckWaveComplete()
     {
-        if (prepared && waveStarted && releaseFinished && PendingEnemies == 0 && livingEnemies.Count == 0)
-            GameFlowController.ReportWaveCleared(SelectedLevel);
+        if (!prepared || !waveStarted || !releaseFinished || livingEnemies.Count != 0 || GameFlowController.IsMatchEnded) return;
+        if (IsBossEncounter && !bossDefeated)
+        {
+            if (!bossScheduled && PendingEnemies == 1)
+            {
+                bossScheduled = true;
+                StartCoroutine(SpawnFinalBoss());
+            }
+            return;
+        }
+        if (PendingEnemies == 0) GameFlowController.ReportWaveCleared(SelectedLevel);
+    }
+
+    private IEnumerator SpawnFinalBoss()
+    {
+        yield return new WaitForSeconds(levelFourBossArrivalDelay);
+        if (GameFlowController.IsMatchEnded) yield break;
+        var assets = Resources.Load<LevelFourAssets>("LevelFourAssets");
+        Camera camera = Camera.main;
+        var player = FindFirstObjectByType<PlayerActions>();
+        float rightEdge = camera != null ? camera.transform.position.x + camera.orthographicSize * camera.aspect
+            : (player != null ? player.transform.position.x + 14f : firstSpawnX);
+        float spawnX = Mathf.Clamp(rightEdge + 5f, objectiveX + 24f, 120f);
+        var truck = Instantiate(assets.TruckPrefab, new Vector3(spawnX, groundY, 0), Quaternion.identity, transform);
+        truck.name = "Final Boss Truck";
+        var health = truck.GetComponent<EnemyHealth>();
+        livingEnemies.Add(health);
+        health.Died += OnBossDied;
+        PendingEnemies--;
+        truck.GetComponent<BossTruck>().Initialize(groundY, objectiveX);
+    }
+
+    private void OnBossDied(EnemyHealth health)
+    {
+        if (!livingEnemies.Remove(health)) return;
+        health.Died -= OnBossDied;
+        bossDefeated = true;
+        GameFlowController.ReportEnemyKilled();
+        CheckWaveComplete();
     }
 
     private void OnDestroy()
     {
         foreach (EnemyHealth enemy in livingEnemies)
-            if (enemy != null) enemy.Died -= OnEnemyDied;
+            if (enemy != null) { enemy.Died -= OnEnemyDied; enemy.Died -= OnBossDied; }
     }
 
     private float GetReleaseDelay(int index)
     {
+        if (SelectedLevel == 3)
+        {
+            float finalWaveDelay = Mathf.Max(.1f, levelFourSpawnDelay);
+            return spawnOrder[index] == enemy3Prefab || spawnOrder[index] == enemy4Prefab
+                ? Mathf.Max(finalWaveDelay, 4.4f) : finalWaveDelay;
+        }
         if (SelectedLevel == 2)
         {
             float interval = Mathf.Max(0.1f, levelThreeSpawnDelay);

@@ -68,7 +68,7 @@ public sealed class GameFlowController : MonoBehaviour
 
     private void Update()
     {
-        bool mostrarPausa = !IsMatchEnded && !paused && !PistolUpgradeShop.IsOpen;
+        bool mostrarPausa = !IsMatchEnded && !paused && !PistolUpgradeShop.IsOpen && !BossIntroduction.IsActive;
         if (pauseButton.gameObject.activeSelf != mostrarPausa)
             pauseButton.gameObject.SetActive(mostrarPausa);
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
@@ -93,7 +93,7 @@ public sealed class GameFlowController : MonoBehaviour
 
     public void PauseGame()
     {
-        if (paused || IsMatchEnded || PistolUpgradeShop.IsOpen) return;
+        if (paused || IsMatchEnded || PistolUpgradeShop.IsOpen || BossIntroduction.IsActive) return;
         previousTimeScale = Time.timeScale;
         previousAudioPause = AudioListener.pause;
         MobileControlsHUD.CancelActiveTouches();
