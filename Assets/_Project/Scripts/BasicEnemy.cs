@@ -103,11 +103,12 @@ public sealed class BasicEnemy : MonoBehaviour
 
             if (target != null && !target.IsDefeated && CanHit(target) && Time.time >= nextAttack)
             {
-                Face(target.transform.position.x - transform.position.x);
                 nextAttack = Time.time + attackCooldown;
                 animator.SetTrigger("Attack");
                 StartCoroutine(PerformAttack(target));
             }
+            else if (target == null || !CanHit(target))
+                animator.ResetTrigger("Attack");
             return;
         }
 
@@ -185,7 +186,7 @@ public sealed class BasicEnemy : MonoBehaviour
         float nearest = float.PositiveInfinity;
         foreach (PlayerActions player in ObjetivosCombate.Obtener())
         {
-            if (player == null || !player.isActiveAndEnabled || player.IsDefeated)
+            if (player == null || !player.isActiveAndEnabled || player.IsDefeated || !IsOnApproach(player))
                 continue;
             float distance = ((Vector2)(player.transform.position - transform.position)).sqrMagnitude;
             if (distance < nearest)
@@ -228,12 +229,25 @@ public sealed class BasicEnemy : MonoBehaviour
         return !health.IsDead &&
                !(attackStyle == AttackStyle.ShieldMelee && health.IsShieldBroken) &&
                victim != null && victim.isActiveAndEnabled && !victim.IsDefeated &&
+               IsOnApproach(victim) &&
                Mathf.Abs(victim.transform.position.x - transform.position.x) <= EffectiveAttackRange &&
                Mathf.Abs(victim.transform.position.y - transform.position.y) <= 1.5f;
     }
 
+    private bool IsOnApproach(PlayerActions victim)
+    {
+        if (entranceTarget == null && !hasFixedEntranceTarget) return true;
+        float destinationX = entranceTarget != null ? entranceTarget.position.x : fixedEntranceX;
+        float advance = destinationX - transform.position.x;
+        float toPlayer = victim.transform.position.x - transform.position.x;
+        // An entrance-bound enemy never turns or fires back after passing a player.
+        return advance * toPlayer >= 0f;
+    }
+
     private void FireAt(PlayerActions victim)
     {
+        // Recheck at emission too: a windup or burst may outlive the crossing.
+        if (!CanHit(victim)) return;
         Vector2 origin = sprite.bounds.center;
         Vector2 destination = victim.AimOrigin;
         Vector2 direction = destination - origin;

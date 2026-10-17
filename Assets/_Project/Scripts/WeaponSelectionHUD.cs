@@ -115,6 +115,7 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
             new Vector2(-16, -6), new Vector2(112, 30));
         ammoValue.color = ProgressionUI.Gold;
         RefreshSelection();
+        ProgressionService.Changed += RefreshAmmo;
     }
 
     private void Update()
@@ -283,6 +284,7 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
 
     private void OnDestroy()
     {
+        ProgressionService.Changed -= RefreshAmmo;
         if (active == this) active = null;
         if (weapons != null) weapons.Changed -= RefreshAmmo;
         foreach (var artwork in ammoArtwork) artwork?.Dispose();

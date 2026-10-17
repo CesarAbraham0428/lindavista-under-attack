@@ -177,7 +177,7 @@ public sealed class ProgressionRepository
             character.speedUpgrade < 0 || character.speedUpgrade >= CharacterStats.MaximumSpeedBars(cesar) ||
             character.healthConsumables < 0 || character.healthConsumables > ShopBalance.MaxHealthConsumables) return false;
         for (int i = 0; i < 3; i++)
-            if (character.ammunition[i] < 0 || character.ammunition[i] > ShopBalance.Capacity[i] ||
+            if (character.ammunition[i] < 0 || character.ammunition[i] > ShopBalance.CapacityFor(i, cesar) ||
                 character.weaponUpgrades[i] < 0 || character.weaponUpgrades[i] > WeaponDefinition.ForCharacter(i, cesar).MaxUpgrade) return false;
         return true;
     }
@@ -249,10 +249,29 @@ public sealed class ProgressionRepository
         return Commit(next);
     }
 
+    // Enemy rewards use the same saved inventory as the shop, without spending coins.
+    public bool TryGrantHealthConsumable(bool cesar)
+    {
+        if (HealthConsumables(cesar) >= ShopBalance.MaxHealthConsumables) return false;
+        var next = profile.Copy();
+        next.Character(cesar).healthConsumables++;
+        return Commit(next);
+    }
+
+    public bool TryGrantAmmo(int index, int amount, bool cesar)
+    {
+        if (index < 0 || index >= 3 || amount <= 0) return false;
+        int current = Municion(index, cesar);
+        if (current >= ShopBalance.CapacityFor(index, cesar)) return false;
+        var next = profile.Copy();
+        next.Character(cesar).ammunition[index] = current + Mathf.Min(amount, ShopBalance.CapacityFor(index, cesar) - current);
+        return Commit(next);
+    }
+
     public bool TryBuyAmmo(int index, bool cesar)
     {
         if (index < 0 || index > 2) return false;
-        if (profile.Character(cesar).ammunition[index] + ShopBalance.Pack[index] > ShopBalance.Capacity[index])
+        if (profile.Character(cesar).ammunition[index] + ShopBalance.Pack[index] > ShopBalance.CapacityFor(index, cesar))
         { LastError = "No cabe un cargador completo."; return false; }
         if (profile.coins < ShopBalance.AmmoCost[index]) { LastError = "No tienes suficientes monedas."; return false; }
         var next = profile.Copy();

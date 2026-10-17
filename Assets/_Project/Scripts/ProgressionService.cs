@@ -13,6 +13,9 @@ public static class ProgressionService
     public static int HealthConsumables(bool cesar) => Repository.HealthConsumables(cesar);
     public static bool TryBuyHealthConsumable(bool cesar) => Publish(Repository.TryBuyHealthConsumable(cesar));
     public static bool TryConsumeHealthConsumable(bool cesar) => Publish(Repository.TryConsumeHealthConsumable(cesar));
+    public static bool TryGrantHealthConsumable(bool cesar) => Publish(Repository.TryGrantHealthConsumable(cesar));
+    public static bool TryGrantAmmo(int index, int amount, bool cesar) =>
+        OwnsWeapon(index, cesar) && Publish(Repository.TryGrantAmmo(index, amount, cesar));
     public static int PistolUpgrade => WeaponUpgrade(0);
     public static string LastError => Repository.LastError;
     public static bool CanSave => Repository.CanSave;

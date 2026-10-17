@@ -86,7 +86,7 @@ public static class GrenadeProjectileChecks
             if (EditorApplication.timeSinceStartup > deadline) throw new Exception("Grenade checks timed out.");
             if (routine.MoveNext()) return;
             SessionState.SetString(Key + ".Result", "GRENADE_CHECKS_OK: " + assertions +
-                " assertions; actual ammo art, player routing, separate ammo, arc, enemy pass-through, painted and physical floors, bounce, 1.5s fuse, pause, walls, range, splash and duplicate hitboxes.");
+                " assertions; actual ammo art, player routing, separate ammo, arc, enemy pass-through, painted and physical floors, bounce, 0.5s fuse, pause, walls, range, splash and duplicate hitboxes.");
             Debug.Log(Result);
         }
         catch (Exception error)
@@ -176,7 +176,7 @@ public static class GrenadeProjectileChecks
         int steps = 0;
         while (!grenade.HasLanded && steps++ < 200) Step(grenade);
         Check(grenade.HasLanded && steps < 200, "grenade reaches painted floor without floor collider");
-        Check(Mathf.Abs(grenade.FuseRemaining - 1.5f) < .001f, "1.5 second fuse starts at first floor contact");
+        Check(Mathf.Abs(grenade.FuseRemaining - 0.5f) < .001f, "0.5 second fuse starts at first floor contact");
         Check(touching.CurrentHealth == 10 && Object.FindObjectsByType<RocketImpact>(FindObjectsSortMode.None).Length == 0,
             "flight and first floor contact cause no damage or explosion");
         float landingY = grenade.transform.position.y;

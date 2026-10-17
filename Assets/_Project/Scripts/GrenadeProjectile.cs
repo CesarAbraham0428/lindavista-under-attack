@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>Ballistic grenade: one small bounce, then a fuse timed from its first floor contact.</summary>
 public sealed class GrenadeProjectile : MonoBehaviour
 {
-    public const float FuseDuration = 1.5f;
+    public const float FuseDuration = 0.5f;
     public const float Gravity = 18f;
     public const float BodyLength = 0.72f;
     private static Sprite shadowSprite;

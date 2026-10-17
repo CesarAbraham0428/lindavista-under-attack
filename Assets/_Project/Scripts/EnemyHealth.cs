@@ -83,6 +83,18 @@ public sealed class EnemyHealth : MonoBehaviour
                animator.GetNextAnimatorStateInfo(0).IsName("Enemy3_HeavyPunch");
     }
 
+    /// <summary>Blast pressure damages through the shield regardless of impact direction or firing cadence.</summary>
+    public void TakeExplosionDamage(int amount)
+    {
+        if (IsDead || amount <= 0 || GameFlowController.IsMatchEnded)
+            return;
+
+        consecutiveShieldHits = 0;
+        if (shieldBlocksFront)
+            shieldBrokenUntil = Time.time + shieldBreakDuration;
+        TakeDamage(amount);
+    }
+
     public void TakeDamage(int amount)
     {
         if (IsDead || amount <= 0 || GameFlowController.IsMatchEnded)

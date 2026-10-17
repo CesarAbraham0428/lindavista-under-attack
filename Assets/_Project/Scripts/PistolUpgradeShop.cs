@@ -48,6 +48,24 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         coin.preserveAspect = true;
         ProgressionUI.Percent(coin.rectTransform, l, b, r, t);
     }
+    private static Text Currency(Transform parent, string name, int size, float l, float b, float r, float t)
+    {
+        var row = ProgressionUI.Image(parent, name, Color.clear);
+        ProgressionUI.Percent(row.rectTransform, l, b, r, t);
+        var layout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
+        layout.childAlignment = TextAnchor.MiddleCenter;
+        layout.childControlWidth = layout.childControlHeight = true;
+        layout.childForceExpandWidth = layout.childForceExpandHeight = false;
+        layout.spacing = size * .2f;
+        Coin(row.transform, 0, 0, 1, 1);
+        var icon = row.transform.Find("Coin").gameObject.AddComponent<LayoutElement>();
+        icon.preferredWidth = icon.preferredHeight = size * 1.2f;
+        var value = Label(row.transform, "0", size, 0, 0, 1, 1);
+        value.gameObject.name = "Cost";
+        value.alignment = TextAnchor.MiddleCenter;
+        value.horizontalOverflow = HorizontalWrapMode.Overflow;
+        return value;
+    }
     private static Button Buy(Transform parent, string text, UnityEngine.Events.UnityAction action,
         float l, float b, float r, float t, bool purchase = false, bool gold = false)
     {
@@ -60,11 +78,7 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         if (purchase)
         {
             ProgressionUI.Percent(label.rectTransform, .04f, .45f, .96f, .96f);
-            var price = ProgressionUI.Image(button.transform, "Price", Color.clear);
-            ProgressionUI.Percent(price.rectTransform, .16f, .06f, .84f, .44f);
-            Coin(price.transform, .08f, .04f, .30f, .96f);
-            var value = Label(price.transform, "Cost", 30, .32f, 0, .94f, 1);
-            value.gameObject.name = "Cost";
+            Currency(button.transform, "Price", 30, .16f, .06f, .84f, .44f);
         }
         return button;
     }
@@ -100,8 +114,7 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         heading.color = ProgressionUI.Gold;
         heading.alignment = TextAnchor.MiddleCenter;
         var purse = Frame(panel.transform, "Wallet frame", new Color(.13f, .16f, .12f), .74f, .895f, .975f, .978f);
-        Coin(purse.transform, .055f, .12f, .23f, .88f);
-        wallet = Label(purse.transform, "", 42, .27f, .08f, .95f, .92f);
+        wallet = Currency(purse.transform, "Balance", 42, .055f, .08f, .945f, .92f);
         var character = Frame(panel.transform, "Character", new Color(.18f, .24f, .19f), .025f, .185f, .285f, .86f);
         Frame(character.transform, "Portrait backdrop", new Color(.27f, .34f, .25f), .025f, .44f, .975f, .965f);
         characterTabs[0] = Buy(character.transform, "MARCO", () => SelectCharacter(false), .045f, .87f, .49f, .975f);
@@ -174,7 +187,7 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         ProgressionUI.Percent(pill.rectTransform, .01f, .06f, .15f, .94f);
         Label(consumables.transform, "PASTILLAS · VIDA +1", 34, .17f, .53f, .65f, .94f);
         consumableCount = Label(consumables.transform, "", 29, .17f, .07f, .65f, .52f);
-        consumableBuy = Buy(consumables.transform, "COMPRAR 1 PASTILLA",
+        consumableBuy = Buy(consumables.transform, "COMPRAR PASTILLA",
             () => Result(ProgressionService.TryBuyHealthConsumable(cesar)), .68f, .09f, .98f, .91f, true);
         feedback = Label(panel.transform, "Compras e inventario por personaje. Cada pastilla recupera 1 de vida.", 27, .305f, .085f, .975f, .125f);
         Buy(panel.transform, "VOLVER", () => Destroy(gameObject), .025f, .025f, .25f, .115f);
@@ -222,8 +235,8 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         PurchaseState(healthBuy, hc > 0 ? "MEJORAR VIDA +1" : "VIDA AL MÁXIMO", hc, true);
         int pills = ProgressionService.HealthConsumables(cesar);
         bool roomForPill = pills < ShopBalance.MaxHealthConsumables;
-        consumableCount.text = "INVENTARIO " + pills + " / " + ShopBalance.MaxHealthConsumables + "  ·  " + (cesar ? "César" : "Marco");
-        PurchaseState(consumableBuy, roomForPill ? "COMPRAR 1 PASTILLA" : "LÍMITE: 10 PASTILLAS",
+        consumableCount.text = pills + " de " + ShopBalance.MaxHealthConsumables;
+        PurchaseState(consumableBuy, roomForPill ? "COMPRAR PASTILLA" : "LÍMITE: 10 PASTILLAS",
             roomForPill ? ShopBalance.HealthConsumableCost : 0, roomForPill);
         var art = CharacterWeapons.Artwork(cesar);
         for (int i = 0; i < 3; i++)
@@ -233,10 +246,11 @@ public sealed class PistolUpgradeShop : MonoBehaviour
             int amount = ProgressionService.Ammo(i, cesar);
             weaponNames[i].text = CharacterWeapons.Name(i, cesar);
             weaponIcons[i].sprite = art != null ? art.IconAt(i) : ProgressionVisuals.Pistol;
-            stats[i].text = "Munición " + amount + "/" + ShopBalance.Capacity[i] + "  ·  Daño " + definition.DamageAt(level) +
+            int capacity = ShopBalance.CapacityFor(i, cesar);
+            stats[i].text = "Munición " + amount + "/" + capacity + "  ·  Daño " + definition.DamageAt(level) +
                 (definition.IsPiercing ? "  ·  Atraviesa " + definition.TargetsAt(level) : "");
-            ammoFill[i].fillAmount = Mathf.Clamp01((float)amount / ShopBalance.Capacity[i]);
-            bool fits = amount + ShopBalance.Pack[i] <= ShopBalance.Capacity[i];
+            ammoFill[i].fillAmount = Mathf.Clamp01((float)amount / capacity);
+            bool fits = amount + ShopBalance.Pack[i] <= capacity;
             PurchaseState(ammo[i], fits ? "MUNICIÓN +" + ShopBalance.Pack[i] : "SIN ESPACIO", ShopBalance.AmmoCost[i], fits);
             PurchaseState(upgrade[i], cost > 0 ? "DAÑO +1" : "MEJORA MÁXIMA", cost, true);
             int tiers = definition.MaxUpgrade + 1;
@@ -337,6 +351,13 @@ public sealed class PistolUpgradeShop : MonoBehaviour
     {
         texto.fontSize = texto.resizeTextMaxSize = tamano;
         texto.resizeTextMinSize = 24;
+        var currency = texto.transform.parent.GetComponent<HorizontalLayoutGroup>();
+        if (currency != null)
+        {
+            currency.spacing = tamano * .2f;
+            var icon = currency.transform.Find("Coin").GetComponent<LayoutElement>();
+            icon.preferredWidth = icon.preferredHeight = tamano * 1.2f;
+        }
     }
 
     private static void ColocarFilaCompacta(RectTransform fila, float desdeArriba, float alto)

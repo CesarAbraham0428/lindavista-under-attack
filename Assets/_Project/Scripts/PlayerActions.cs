@@ -359,26 +359,42 @@ public class PlayerActions : MonoBehaviour
         if (weapons.Magazine == 0) { TryReload(); return; }
         if (!weapons.CanFire) return;
 
+        Vector2 aimOrigin = AimOrigin;
         // Evaluate the firing sprite before locating its barrel. A trigger alone
         // blends for 80 ms and would emit while the previous idle/walk pose is visible.
         if (animator != null && animator.runtimeAnimatorController != null)
         {
             ResetFireTriggers();
-            // The sniper sheet starts with three raising poses. Emit on its
-            // fourth frame, where the rifle is aimed and the drawn flash appears.
-            float firingPoseTime = weapons.IsCesar && weapons.Definition.IsPiercing ? 0.38f : 0f;
+            // Cesar's shotgun starts lowered: its third frame is the horizontal
+            // firing pose. The sniper is ready on its fourth frame.
+            float firingPoseTime = weapons.IsCesar
+                ? weapons.EquippedWeapon == 0 ? 0.25f : weapons.Definition.IsPiercing ? 0.38f : 0f
+                : 0f;
             animator.Play(estadoDisparo, 0, firingPoseTime);
             animator.Update(0f);
         }
         Vector2 spawnPosition = PlayerMuzzle.WorldPosition(spriteRenderer, weapons.EquippedWeapon);
         Vector2 shotDirection = AimTarget - spawnPosition;
-        // Mouse shots pass through the crosshair and continue to the camera edge.
+        // Distant mouse shots pass through the crosshair and continue to the camera edge.
         // A pointer behind the barrel must not reverse the intended direction;
         // touch aiming already supplies a direction without a world-space target.
         bool reversesHorizontalAim = Mathf.Abs(AimDirection.x) > 0.0001f && shotDirection.x * AimDirection.x < 0f;
         if (touchAimActive || shotDirection.sqrMagnitude < 0.0001f ||
             Vector2.Dot(shotDirection, AimDirection) <= 0f || reversesHorizontalAim)
             shotDirection = AimDirection;
+        else
+        {
+            // A nearby cursor just beyond the barrel otherwise turns a horizontal
+            // aim almost vertical. This is especially visible when firing left,
+            // where the camera leaves less space behind the player. Keep nearby
+            // shots parallel to the player's aim, then ease into precise distant aim.
+            float muzzleReach = Vector2.Distance(aimOrigin, spawnPosition);
+            float pointerDistance = Vector2.Distance(aimOrigin, AimTarget);
+            float preciseAim = muzzleReach > 0.0001f
+                ? Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(muzzleReach * 2f, muzzleReach * 4f, pointerDistance))
+                : 1f;
+            shotDirection = Vector2.Lerp(AimDirection, shotDirection.normalized, preciseAim);
+        }
         weapons.TryFire(spawnPosition, shotDirection.normalized, transform);
     }
 

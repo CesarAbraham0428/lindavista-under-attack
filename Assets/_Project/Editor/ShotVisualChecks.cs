@@ -79,13 +79,13 @@ public static class ShotVisualChecks
                     var shot = shots[0];
                     created.Add(shot);
                     string weaponName = CharacterWeapons.State(weapon, cesar);
-                    string expectedFrame = character + "_" + weaponName + (cesar ? "_Fire_" + (weapon == 1 ? 3 : 0) : "_Fire_8f_0");
+                    string expectedFrame = character + "_" + weaponName + (cesar ? "_Fire_" + (weapon == 0 ? 2 : weapon == 1 ? 3 : 0) : "_Fire_8f_0");
                     Require(renderer.sprite.name == expectedFrame,
                         "Projectile uses the current weapon firing sprite, including after switching weapons");
                     Require(renderer.flipX == (aim.x < 0), "Firing sprite faces the target");
-                    // Independent measured barrel coordinates for the first firing frame.
+                    // Independent measured barrel coordinates for each selected firing pose.
                     Vector2 pixel = cesar ?
-                        (weapon == 0 ? new Vector2(325, 361) : weapon == 1 ? new Vector2(322, 224) : new Vector2(373, 182)) :
+                        (weapon == 0 ? new Vector2(334, 228) : weapon == 1 ? new Vector2(322, 224) : new Vector2(373, 182)) :
                         (weapon == 0 ? new Vector2(374, 119) : weapon == 1 ? new Vector2(371, 139) : new Vector2(354, 145));
                     Sprite sprite = renderer.sprite;
                     Vector2 local = (Vector2.Scale(new Vector2(pixel.x / 384f, 1f - pixel.y / 512f), sprite.rect.size) -

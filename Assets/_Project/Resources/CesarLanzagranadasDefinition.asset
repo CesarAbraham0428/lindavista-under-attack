@@ -17,6 +17,6 @@ MonoBehaviour:
   projectileSpeed: 14
   range: 18
   projectileRadius: 0.2
-  magazineSize: 2
+  magazineSize: 4
   reloadDuration: 2
   upgradeCosts: 3c00000078000000c80000002c010000c2010000

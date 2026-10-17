@@ -88,6 +88,9 @@ public sealed class CombatProjectile : MonoBehaviour
         else
         {
             ShotVisual.Attach(shot, projectile.weaponIndex);
+            // Cesar's shotgun shell is twice as large; collision and muzzle stay unchanged.
+            if (projectile.weaponIndex == 0 && weapon != null && weapon.IsCesar)
+                shot.transform.localScale *= 2f;
             ShotVisual.Muzzle(origin, projectile.direction, projectile.weaponIndex);
         }
 
@@ -271,8 +274,13 @@ public sealed class CombatProjectile : MonoBehaviour
     private void ApplyImpactDamage(Collider2D hitCollider, Vector2 position)
     {
         EnemyHealth direct = hitCollider != null ? hitCollider.GetComponentInParent<EnemyHealth>() : null;
-        direct?.TakeDamage(damage, direction);
-        if (weaponIndex != 2) return;
+        if (weaponIndex != 2)
+        {
+            direct?.TakeDamage(damage, direction);
+            return;
+        }
+
+        direct?.TakeExplosionDamage(damage);
 
         ApplySplashDamage(position, damage, direction, owner, direct);
     }
@@ -291,8 +299,7 @@ public sealed class CombatProjectile : MonoBehaviour
             Vector2 target = nearby.ClosestPoint(position);
             if (IsSplashBlocked(position, target, owner)) continue;
             damaged.Add(enemy);
-            Vector2 outward = (Vector2)nearby.bounds.center - position;
-            enemy.TakeDamage(damage, outward.sqrMagnitude > 0.0001f ? outward.normalized : direction);
+            enemy.TakeExplosionDamage(damage);
         }
     }
 
