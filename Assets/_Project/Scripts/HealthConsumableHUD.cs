@@ -24,7 +24,7 @@ public sealed class HealthConsumableHUD : MonoBehaviour
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if ((scene.name == "Gameplay" || scene.name == "Testing") && active == null)
+        if (scene.name == "Gameplay" && active == null)
             new GameObject("Health Consumable HUD").AddComponent<HealthConsumableHUD>();
     }
 

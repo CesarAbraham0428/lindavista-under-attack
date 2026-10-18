@@ -33,7 +33,9 @@ El calentamiento de proyectiles, trazadores, explosiones y números de daño se 
 
 La herramienta conserva la resolución efectiva y comprueba las imágenes originales y el YAML fuera del bloque Android, incluidos GUID, recortes de sprites, filtrado, valores predeterminados y ajustes de otras plataformas. También se compararon independientemente los 49 metadatos contra Git: ningún ajuste ajeno a Android cambió, salvo espacios finales de serialización. Si una comprobación de preservación falla, la herramienta intenta restaurar los metadatos y conserva el diagnóstico si Windows impide escribirlos.
 
-`Boss_Base.png` queda excluido por completo. También quedan excluidos `SniperBloodImpact`, `SniperTracer` y `ShotProjectileAtlas`: el código actual consulta sus píxeles para calcular recortes y todavía necesita `Read/Write`. Cambiar esa parte requeriría preparar previamente los rectángulos de recorte como datos de importación.
+`Boss_Base.png` queda excluido por completo.
+
+**Corrección posterior (revisión de rendimiento del mismo día):** ETC2 solo comprime dimensiones múltiplo de 4, y 24 de esas 49 texturas seguían importándose como RGBA32. `AndroidTextureSetup` usa ahora ASTC 4×4 en esos casos y verifica el formato realmente importado. Cubre 100 texturas: 27 en ETC2 y 73 en ASTC. `SniperBloodImpact`, `SniperTracer` y `ShotProjectileAtlas` ya no necesitan `Read/Write`, porque sus recortes se hornean como datos de importación. Detalle y mediciones: [Revisión de rendimiento](rendimiento-2026-10-17.md).
 
 La auditoría de metadatos encontró las dos músicas con carga en streaming. Los efectos de armas son clips cortos; no se identificó música larga configurada para descomprimirse completa al cargar. El ahorro teórico de las texturas no equivale a memoria residente medida, porque depende de los recursos cargados en cada pantalla.
 

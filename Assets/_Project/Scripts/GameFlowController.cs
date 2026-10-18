@@ -57,7 +57,7 @@ public sealed class GameFlowController : MonoBehaviour
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name != "Gameplay" && scene.name != "Testing")
+        if (scene.name != "Gameplay")
             return;
 
         if (active == null || active.gameObject.scene != scene)
@@ -252,7 +252,7 @@ public sealed class GameFlowController : MonoBehaviour
             return active;
 
         Scene scene = SceneManager.GetActiveScene();
-        if (scene.name != "Gameplay" && scene.name != "Testing")
+        if (scene.name != "Gameplay")
             return null;
 
         return new GameObject("Game Flow Controller").AddComponent<GameFlowController>();

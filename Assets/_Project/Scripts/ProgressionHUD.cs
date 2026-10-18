@@ -26,7 +26,7 @@ public sealed class ProgressionHUD : MonoBehaviour
     }
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if ((scene.name == "Gameplay" || scene.name == "Testing") && active == null)
+        if (scene.name == "Gameplay" && active == null)
             new GameObject("Progression HUD").AddComponent<ProgressionHUD>();
     }
     private void Awake()

@@ -44,7 +44,7 @@ public sealed class MobileControlsHUD : MonoBehaviour
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if ((scene.name != "Testing" && scene.name != "Gameplay") ||
+        if (scene.name != "Gameplay" ||
             (!Application.isMobilePlatform && !Application.isEditor))
             return;
 

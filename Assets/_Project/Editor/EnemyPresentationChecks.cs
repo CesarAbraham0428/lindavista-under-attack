@@ -114,19 +114,6 @@ public static class EnemyPresentationChecks
                     Check(Mathf.Abs(Foot(frame) - Foot(idle)) < .0001f, "walk has no vertical foot drift");
                 }
             }
-            var scene = EditorSceneManager.OpenPreviewScene("Assets/_Project/Scenes/Testing.unity");
-            try
-            {
-                var enemies = scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<BasicEnemy>(true)).ToArray();
-                Check(enemies.Length == 4, "four Testing actors retained");
-                foreach (var enemy in enemies)
-                {
-                    int type = int.Parse(enemy.name.Substring(5, 1));
-                    Check(Mathf.Abs(enemy.transform.TransformPoint(new Vector3(0, Foot(Frames(type, "Idle")[0]), 0)).y - GroundY) < .0001f,
-                        "Testing actor shares visible ground");
-                }
-            }
-            finally { EditorSceneManager.ClosePreviewScene(scene); }
             return "ENEMY_PRESENTATION_OK: " + checks + " assertions; four sizes, 32 walk poses, visible soles and draw order.";
         }
         finally { sources.Clear(); }

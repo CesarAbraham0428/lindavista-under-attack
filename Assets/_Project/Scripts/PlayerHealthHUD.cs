@@ -43,7 +43,7 @@ public sealed class PlayerHealthHUD : MonoBehaviour
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if ((scene.name != "Testing" && scene.name != "Gameplay") || active != null)
+        if (scene.name != "Gameplay" || active != null)
             return;
 
         new GameObject("Player Health HUD").AddComponent<PlayerHealthHUD>();

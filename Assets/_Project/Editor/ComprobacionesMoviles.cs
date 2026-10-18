@@ -18,7 +18,7 @@ public static class ComprobacionesMoviles
     {
         Exigir(EditorApplication.isPlaying && !GameFlowController.IsPaused &&
             !GameFlowController.IsMatchEnded && !PistolUpgradeShop.IsOpen && !BossIntroduction.IsActive,
-            "Abrir Gameplay o Testing en Play Mode, después de la introducción.");
+            "Abrir Gameplay en Play Mode, después de la introducción.");
         var hud = UnityEngine.Object.FindFirstObjectByType<MobileControlsHUD>();
         Exigir(hud != null, "Existe HUD táctil.");
         Exigir(hud.PuedeRecibirEntrada, "Jugador preparado y controles desbloqueados.");

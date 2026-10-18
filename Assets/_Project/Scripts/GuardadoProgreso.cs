@@ -13,7 +13,9 @@ public sealed class GuardadoProgreso : MonoBehaviour
     {
         if (Time.unscaledTime < proximoGuardado) return;
         proximoGuardado = Time.unscaledTime + 1f;
-        ProgressionService.GuardarPendientes();
+        // During combat the periodic write used to block a frame every second (~24 ms in the editor).
+        // Suspension, quitting and scene changes below still wait until the data is on disk.
+        ProgressionService.GuardarPendientesEnSegundoPlano();
     }
 
     private void AlDescargarEscena(Scene escena) { ProgressionService.GuardarPendientes(); }

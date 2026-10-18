@@ -12,6 +12,8 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
     private readonly Image[] icons = new Image[3];
     private readonly Button[] buttons = new Button[3];
     private readonly Text[] ammoCounts = new Text[3];
+    private readonly int[] reservasMostradas = { int.MinValue, int.MinValue, int.MinValue };
+    private int cargadorMostrado = int.MinValue;
     private readonly System.Collections.Generic.List<Image> cartridges = new System.Collections.Generic.List<Image>();
     private int capacidadCartuchos;
     private readonly HUDSpriteVariants[] ammoArtwork = new HUDSpriteVariants[3];
@@ -45,7 +47,7 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if ((scene.name == "Testing" || scene.name == "Gameplay") && active == null)
+        if (scene.name == "Gameplay" && active == null)
             new GameObject("Weapon Selection HUD").AddComponent<WeaponSelectionHUD>();
     }
 
@@ -205,8 +207,14 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
             return;
         }
         string name = CharacterWeapons.Name(selected, weapons != null ? weapons.IsCesar : CharacterWeapons.SelectedCesar);
+        // Runs twice per shot (weapon and inventory events): format text only when a value changes.
         for (int i = 0; i < ammoCounts.Length; i++)
-            ammoCounts[i].text = weapons != null ? ProgressionService.Ammo(i, weapons.IsCesar).ToString() : "—";
+        {
+            int reserve = weapons != null ? ProgressionService.Ammo(i, weapons.IsCesar) : -1;
+            if (reserve == reservasMostradas[i]) continue;
+            reservasMostradas[i] = reserve;
+            ammoCounts[i].text = reserve >= 0 ? reserve.ToString() : "—";
+        }
 
         bool available = weapons != null && weapons.EquippedWeapon == selected;
         int capacity = available ? Mathf.Max(1, weapons.Definition.MagazineSize) : 0;
@@ -224,7 +232,12 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
             weapons.IsReloading ? "RECARGANDO…" : remaining == 0 ? "SIN BALAS · RECARGA" : name;
         ammoStatus.color = available && (weapons.IsReloading || remaining == 0)
             ? ProgressionUI.Gold : new Color(0.96f, 0.93f, 0.85f);
-        ammoValue.text = available ? remaining + " / " + capacity : "—";
+        int magazineKey = available ? remaining * 1000 + capacity : -1;
+        if (magazineKey != cargadorMostrado)
+        {
+            cargadorMostrado = magazineKey;
+            ammoValue.text = available ? remaining + " / " + capacity : "—";
+        }
     }
 
     private void BuildCartridges(int capacity)

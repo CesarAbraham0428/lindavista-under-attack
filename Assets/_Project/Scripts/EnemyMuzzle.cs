@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>Barrel sockets measured in the imported enemy firing sprite rectangles.</summary>
@@ -65,16 +66,27 @@ public static class EnemyMuzzle
         return true;
     }
 
+    // Line of sight is checked every frame per ranged enemy and Sprite.name allocates a string
+    // per read, so each sprite's frame index is parsed once per prefix. Keyed by instance ID so
+    // the cache does not keep enemy sheets of a previous level resident.
+    private static readonly Dictionary<(int, string), int> frames = new();
+
     private static bool TryFrame(Sprite sprite, string prefix, out int frame)
     {
         frame = -1;
         if (sprite == null) return false;
-        string name = sprite.name;
-        if (name.Length != prefix.Length + 1 ||
-            !name.StartsWith(prefix, StringComparison.Ordinal)) return false;
-        int index = name[prefix.Length] - '0';
-        if (index < 0 || index >= 8) return false;
-        frame = index;
-        return true;
+        var key = (sprite.GetInstanceID(), prefix);
+        if (!frames.TryGetValue(key, out frame))
+        {
+            frame = -1;
+            string name = sprite.name;
+            if (name.Length == prefix.Length + 1 && name.StartsWith(prefix, StringComparison.Ordinal))
+            {
+                int index = name[prefix.Length] - '0';
+                if (index >= 0 && index < 8) frame = index;
+            }
+            frames[key] = frame;
+        }
+        return frame >= 0;
     }
 }

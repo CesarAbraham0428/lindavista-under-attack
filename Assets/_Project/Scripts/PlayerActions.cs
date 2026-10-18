@@ -1,8 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerActions : MonoBehaviour
 {
+    // Bars of the desktop crosshair in screen pixels around the aim point (formerly drawn with IMGUI).
+    private static readonly Rect[] BarrasMira =
+        { new Rect(-1f, 3f, 2f, 7f), new Rect(-1f, -10f, 2f, 7f), new Rect(-10f, -1f, 7f, 2f), new Rect(3f, -1f, 7f, 2f) };
     [Header("Mouse aim")]
     [SerializeField, Min(0.1f)] private float maxAimDistance = 18f;
 
@@ -31,6 +35,7 @@ public class PlayerActions : MonoBehaviour
     private float duracionPastilla;
     private float tiempoPastilla;
     private bool pastillaAplicada;
+    private RectTransform mira;
 
     public bool IsUsingHealthConsumable { get; private set; }
     public bool CanUseHealthConsumable => CanReceiveCombatInput &&
@@ -121,15 +126,6 @@ public class PlayerActions : MonoBehaviour
 
             if (Keyboard.current.rKey.wasPressedThisFrame)
                 TryReload();
-
-            if (gameObject.scene.name == "Testing" && Keyboard.current.qKey.wasPressedThisFrame)
-                TakeDamage(1);
-
-            if (gameObject.scene.name == "Testing" && Keyboard.current.eKey.wasPressedThisFrame)
-            {
-                TakeDamage(MaxHealth);
-                return;
-            }
         }
 
         bool mouseFireHeld = !Application.isMobilePlatform &&
@@ -278,13 +274,23 @@ public class PlayerActions : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (mira != null) Destroy(mira.root.gameObject);
         if (weapons != null) weapons.Changed -= OnWeaponChanged;
         if (health == null) return;
         health.Damaged -= OnDamaged;
         health.Died -= Defeat;
     }
 
+    private void OnEnable() => Canvas.willRenderCanvases += ActualizarMira;
+
     private void OnDisable()
+    {
+        Canvas.willRenderCanvases -= ActualizarMira;
+        if (mira != null) mira.gameObject.SetActive(false);
+        CancelarEntrada();
+    }
+
+    private void CancelarEntrada()
     {
         CancelHealthConsumable();
         fireRequested = false;
@@ -294,12 +300,12 @@ public class PlayerActions : MonoBehaviour
 
     private void OnApplicationFocus(bool tieneFoco)
     {
-        if (!tieneFoco) OnDisable();
+        if (!tieneFoco) CancelarEntrada();
     }
 
     private void OnApplicationPause(bool paused)
     {
-        if (paused) OnDisable();
+        if (paused) CancelarEntrada();
     }
 
     private void Defeat()
@@ -465,24 +471,46 @@ public class PlayerActions : MonoBehaviour
         AimDirection = fromPlayer.normalized;
     }
 
-    private void OnGUI()
+    // An OnGUI method made Unity run IMGUI every frame on every platform (~370 B of garbage and
+    // ~0.2 ms per frame), even on Android where the crosshair is never shown. The same bars are
+    // now a tiny overlay canvas, created only when the desktop crosshair is first needed.
+    // willRenderCanvases runs after every LateUpdate, so the final camera position is used.
+    private void ActualizarMira()
     {
-        if (inputLocked || GameFlowController.IsPaused || defeated || aimCamera == null || !hasAimInViewport || MobileControlsHUD.IsVisible)
-            return;
+        bool visible = !(inputLocked || GameFlowController.IsPaused || defeated || aimCamera == null ||
+            !hasAimInViewport || MobileControlsHUD.IsVisible);
+        Vector3 screen = visible ? aimCamera.WorldToScreenPoint(AimTarget) : Vector3.zero;
+        visible &= screen.z > 0f;
+        if (mira == null)
+        {
+            if (!visible) return;
+            mira = CrearMira();
+        }
+        if (mira.gameObject.activeSelf != visible) mira.gameObject.SetActive(visible);
+        if (visible) mira.anchoredPosition = new Vector2(screen.x, screen.y);
+    }
 
-        Vector3 screen = aimCamera.WorldToScreenPoint(AimTarget);
-        if (screen.z <= 0f)
-            return;
-
-        float x = screen.x;
-        float y = Screen.height - screen.y;
-        Color previousColor = GUI.color;
-        GUI.color = Color.yellow;
-        GUI.DrawTexture(new Rect(x - 1f, y - 10f, 2f, 7f), Texture2D.whiteTexture);
-        GUI.DrawTexture(new Rect(x - 1f, y + 3f, 2f, 7f), Texture2D.whiteTexture);
-        GUI.DrawTexture(new Rect(x - 10f, y - 1f, 7f, 2f), Texture2D.whiteTexture);
-        GUI.DrawTexture(new Rect(x + 3f, y - 1f, 7f, 2f), Texture2D.whiteTexture);
-        GUI.color = previousColor;
+    private static RectTransform CrearMira()
+    {
+        var lienzo = new GameObject("Desktop Crosshair Canvas", typeof(Canvas)).GetComponent<Canvas>();
+        lienzo.renderMode = RenderMode.ScreenSpaceOverlay;
+        lienzo.sortingOrder = short.MaxValue; // IMGUI was drawn above every canvas.
+        var centro = new GameObject("Crosshair", typeof(RectTransform)).GetComponent<RectTransform>();
+        centro.SetParent(lienzo.transform, false);
+        centro.anchorMin = centro.anchorMax = centro.pivot = Vector2.zero;
+        centro.sizeDelta = Vector2.zero;
+        foreach (Rect barra in BarrasMira)
+        {
+            var imagen = new GameObject("Bar", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image)).GetComponent<Image>();
+            imagen.color = Color.yellow;
+            imagen.raycastTarget = false;
+            RectTransform rect = imagen.rectTransform;
+            rect.SetParent(centro, false);
+            rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
+            rect.anchoredPosition = barra.position;
+            rect.sizeDelta = barra.size;
+        }
+        return centro;
     }
 
     private bool IsBusyExceptFire()

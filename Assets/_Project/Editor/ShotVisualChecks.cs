@@ -311,7 +311,7 @@ public static class ShotVisualChecks
         try
         {
             var atlas = Resources.Load<Texture2D>("ShotProjectileAtlas");
-            Require(atlas != null && atlas.isReadable, "Readable projectile atlas is included in Resources");
+            Require(atlas != null && !atlas.isReadable, "Projectile atlas ships without a CPU copy (baked sprite rectangles)");
             for (int i = 0; i < 4; i++)
             {
                 Sprite sprite = ShotVisual.GetSprite(i);

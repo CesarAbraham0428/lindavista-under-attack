@@ -1,6 +1,6 @@
 # Controles
 
-El juego usa el paquete **Input System** de Unity. Los controles están disponibles en `Gameplay` y `Testing`; la introducción, la pausa y el resultado bloquean las acciones del personaje.
+El juego usa el paquete **Input System** de Unity. Los controles están disponibles en `Gameplay`; la introducción, la pausa y el resultado bloquean las acciones del personaje.
 
 ## Teclado y mouse
 
@@ -15,8 +15,6 @@ El juego usa el paquete **Input System** de Unity. Los controles están disponib
 | Usar pastilla | `H` o botón de pastillas | Reproduce la animación de consumo y recupera exactamente 1 punto de vida al tragar. |
 | Pausar / continuar | `Esc` o botón **PAUSA** | Abre la pausa. Tocar el letrero **PAUSA** continúa la partida. |
 | Previsualizar controles móviles | `F9` | Solo en el Editor: muestra u oculta los controles táctiles. |
-| Probar daño | `Q` | Solo en `Testing`: intenta quitar 1 punto de vida. |
-| Forzar derrota | `E` | Solo en `Testing`: intenta quitar la vida restante, respetando la protección temporal. |
 
 El puntero de apuntado es una pequeña cruz amarilla. El clic solo dispara cuando el cursor está dentro del viewport del juego y fuera de la interfaz. Cuando se muestra el HUD táctil, el disparo con mouse se desactiva para que el clic en los controles no genere un segundo disparo. La dirección de apuntado usa la distancia configurada por arma; los proyectiles emitidos dentro de la cámara pueden recorrer la vista actual. Las granadas mantienen su vuelo y detonación propios.
 

@@ -91,6 +91,11 @@ public sealed class SelectedLevelEnvironment : MonoBehaviour
             SetDamageLevelVisibility(damageLevels, "Daño_Nivel_4", isLevelFour);
         }
 
+        // Only the selected sky body is drawn; the other references would keep their textures loaded.
+        Sprite celestialSprite = isLevelTwo ? sunsetSunSprite
+            : isLevelThree ? nightMoonSprite : isLevelFour ? threeAmMoonSprite : null;
+        sunsetSunSprite = nightMoonSprite = threeAmMoonSprite = null;
+
         if (!isLevelTwo && !isLevelThree && !isLevelFour)
             return;
 
@@ -129,9 +134,6 @@ public sealed class SelectedLevelEnvironment : MonoBehaviour
             }
         }
 
-        Sprite celestialSprite = isLevelTwo
-            ? sunsetSunSprite
-            : isLevelThree ? nightMoonSprite : threeAmMoonSprite;
         if (celestialSprite == null)
             return;
 
@@ -146,8 +148,10 @@ public sealed class SelectedLevelEnvironment : MonoBehaviour
     private static void SetDamageLevelVisibility(Transform damageLevels, string objectName, bool isVisible)
     {
         Transform damageLevel = damageLevels.Find(objectName);
-        if (damageLevel != null)
-            damageLevel.gameObject.SetActive(isVisible);
+        if (damageLevel == null) return;
+        // Hidden decorations of other levels would keep their graffiti textures resident.
+        if (isVisible) damageLevel.gameObject.SetActive(true);
+        else Destroy(damageLevel.gameObject);
     }
 
     private void CreateGradientBackground(

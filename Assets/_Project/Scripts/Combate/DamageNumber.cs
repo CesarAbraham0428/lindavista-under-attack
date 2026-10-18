@@ -122,7 +122,9 @@ public sealed class DamageNumber : MonoBehaviour
         float t = Mathf.Clamp01(age / Lifetime);
         transform.localPosition = new Vector3(point.x + horizontalOffset, point.y + 16f + 40f * t, 0f);
         transform.localScale = Vector3.one * (1f + .06f * (1f - t));
-        label.color = new Color(Tint.r, Tint.g, Tint.b, 1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(.35f, 1f, t)));
+        // CanvasRenderer alpha multiplies the text and its outline exactly like the colour alpha
+        // did, but only re-batches the canvas instead of regenerating the outlined text mesh.
+        label.canvasRenderer.SetAlpha(1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(.35f, 1f, t)));
     }
 
     private void Release()

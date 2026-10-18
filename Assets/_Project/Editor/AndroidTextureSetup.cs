@@ -5,7 +5,12 @@ using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
 
-/// <summary>Android-only GPU compression. Original images, sprite slices and other platforms are preserved.</summary>
+/// <summary>
+/// Android-only GPU compression. Original images, sprite slices and other platforms are preserved.
+/// ETC2 can only encode textures whose imported width and height are multiples of 4; Unity silently
+/// keeps any other size as uncompressed RGBA32. Those textures use ASTC 4x4 instead: the same 8 bits
+/// per pixel as ETC2 RGBA8, without the block-size restriction. Devices without ASTC decompress at load.
+/// </summary>
 public static class AndroidTextureSetup
 {
     private const string Root = "Assets/_Project";
@@ -28,7 +33,7 @@ public static class AndroidTextureSetup
             this.path = path;
             sourceHash = HashFile(path);
             metadata = File.ReadAllBytes(path + ".meta");
-            metadataWithoutAndroid = RemoveAndroidSettings(File.ReadAllText(path + ".meta"));
+            metadataWithoutAndroid = RemovePlatformSettings(File.ReadAllText(path + ".meta"), "Android");
             var android = importer.GetPlatformTextureSettings("Android");
             maximumSize = android.overridden ? android.maxTextureSize : importer.maxTextureSize;
         }
@@ -45,7 +50,7 @@ public static class AndroidTextureSetup
             }
             string current = File.ReadAllText(path + ".meta");
             string expected = metadataWithoutAndroid;
-            current = RemoveAndroidSettings(current);
+            current = RemovePlatformSettings(current, "Android");
             if (Normalize(current) != Normalize(expected))
                 throw new InvalidOperationException("Metadata outside Android changed (GUID, slices, defaults or other platforms): " +
                     path + "; " + FirstDifference(expected, current));
@@ -84,13 +89,14 @@ public static class AndroidTextureSetup
                 LastStage = "Applying Android settings";
                 var importer = (TextureImporter)AssetImporter.GetAtPath(snapshot.path);
                 var android = importer.GetPlatformTextureSettings("Android");
-                if (!IsConfigured(android) || android.maxTextureSize != snapshot.maximumSize)
+                TextureImporterFormat format = FormatFor(snapshot.path);
+                if (!IsConfigured(android, format) || android.maxTextureSize != snapshot.maximumSize)
                 {
                     applied.Add(snapshot);
                     android.name = "Android";
                     android.overridden = true;
                     android.maxTextureSize = snapshot.maximumSize;
-                    android.format = TextureImporterFormat.ETC2_RGBA8;
+                    android.format = format;
                     android.textureCompression = TextureImporterCompression.Compressed;
                     android.compressionQuality = 50;
                     android.crunchedCompression = false;
@@ -100,7 +106,7 @@ public static class AndroidTextureSetup
                 LastStage = "Verifying imported Android settings";
                 importer = (TextureImporter)AssetImporter.GetAtPath(snapshot.path);
                 android = importer.GetPlatformTextureSettings("Android");
-                if (!IsConfigured(android) || android.maxTextureSize != snapshot.maximumSize)
+                if (!IsConfigured(android, format) || android.maxTextureSize != snapshot.maximumSize)
                     throw new InvalidOperationException("Android settings did not persist: " + snapshot.path +
                         "; " + Describe(android));
                 LastStage = "Verifying source and non-Android metadata";
@@ -151,15 +157,23 @@ public static class AndroidTextureSetup
     public static string Verify()
     {
         if (Application.isPlaying) throw new InvalidOperationException("Verify textures outside Play Mode.");
-        int count = 0;
+        int count = 0, etc2 = 0, astc = 0;
+        bool androidActive = EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android;
         foreach (string path in CandidatePaths())
         {
             LastAsset = path;
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             var android = importer.GetPlatformTextureSettings("Android");
-            if (!IsConfigured(android))
-                throw new InvalidOperationException("Expected Android ETC2 RGBA8 quality 50 without Crunch: " + path +
+            TextureImporterFormat format = FormatFor(path);
+            if (!IsConfigured(android, format))
+                throw new InvalidOperationException("Expected Android " + format + " quality 50 without Crunch: " + path +
                     "; " + Describe(android));
+            // The override alone is not proof: check what the importer actually produced.
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            TextureFormat expected = format == TextureImporterFormat.ASTC_4x4 ? TextureFormat.ASTC_4x4 : TextureFormat.ETC2_RGBA8;
+            if (androidActive && texture.format != expected)
+                throw new InvalidOperationException("Imported Android texture is " + texture.format + ", expected " + expected + ": " + path);
+            if (format == TextureImporterFormat.ASTC_4x4) astc++; else etc2++;
             count++;
         }
         if (count == 0) throw new InvalidOperationException("No uncompressed non-readable textures found to verify.");
@@ -176,9 +190,18 @@ public static class AndroidTextureSetup
             LastAsset = ProtectedPortrait;
             portraitBeforeConfiguration.VerifyPreserved(true);
         }
-        return "ANDROID_TEXTURES_OK: " + count +
-            " non-readable PNGs use ETC2 RGBA8 on Android; resolution, sources and all non-Android metadata preserved by Configure. " +
-            "Readable runtime atlases and Boss_Base.png excluded.";
+        return "ANDROID_TEXTURES_OK: " + count + " non-readable PNGs compressed on Android (" + etc2 + " ETC2 RGBA8, " +
+            astc + " ASTC 4x4 for sizes that are not multiples of 4)" +
+            (androidActive ? "; imported formats confirmed" : "; imported formats not checked (Android is not the active target)") +
+            ". Resolution, sources and all non-Android metadata preserved by Configure. Boss_Base.png excluded.";
+    }
+
+    /// <summary>ETC2 needs 4x4 blocks; other imported sizes would silently stay uncompressed.</summary>
+    public static TextureImporterFormat FormatFor(string path)
+    {
+        var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        return texture.width % 4 == 0 && texture.height % 4 == 0
+            ? TextureImporterFormat.ETC2_RGBA8 : TextureImporterFormat.ASTC_4x4;
     }
 
     private static IEnumerable<string> CandidatePaths()
@@ -189,20 +212,22 @@ public static class AndroidTextureSetup
             if (!path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
                 path.Equals(ProtectedPortrait, StringComparison.OrdinalIgnoreCase)) continue;
             if (AssetImporter.GetAtPath(path) is not TextureImporter importer || importer.isReadable) continue;
-            if (importer.GetDefaultPlatformTextureSettings().textureCompression == TextureImporterCompression.Uncompressed)
+            // Explicitly uncompressed imports, plus "automatic" ones whose ETC2 attempt falls back to RGBA32.
+            if (importer.GetDefaultPlatformTextureSettings().textureCompression == TextureImporterCompression.Uncompressed ||
+                FormatFor(path) == TextureImporterFormat.ASTC_4x4)
                 yield return path;
         }
     }
 
-    private static string HashFile(string path)
+    internal static string HashFile(string path)
     {
         using var hash = SHA256.Create();
         using var source = File.OpenRead(path);
         return Convert.ToBase64String(hash.ComputeHash(source));
     }
 
-    private static bool IsConfigured(TextureImporterPlatformSettings settings) => settings.overridden &&
-        settings.format == TextureImporterFormat.ETC2_RGBA8 &&
+    private static bool IsConfigured(TextureImporterPlatformSettings settings, TextureImporterFormat format) => settings.overridden &&
+        settings.format == format &&
         settings.textureCompression == TextureImporterCompression.Compressed &&
         !settings.crunchedCompression && settings.compressionQuality == 50;
 
@@ -211,7 +236,7 @@ public static class AndroidTextureSetup
         ", quality=" + settings.compressionQuality + ", crunch=" + settings.crunchedCompression +
         ", max=" + settings.maxTextureSize;
 
-    private static string FirstDifference(string expected, string current)
+    internal static string FirstDifference(string expected, string current)
     {
         string[] before = Normalize(expected).Split('\n');
         string[] after = Normalize(current).Split('\n');
@@ -226,7 +251,7 @@ public static class AndroidTextureSetup
         return "no textual difference";
     }
 
-    private static string Normalize(string text)
+    internal static string Normalize(string text)
     {
         // Unity may serialize empty values as "key:" or "key: ". Ignore
         // trailing whitespace/newlines while preserving indentation and values.
@@ -243,19 +268,24 @@ public static class AndroidTextureSetup
         return true;
     }
 
-    private static string RemoveAndroidSettings(string text)
+    internal static string RemovePlatformSettings(string text, string platform)
     {
         var lines = new List<string>(Normalize(text).Split('\n'));
         for (int i = 0; i < lines.Count; i++)
         {
-            if (lines[i] != "    buildTarget: Android") continue;
+            if (!lines[i].StartsWith("    buildTarget: ", StringComparison.Ordinal)) continue;
             int start = i - 1;
             if (start < 0 || !lines[start].StartsWith("  - serializedVersion:", StringComparison.Ordinal))
-                throw new InvalidOperationException("Unrecognized Android texture metadata section.");
+                throw new InvalidOperationException("Unrecognized texture platform metadata section.");
             int end = i + 1;
             while (end < lines.Count && (lines[end].StartsWith("    ", StringComparison.Ordinal) || lines[end].Length == 0)) end++;
+            string target = lines[i].Substring("    buildTarget: ".Length);
+            // Saving a first Android override also serializes default blocks for other platforms
+            // (for example WebGL). A block with "overridden: 0" carries no settings, so it is ignored.
+            bool inert = target != "DefaultTexturePlatform" && lines.GetRange(start, end - start).Contains("    overridden: 0");
+            if (target != platform && !inert) continue;
             lines.RemoveRange(start, end - start);
-            break;
+            i = start - 1;
         }
         return string.Join("\n", lines);
     }

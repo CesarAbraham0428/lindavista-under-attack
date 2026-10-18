@@ -241,7 +241,7 @@ public static class DamageNumberChecks
         var reused = Active()[0];
         Check(reused == number && All().Length == count && Label(reused).text == "12" && Get<float>(reused, "age") == 0f,
             "reused number resets its value and lifetime without allocating a new object");
-        Check(Label(reused).color.a > .95f && Get<EnemyHealth>(reused, "target") == enemy,
+        Check(Label(reused).color.a * Label(reused).canvasRenderer.GetAlpha() > .95f && Get<EnemyHealth>(reused, "target") == enemy,
             "reused number restores opacity and the current victim");
     }
 
