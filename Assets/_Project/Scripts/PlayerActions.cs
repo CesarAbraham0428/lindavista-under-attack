@@ -33,8 +33,7 @@ public class PlayerActions : MonoBehaviour
     private bool pastillaAplicada;
 
     public bool IsUsingHealthConsumable { get; private set; }
-    public bool CanUseHealthConsumable => isActiveAndEnabled && !inputLocked && !defeated &&
-        !GameFlowController.IsMatchEnded && !GameFlowController.IsPaused && !PistolUpgradeShop.IsOpen &&
+    public bool CanUseHealthConsumable => CanReceiveCombatInput &&
         health != null && health.CanHeal && weapons != null && !IsBusyExceptFire() &&
         ProgressionService.HealthConsumables(health.IsCesar) > 0 &&
         animator != null && animator.runtimeAnimatorController != null &&
@@ -42,6 +41,9 @@ public class PlayerActions : MonoBehaviour
 
     public bool IsDefeated => defeated;
     public bool IsInputLocked => inputLocked;
+    public bool CanReceiveCombatInput => isActiveAndEnabled && !inputLocked && !defeated &&
+        !IsUsingHealthConsumable && !GameFlowController.IsPaused && !GameFlowController.IsMatchEnded &&
+        !PistolUpgradeShop.IsOpen && !BossIntroduction.IsActive;
     public int CurrentHealth => health != null ? health.CurrentHealth : 0;
     public int MaxHealth => health != null ? health.MaxHealth : CharacterStats.BaseHealth(CharacterWeapons.IsCesar(gameObject));
     public PlayerHealth Health => health;
@@ -58,6 +60,7 @@ public class PlayerActions : MonoBehaviour
         if (!locked)
             return;
 
+        MobileControlsHUD.CancelActiveTouches();
         CancelHealthConsumable();
         hasAimInViewport = false;
         touchAimActive = false;
@@ -98,7 +101,7 @@ public class PlayerActions : MonoBehaviour
                 AdvanceHealthConsumable(Time.deltaTime);
             return;
         }
-        if (inputLocked || GameFlowController.IsPaused || PistolUpgradeShop.IsOpen)
+        if (!CanReceiveCombatInput)
             return;
 
         UpdateAim();
@@ -147,7 +150,7 @@ public class PlayerActions : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (inputLocked || IsUsingHealthConsumable || GameFlowController.IsPaused || defeated || spriteRenderer == null)
+        if (!CanReceiveCombatInput || spriteRenderer == null)
             return;
 
         // Firing poses must face the target, even while walking the other way.
@@ -162,13 +165,13 @@ public class PlayerActions : MonoBehaviour
 
     public void SelectTouchWeapon(int index)
     {
-        if (!inputLocked && !GameFlowController.IsPaused && !defeated && index >= 0 && index <= 2)
+        if (CanReceiveCombatInput && index >= 0 && index <= 2)
             EquipWeapon(index);
     }
 
     public void EquipWeapon(int index)
     {
-        if (IsUsingHealthConsumable) return;
+        if (!CanReceiveCombatInput || weapons == null || index < 0 || index > 2) return;
         int previous = weapons.EquippedWeapon;
         if (!weapons.TryEquip(index) || previous == index || animator == null ||
             animator.runtimeAnimatorController == null) return;
@@ -214,7 +217,7 @@ public class PlayerActions : MonoBehaviour
 
     public void ReloadTouchWeapon()
     {
-        if (!inputLocked && !GameFlowController.IsPaused && !PistolUpgradeShop.IsOpen)
+        if (CanReceiveCombatInput)
             TryReload();
     }
 
@@ -226,6 +229,7 @@ public class PlayerActions : MonoBehaviour
     public bool TryUseHealthConsumable()
     {
         if (!CanUseHealthConsumable) return false;
+        MobileControlsHUD.CancelActiveTouches();
         StopTouchAimAndFire();
         fireRequested = false;
         IsUsingHealthConsumable = true;
@@ -293,6 +297,11 @@ public class PlayerActions : MonoBehaviour
         if (!tieneFoco) OnDisable();
     }
 
+    private void OnApplicationPause(bool paused)
+    {
+        if (paused) OnDisable();
+    }
+
     private void Defeat()
     {
         if (defeated)
@@ -314,7 +323,7 @@ public class PlayerActions : MonoBehaviour
 
     public void SetTouchAimAndFire(Vector2 direction)
     {
-        if (inputLocked || IsUsingHealthConsumable || GameFlowController.IsPaused || PistolUpgradeShop.IsOpen || defeated)
+        if (!CanReceiveCombatInput)
             return;
 
         touchAimActive = true;
@@ -326,6 +335,7 @@ public class PlayerActions : MonoBehaviour
 
     public void StopTouchAimAndFire()
     {
+        fireRequested = false;
         touchAimActive = false;
         touchFireHeld = false;
         if (animator != null)
@@ -336,7 +346,7 @@ public class PlayerActions : MonoBehaviour
 
     private void TryReload()
     {
-        if (inputLocked || GameFlowController.IsPaused || defeated || IsBusyExceptFire() || !weapons.TryReload())
+        if (!CanReceiveCombatInput || IsBusyExceptFire() || !weapons.TryReload())
             return;
 
         ResetFireTriggers();
@@ -354,7 +364,7 @@ public class PlayerActions : MonoBehaviour
 
     private void HoldFire()
     {
-        if (inputLocked || IsBusyExceptFire())
+        if (!CanReceiveCombatInput || IsBusyExceptFire())
             return;
 
         if (weapons.Magazine == 0) { TryReload(); return; }

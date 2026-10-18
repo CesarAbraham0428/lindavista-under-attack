@@ -22,17 +22,17 @@ public sealed class MobileControlsHUD : MonoBehaviour
     private int screenHeight;
     private Rect lastSafeArea;
     private bool vistaSolicitada;
+    private bool entradaPermitidaAnterior;
     private float proximaBusquedaJugador;
 
     private static readonly Color ButtonColor = new Color(0.08f, 0.15f, 0.22f, 0.70f);
     private static readonly Color AimColor = new Color(0.07f, 0.19f, 0.24f, 0.48f);
 
     public static bool IsVisible => active != null && active.canvas != null &&
-                                    active.canvas.gameObject.activeInHierarchy;
+                                    active.canvas.isActiveAndEnabled;
 
     public bool PuedeRecibirEntrada => actions != null && movement != null &&
-        !actions.IsInputLocked && !actions.IsDefeated && !GameFlowController.IsPaused &&
-        !GameFlowController.IsMatchEnded && !PistolUpgradeShop.IsOpen;
+        movement.isActiveAndEnabled && actions.CanReceiveCombatInput;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Register()
@@ -74,6 +74,9 @@ public sealed class MobileControlsHUD : MonoBehaviour
 #endif
 
         ActualizarVisibilidad();
+        bool entradaPermitida = PuedeRecibirEntrada;
+        if (entradaPermitidaAnterior && !entradaPermitida) ClearTouches();
+        entradaPermitidaAnterior = entradaPermitida;
         if (IsVisible && Time.unscaledTime >= proximaBusquedaJugador &&
             (movement == null || actions == null || !movement.gameObject.activeInHierarchy))
         {
@@ -190,7 +193,7 @@ public sealed class MobileControlsHUD : MonoBehaviour
         if (canvas == null)
             return;
         bool visible = vistaSolicitada && !GameFlowController.IsPaused &&
-            !GameFlowController.IsMatchEnded && !PistolUpgradeShop.IsOpen;
+            !GameFlowController.IsMatchEnded && !PistolUpgradeShop.IsOpen && !BossIntroduction.IsActive;
         if (canvas.gameObject.activeSelf == visible) return;
         if (!visible)
             ClearTouches();

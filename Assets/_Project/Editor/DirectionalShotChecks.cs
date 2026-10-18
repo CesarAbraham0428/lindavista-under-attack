@@ -99,7 +99,8 @@ public static class DirectionalShotChecks
                         "Assets/_Project/Animations/Player_" + character + ".controller");
                     animator.Update(0f);
                     var actions = player.AddComponent<PlayerActions>();
-                    actions.enabled = false;
+                    // Keep the real input eligibility guard enabled. This entire
+                    // shot check is synchronous and destroys the player before a new frame.
                     actions.SelectTouchWeapon(weapon);
                     var controller = actions.Weapons;
                     typeof(PlayerActions).GetField("aimCamera", Private).SetValue(actions, camera);

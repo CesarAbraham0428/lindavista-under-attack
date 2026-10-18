@@ -110,7 +110,10 @@ public static class HealthConsumableChecks
             Idle(animator, character);
             int hurt = actions.CurrentHealth;
             int maximum = actions.MaxHealth;
+            actions.SetTouchAimAndFire(Vector2.right);
             Check(actions.TryUseHealthConsumable(), character + " inicia curación");
+            Check(!actions.CanReceiveCombatInput && !(bool)typeof(PlayerActions).GetField("touchFireHeld", Private).GetValue(actions),
+                "la curación libera el disparo táctil y bloquea nuevas acciones");
             Check(!actions.TryUseHealthConsumable(), "no se solapan consumos");
             Check(animator.GetCurrentAnimatorStateInfo(0).IsName(character + "_UseHealthConsumable"), "reproduce el clip correcto");
             int weapon = actions.Weapons.EquippedWeapon;

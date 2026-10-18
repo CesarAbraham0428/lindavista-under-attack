@@ -12,10 +12,17 @@ public sealed class BossProjectile : MonoBehaviour
     private float speed, remaining;
     private int damage;
     private bool retired;
+    private SpriteRenderer visual;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() { flying.Clear(); cancelled.Clear(); }
-    internal static void Prewarm() => pool.Prewarm(8, shot => ShotVisual.Attach(shot.gameObject, 1));
+    internal static void Prewarm() => pool.Prewarm(8, shot => shot.PrepareVisual());
+    private void PrepareVisual()
+    {
+        ShotVisual.Attach(gameObject, 1);
+        if (visual == null) visual = GetComponent<SpriteRenderer>();
+        visual.color = new Color(1f, .64f, .35f);
+    }
     public static bool Fire(Vector2 origin, Vector2 direction, float speed, int damage, EnemyHealth owner)
     {
         if (owner == null || owner.IsDead || GameFlowController.IsMatchEnded || flying.Count >= 16 ||
@@ -29,8 +36,7 @@ public sealed class BossProjectile : MonoBehaviour
         shot.retired = false;
         shot.transform.position = origin;
         shot.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-        ShotVisual.Attach(shot.gameObject, 1);
-        shot.GetComponent<SpriteRenderer>().color = new Color(1f, .64f, .35f);
+        shot.PrepareVisual();
         flying.Add(shot);
         shot.gameObject.SetActive(true);
         ShotVisual.Muzzle(origin, shot.direction, 1);
@@ -73,6 +79,7 @@ public sealed class BossProjectile : MonoBehaviour
         if (retired) return;
         retired = true;
         flying.Remove(this);
+        owner = null;
         pool.Return(this);
     }
     private void OnDisable() { flying.Remove(this); }

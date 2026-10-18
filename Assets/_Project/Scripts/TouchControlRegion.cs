@@ -14,7 +14,7 @@ public enum TouchControlKind
 }
 
 public sealed class TouchControlRegion : MonoBehaviour,
-    IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerExitHandler
+    IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerExitHandler, ICancelHandler
 {
     private const int NoPointer = int.MinValue;
 
@@ -46,7 +46,8 @@ public sealed class TouchControlRegion : MonoBehaviour,
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (pointerId != NoPointer || hud == null || !hud.PuedeRecibirEntrada)
+        if (eventData.button != PointerEventData.InputButton.Left ||
+            pointerId != NoPointer || hud == null || !hud.PuedeRecibirEntrada)
             return;
 
         pointerId = eventData.pointerId;
@@ -60,9 +61,17 @@ public sealed class TouchControlRegion : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (kind == TouchControlKind.AimAndFire && eventData.pointerId == pointerId)
+        if (eventData.pointerId != pointerId) return;
+        if (hud == null || !hud.PuedeRecibirEntrada)
+        {
+            Cancel();
+            return;
+        }
+        if (kind == TouchControlKind.AimAndFire)
             UpdateAim(eventData);
     }
+
+    public void OnCancel(BaseEventData eventData) => Cancel();
 
     public void OnPointerUp(PointerEventData eventData)
     {

@@ -29,6 +29,12 @@ public sealed class GameFlowController : MonoBehaviour
     private bool paused;
     private float previousTimeScale;
     private bool previousAudioPause;
+    private bool applicationSuspended;
+    private bool applicationUnfocused;
+    private bool suspensionFrozen;
+    private bool pauseAfterIntroduction;
+    private float suspensionTimeScale;
+    private bool suspensionAudioPause;
     private Vector2 ultimoEspacioPausa;
     private Vector2 ultimoEspacioResultado;
 
@@ -68,21 +74,70 @@ public sealed class GameFlowController : MonoBehaviour
 
     private void Update()
     {
+        if (pauseAfterIntroduction && !suspensionFrozen && !BossIntroduction.IsActive && !PistolUpgradeShop.IsOpen)
+        {
+            pauseAfterIntroduction = false;
+            PauseGame();
+        }
         bool mostrarPausa = !IsMatchEnded && !paused && !PistolUpgradeShop.IsOpen && !BossIntroduction.IsActive;
         if (pauseButton.gameObject.activeSelf != mostrarPausa)
             pauseButton.gameObject.SetActive(mostrarPausa);
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-            TogglePause();
+        {
+            if (PistolUpgradeShop.IsOpen) PistolUpgradeShop.Close();
+            else TogglePause();
+        }
     }
 
     private void OnApplicationPause(bool enSegundoPlano)
     {
-        if (enSegundoPlano && Application.isMobilePlatform) PauseGame();
+        if (Application.platform != RuntimePlatform.Android)
+        {
+            if (enSegundoPlano && Application.isMobilePlatform) PauseGame();
+            return;
+        }
+        applicationSuspended = enSegundoPlano;
+        UpdateApplicationSuspension();
     }
 
     private void OnApplicationFocus(bool tieneFoco)
     {
-        if (!tieneFoco && Application.isMobilePlatform) PauseGame();
+        if (Application.platform != RuntimePlatform.Android)
+        {
+            if (!tieneFoco && Application.isMobilePlatform) PauseGame();
+            return;
+        }
+        applicationUnfocused = !tieneFoco;
+        UpdateApplicationSuspension();
+    }
+
+    private void UpdateApplicationSuspension()
+    {
+        bool blocked = applicationSuspended || applicationUnfocused;
+        if (blocked)
+        {
+            MobileControlsHUD.CancelActiveTouches();
+            ProgressionService.GuardarPendientes();
+            if (suspensionFrozen) return;
+            // The cinematic owns the screen, so show the pause panel after it closes.
+            if (BossIntroduction.IsActive || PistolUpgradeShop.IsOpen)
+            {
+                pauseAfterIntroduction = !IsMatchEnded;
+                suspensionTimeScale = Time.timeScale;
+                suspensionAudioPause = AudioListener.pause;
+                suspensionFrozen = true;
+                Time.timeScale = 0f;
+                AudioListener.pause = true;
+            }
+            else PauseGame();
+        }
+        else if (suspensionFrozen)
+        {
+            suspensionFrozen = false;
+            Time.timeScale = suspensionTimeScale;
+            AudioListener.pause = suspensionAudioPause;
+            // An open shop already blocks play; wait until it closes before pausing.
+        }
     }
 
     public void TogglePause()
@@ -167,6 +222,12 @@ public sealed class GameFlowController : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (suspensionFrozen)
+        {
+            Time.timeScale = suspensionTimeScale;
+            AudioListener.pause = suspensionAudioPause;
+            suspensionFrozen = false;
+        }
         ResumeGame();
         Canvas.willRenderCanvases -= UpdatePauseLayout;
         Canvas.willRenderCanvases -= UpdateDefeatLayout;

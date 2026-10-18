@@ -5,6 +5,10 @@ using UnityEngine;
 public sealed class BossTruck : MonoBehaviour
 {
     public enum CombatPhase { Entering, Recovery, Warning, Firing, Defeated }
+    private static readonly int MovingParameter = Animator.StringToHash("IsMoving");
+    private static readonly int AttackParameter = Animator.StringToHash("Attack");
+    private static readonly int DamageParameter = Animator.StringToHash("TakeDamage");
+    private static readonly int DefeatState = Animator.StringToHash("BossTruck_Defeat");
     [Header("Movement and ground")]
     [SerializeField, Min(.1f)] private float entrySpeed = 2.8f;
     [SerializeField, Min(6f)] private float combatDistance = 9f;
@@ -28,7 +32,7 @@ public sealed class BossTruck : MonoBehaviour
     private float groundY, minimumX, deadline, nextTargetSearch;
     private int remainingShots;
     private Vector2 lockedAim;
-    private bool initialized;
+    private bool initialized, moving, movementInitialized;
     public CombatPhase Phase { get; private set; } = CombatPhase.Entering;
     public EnemyHealth Health => health;
     public bool Enraged => health != null && health.CurrentHealth <= health.MaxHealth * .5f;
@@ -53,17 +57,20 @@ public sealed class BossTruck : MonoBehaviour
         PlaceOnGround();
         FindTarget();
         BossProjectile.Prewarm();
-        hud = gameObject.AddComponent<BossHealthHUD>();
-        hud.Bind(this);
+        if (hud == null)
+        {
+            hud = gameObject.AddComponent<BossHealthHUD>();
+            hud.Bind(this);
+        }
         Phase = CombatPhase.Entering;
-        animator.SetBool("IsMoving", true);
+        SetMoving(true);
     }
 
     private void FindTarget()
     {
         target = null;
-        foreach (var player in FindObjectsByType<PlayerActions>(FindObjectsSortMode.None))
-            if (!player.IsDefeated && player.isActiveAndEnabled) { target = player; break; }
+        foreach (var player in ObjetivosCombate.Obtener())
+            if (player != null && !player.IsDefeated && player.isActiveAndEnabled) { target = player; break; }
         nextTargetSearch = Time.time + .4f;
     }
 
@@ -92,14 +99,14 @@ public sealed class BossTruck : MonoBehaviour
                 float recoveryX = Mathf.Clamp(target.transform.position.x - Mathf.Sign(dx) * DesiredCombatDistance(dx), minimumX, maximumX);
                 if (Mathf.Abs(transform.position.x - recoveryX) > .15f)
                     MoveTowards(recoveryX, entrySpeed * .65f);
-                else animator.SetBool("IsMoving", false);
+                else SetMoving(false);
                 if (Time.time >= deadline && CanEngage()) BeginWarning();
                 break;
             case CombatPhase.Warning:
                 if (Time.time < deadline) break;
                 Phase = CombatPhase.Firing;
                 remainingShots = shotsPerBurst + (Enraged ? 2 : 0);
-                animator.SetTrigger("Attack");
+                animator.SetTrigger(AttackParameter);
                 deadline = Time.time + .25f;
                 break;
             case CombatPhase.Firing:
@@ -133,14 +140,14 @@ public sealed class BossTruck : MonoBehaviour
     }
     private void BeginWarning()
     {
-        animator.SetBool("IsMoving", false);
+        SetMoving(false);
         lockedAim = target.AimOrigin;
         Phase = CombatPhase.Warning;
         deadline = Time.time + warningDuration;
     }
     private void Recover(float duration)
     {
-        animator.SetBool("IsMoving", false);
+        SetMoving(false);
         Phase = CombatPhase.Recovery;
         deadline = Time.time + duration;
     }
@@ -149,7 +156,14 @@ public sealed class BossTruck : MonoBehaviour
         Vector3 position = transform.position;
         position.x = Mathf.MoveTowards(position.x, x, speed * Time.deltaTime);
         transform.position = position;
-        animator.SetBool("IsMoving", true);
+        SetMoving(true);
+    }
+    private void SetMoving(bool value)
+    {
+        if (movementInitialized && moving == value) return;
+        movementInitialized = true;
+        moving = value;
+        animator.SetBool(MovingParameter, value);
     }
     private void PlaceOnGround()
     {
@@ -165,15 +179,15 @@ public sealed class BossTruck : MonoBehaviour
     {
         Phase = CombatPhase.Defeated;
         BossProjectile.CancelFor(health);
-        animator.SetBool("IsMoving", false);
-        animator.ResetTrigger("Attack");
-        animator.ResetTrigger("TakeDamage");
-        animator.Play("BossTruck_Defeat", 0, 0);
+        SetMoving(false);
+        animator.ResetTrigger(AttackParameter);
+        animator.ResetTrigger(DamageParameter);
+        animator.Play(DefeatState, 0, 0);
     }
     private void StopCombat()
     {
-        animator.SetBool("IsMoving", false);
-        animator.ResetTrigger("Attack");
+        SetMoving(false);
+        animator.ResetTrigger(AttackParameter);
         Phase = CombatPhase.Defeated;
         BossProjectile.CancelFor(health);
     }

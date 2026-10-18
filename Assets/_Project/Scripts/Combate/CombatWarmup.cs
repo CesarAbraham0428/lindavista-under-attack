@@ -3,7 +3,7 @@ using System.Collections;
 /// <summary>Spread first-use preparation across the level introduction, before combat.</summary>
 internal static class CombatWarmup
 {
-    internal static IEnumerator Prepare()
+    internal static IEnumerator Prepare(bool prepareBoss = false)
     {
         yield return null;
         if (GameFlowController.IsMatchEnded) yield break;
@@ -23,5 +23,9 @@ internal static class CombatWarmup
         yield return null;
         if (GameFlowController.IsMatchEnded) yield break;
         DamageNumber.Prewarm();
+        if (!prepareBoss) yield break;
+        yield return null;
+        if (GameFlowController.IsMatchEnded) yield break;
+        BossProjectile.Prewarm();
     }
 }

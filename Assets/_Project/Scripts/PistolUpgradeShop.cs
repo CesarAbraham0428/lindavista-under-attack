@@ -24,6 +24,12 @@ public sealed class PistolUpgradeShop : MonoBehaviour
     private ShopCharacterAssets retratos;
     public static bool IsOpen => active != null;
     public static void Open() { if (active == null && !BossIntroduction.IsActive) new GameObject("Character and Weapons Shop").AddComponent<PistolUpgradeShop>(); }
+    public static void Close()
+    {
+        if (active == null) return;
+        MobileControlsHUD.CancelActiveTouches();
+        Destroy(active.gameObject);
+    }
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() { active = null; }
 
@@ -190,12 +196,18 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         consumableBuy = Buy(consumables.transform, "COMPRAR PASTILLA",
             () => Result(ProgressionService.TryBuyHealthConsumable(cesar)), .68f, .09f, .98f, .91f, true);
         feedback = Label(panel.transform, "Compras e inventario por personaje. Cada pastilla recupera 1 de vida.", 27, .305f, .085f, .975f, .125f);
-        Buy(panel.transform, "VOLVER", () => Destroy(gameObject), .025f, .025f, .25f, .115f);
+        var back = Buy(panel.transform, "VOLVER", Close, .025f, .025f, .25f, .115f);
 #if UNITY_EDITOR
-        Buy(panel.transform, "+1000 monedas · prueba", () => Result(ProgressionService.TryCredit(1000)), .735f, .025f, .975f, .095f);
+        var testCredit = Buy(panel.transform, "+1000 monedas · prueba", () => Result(ProgressionService.TryCredit(1000)), .735f, .025f, .975f, .095f);
 #endif
         if (Application.isMobilePlatform || Screen.height <= 800)
+        {
             ConfigurarDistribucionCompacta(panel.rectTransform, character.rectTransform);
+            ProgressionUI.Percent((RectTransform)back.transform, .025f, .01f, .25f, .145f);
+#if UNITY_EDITOR
+            testCredit.gameObject.SetActive(false);
+#endif
+        }
         ProgressionService.Changed += Refresh;
         Refresh();
     }
@@ -280,7 +292,7 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         lista.anchorMin = new Vector2(0f, 1f);
         lista.anchorMax = Vector2.one;
         lista.pivot = new Vector2(.5f, 1f);
-        lista.sizeDelta = new Vector2(-28f, 1920f);
+        lista.sizeDelta = new Vector2(-28f, 1980f);
         lista.anchoredPosition = new Vector2(-14f, 0f);
         var scroll = desplazamiento.gameObject.AddComponent<ScrollRect>();
         scroll.viewport = desplazamiento.rectTransform;
@@ -291,15 +303,15 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         personaje.SetParent(lista, false);
         ColocarFilaCompacta(personaje, 0f, 600f);
         ProgressionUI.Percent((RectTransform)personaje.Find("Portrait backdrop"), .01f, .025f, .35f, .98f);
-        ProgressionUI.Percent(portrait.rectTransform, .015f, .035f, .345f, .79f);
-        ProgressionUI.Percent((RectTransform)characterTabs[0].transform, .02f, .81f, .175f, .97f);
-        ProgressionUI.Percent((RectTransform)characterTabs[1].transform, .185f, .81f, .34f, .97f);
+        ProgressionUI.Percent((RectTransform)characterTabs[0].transform, .02f, .755f, .175f, .985f);
+        ProgressionUI.Percent((RectTransform)characterTabs[1].transform, .185f, .755f, .34f, .985f);
+        ProgressionUI.Percent(portrait.rectTransform, .015f, .035f, .345f, .745f);
         ProgressionUI.Percent(health.rectTransform, .39f, .80f, .96f, .95f);
         ProgressionUI.Percent((RectTransform)life[0].transform.parent, .39f, .68f, .96f, .78f);
-        ProgressionUI.Percent((RectTransform)healthBuy.transform, .39f, .48f, .96f, .65f);
-        ProgressionUI.Percent(speed.rectTransform, .39f, .34f, .96f, .45f);
+        ProgressionUI.Percent((RectTransform)healthBuy.transform, .39f, .445f, .96f, .665f);
+        ProgressionUI.Percent(speed.rectTransform, .39f, .34f, .96f, .44f);
         ProgressionUI.Percent((RectTransform)speedBars[0].transform.parent, .39f, .25f, .96f, .32f);
-        ProgressionUI.Percent((RectTransform)speedBuy.transform, .39f, .055f, .96f, .23f);
+        ProgressionUI.Percent((RectTransform)speedBuy.transform, .39f, .015f, .96f, .24f);
         var pastillas = (RectTransform)panel.Find("Health consumables");
         pastillas.SetParent(lista, false);
         ColocarFilaCompacta(pastillas, 620f, 260f);
@@ -316,7 +328,7 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         {
             var fila = (RectTransform)panel.Find("Weapon " + i);
             fila.SetParent(lista, false);
-            ColocarFilaCompacta(fila, 900f + i * 340f, 320f);
+            ColocarFilaCompacta(fila, 900f + i * 350f, 340f);
             AmpliarTextoCompacto(weaponNames[i], 44);
             AmpliarTextoCompacto(stats[i], 36);
             AmpliarBotonCompacto(ammo[i]);
@@ -325,18 +337,20 @@ public sealed class PistolUpgradeShop : MonoBehaviour
         var pista = ProgressionUI.Text(panel, "Ayuda de desplazamiento", "DESLIZA PARA VER TODAS LAS MEJORAS  ↕", 27, TextAnchor.MiddleCenter);
         CartoonUI.Typography(pista);
         ProgressionUI.Percent(pista.rectTransform, .27f, .025f, .72f, .10f);
-        ProgressionUI.Percent(feedback.rectTransform, .025f, .12f, .975f, .18f);
-        var carril = ProgressionUI.Image(desplazamiento.transform, "Carril de desplazamiento", new Color(0f, 0f, 0f, .25f), true);
+        ProgressionUI.Percent(feedback.rectTransform, .27f, .115f, .975f, .18f);
+        // El carril es solo un indicador: toda la lista acepta arrastre, sin un objetivo táctil estrecho.
+        var carril = ProgressionUI.Image(desplazamiento.transform, "Carril de desplazamiento", new Color(0f, 0f, 0f, .25f));
         carril.rectTransform.anchorMin = new Vector2(1f, 0f);
         carril.rectTransform.anchorMax = Vector2.one;
         carril.rectTransform.pivot = new Vector2(1f, .5f);
         carril.rectTransform.sizeDelta = new Vector2(18f, 0f);
-        var asa = ProgressionUI.Image(carril.transform, "Indicador de desplazamiento", ProgressionUI.Gold, true);
+        var asa = ProgressionUI.Image(carril.transform, "Indicador de desplazamiento", ProgressionUI.Gold);
         ProgressionUI.Percent(asa.rectTransform, 0f, 0f, 1f, 1f);
         var barra = carril.gameObject.AddComponent<Scrollbar>();
         barra.handleRect = asa.rectTransform;
         barra.targetGraphic = asa;
         barra.direction = Scrollbar.Direction.BottomToTop;
+        barra.interactable = false;
         scroll.verticalScrollbar = barra;
         scroll.verticalNormalizedPosition = 1f;
     }

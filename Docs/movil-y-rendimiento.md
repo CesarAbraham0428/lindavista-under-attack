@@ -2,7 +2,7 @@
 
 Esta página describe la adaptación móvil y las optimizaciones presentes en el código. Las comprobaciones automatizadas verifican comportamientos concretos; los resultados y capturas de la revisión se registran por separado al terminar su ejecución. No se deduce rendimiento real de un teléfono a partir del Editor.
 
-Resultados ejecutados y capturas: [Validación del 16 de octubre de 2026](validacion-movil-2026-10-16.md).
+Resultados actuales y capturas: [Adaptación a Android y validación del 17 de octubre de 2026](adaptacion-android.md). Incluye las comprobaciones de controles en cuatro resoluciones, texturas, disparos, ciclo de vida e interfaz. No se generó APK por indicación del usuario. La [validación del 16 de octubre](validacion-movil-2026-10-16.md) se conserva como referencia histórica.
 
 ## Pantalla e interfaz
 
@@ -131,7 +131,7 @@ Se retiró de los archivos de paquetes la dependencia directa `com.unity.ai.infe
 
 Sentis aportaba 65 shaders y 42 compute shaders bajo su carpeta `Resources`; el intento de build Android estaba compilando variantes `Hidden/Sentis` ajenas al juego. Retirar la dependencia evita incluir ese conjunto en las siguientes resoluciones de paquetes. No se eliminaron assets del proyecto ni archivos de `PackageCache`. Se limpiaron únicamente sus dos símbolos de compilación (`SENTIS_ANALYTICS_ENABLED` y `APP_UI_EDITOR_ONLY`) y la referencia de configuración de App UI en `EditorBuildSettings`, conservando las acciones de Input System.
 
-**Estado posterior a la retirada:** los archivos JSON y las referencias del grafo se revisan en disco, pero la resolución/importación de paquetes y la compilación final quedan pendientes de que el Editor deje libre el build en curso. Las pruebas registradas hasta este punto son anteriores a esta retirada; todavía no se presenta una build Android validada ni un ahorro de tamaño medido.
+**Estado de la revisión del 17 de octubre:** los scripts quedaron compilados y la segunda sesión de QA en Play Mode terminó sin errores ni advertencias en la consola. Los resultados actuales están en [Adaptación a Android](adaptacion-android.md). No se generó un APK por indicación del usuario y no se midió ahorro de tamaño de un instalador.
 
 ## Reproducir las comprobaciones
 

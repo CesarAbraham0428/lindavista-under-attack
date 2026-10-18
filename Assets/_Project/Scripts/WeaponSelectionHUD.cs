@@ -156,8 +156,7 @@ public sealed class WeaponSelectionHUD : MonoBehaviour
         active.RefreshSelection();
     }
 
-    private bool CanSelect() => player != null && !player.IsInputLocked && !player.IsDefeated &&
-        !GameFlowController.IsMatchEnded && !GameFlowController.IsPaused && !PistolUpgradeShop.IsOpen;
+    private bool CanSelect() => player != null && player.CanReceiveCombatInput;
 
     private void RefreshSelection()
     {

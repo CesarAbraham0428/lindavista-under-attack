@@ -93,7 +93,9 @@ public sealed class ShotVisual : MonoBehaviour
             }
         }
         if (weapon != 2 || Time.time < nextSmoke) return;
-        nextSmoke = Time.time + 0.025f;
+        // Halve exhaust work and transparent overdraw on Android; the projectile,
+        // muzzle flash, impact and damage cadence remain unchanged.
+        nextSmoke = Time.time + (Application.platform == RuntimePlatform.Android ? 0.05f : 0.025f);
         // Rocket pivot is at its tail, so art and exhaust start at the barrel.
         Vector2 rear = (Vector2)transform.position + (Vector2)transform.right * 0.05f;
         Puff(rear, -(Vector2)transform.right * 0.35f + Vector2.up * 0.12f,

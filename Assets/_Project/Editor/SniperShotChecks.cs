@@ -245,7 +245,8 @@ public static class SniperShotChecks
                 animator.Update(0f);
                 var controller = player.AddComponent<PlayerWeaponController>();
                 var actions = player.AddComponent<PlayerActions>();
-                actions.enabled = false;
+                // Exercise the enabled gameplay path without advancing input frames;
+                // Verify() clears these temporary objects before its next yield.
                 actions.SelectTouchWeapon(1);
                 Check(controller.EquippedWeapon == 1, "Cesar equips sniper");
                 actions.SetTouchAimAndFire(Vector2.right);

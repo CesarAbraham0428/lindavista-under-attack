@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -51,6 +52,13 @@ public sealed class MainMenuController : MonoBehaviour
     public void OpenCharacterSelection()
     {
         SceneManager.LoadScene("CharacterSelection");
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current == null || !Keyboard.current.escapeKey.wasPressedThisFrame) return;
+        if (PistolUpgradeShop.IsOpen) PistolUpgradeShop.Close();
+        else ClosePanels();
     }
 
     public void OpenStore()

@@ -17,7 +17,8 @@ Esta documentación describe lo que está implementado hoy en las escenas y scri
 - [Estado de los sistemas](Docs/estado-sistemas-juego.md): análisis de vida, tienda, armas, daño y puntos por balancear.
 - [Escenas y flujo](Docs/escenas-y-flujo.md): recorrido entre menús, `Gameplay` y `Testing`.
 - [Controles](Docs/controles.md): teclado, mouse y controles táctiles que existen actualmente.
-- [Móvil y rendimiento](Docs/movil-y-rendimiento.md): adaptación de pantallas, controles, guardado agrupado, optimizaciones y guía de comprobaciones.
+- [Adaptación a Android](Docs/adaptacion-android.md): configuración Android, controles, rendimiento y resultados de la validación del 17 de octubre; sin generar APK por indicación del usuario.
+- [Móvil y rendimiento](Docs/movil-y-rendimiento.md): detalle de guardado agrupado, optimizaciones y herramientas de comprobación.
 - [Combate y vida](Docs/combate-y-vida.md): salud, daño, armas, proyectiles y comportamiento enemigo.
 - [Progresión de la pistola](Docs/progresion-nivel-1.md): monedas, mejoras, guardado, cargador y victoria del nivel 1.
 - [Niveles y entorno](Docs/niveles-y-entorno.md): horarios, cámara, tramos, muros, baches y elementos estáticos.

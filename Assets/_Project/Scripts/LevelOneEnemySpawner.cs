@@ -170,7 +170,7 @@ public sealed class LevelOneEnemySpawner : MonoBehaviour
         reinforcementSpawnX = firstSpawnX + (previewCount - 1) * spawnSpacing;
         IntroCameraX = firstSpawnX + (queuedEnemies.Count - 1) * spawnSpacing * 0.5f;
         prepared = true;
-        StartCoroutine(CombatWarmup.Prepare());
+        StartCoroutine(CombatWarmup.Prepare(IsBossEncounter));
         return true;
     }
 
