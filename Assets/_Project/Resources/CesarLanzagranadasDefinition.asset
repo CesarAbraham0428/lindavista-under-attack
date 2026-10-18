@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponDefinition
   baseDamage: 10
   fireInterval: 1.2
-  projectileSpeed: 14
+  projectileSpeed: 21
   range: 18
   projectileRadius: 0.2
   magazineSize: 4

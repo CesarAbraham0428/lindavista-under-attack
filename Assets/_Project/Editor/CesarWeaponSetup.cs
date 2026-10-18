@@ -171,7 +171,7 @@ public static class CesarWeaponSetup
         data.FindProperty("fireInterval").floatValue = new[] { 0.85f, 1.1f, 1.2f }[index];
         data.FindProperty("magazineSize").intValue = new[] { 6, 5, 2 }[index];
         data.FindProperty("reloadDuration").floatValue = new[] { 2f, 2.2f, 2f }[index];
-        data.FindProperty("projectileSpeed").floatValue = new[] { 22f, 40f, 14f }[index];
+        data.FindProperty("projectileSpeed").floatValue = new[] { 22f, 40f, 21f }[index];
         data.FindProperty("range").floatValue = new[] { 18f, 26f, 18f }[index];
         data.FindProperty("piercingShot").boolValue = index == 1;
         data.ApplyModifiedPropertiesWithoutUndo();

@@ -30,8 +30,8 @@ Transform:
   m_GameObject: {fileID: 8332502759669343063}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.8014, y: -1.360586, z: 0}
-  m_LocalScale: {x: 1.5290946, y: 1.3223912, z: 1}
+  m_LocalPosition: {x: 12.8014, y: -1.5813161, z: 0}
+  m_LocalScale: {x: 1.4194902, y: 1.2276032, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -153,12 +153,13 @@ MonoBehaviour:
   hasStandingFootAnchor: 1
   standingFootY: -2.328671
   attackStyle: 3
-  attackRange: 6.5
+  attackRange: 13
   meleeHitRange: 1.5
   attackCooldown: 2
   attackWindup: 0.2
   shotsPerAttack: 3
   timeBetweenShots: 0.16
+  firingMuzzleReference: {fileID: -86131354888680555, guid: b6d41ff8891002746a10bbaae1f8fa54, type: 3}
   entranceTarget: {fileID: 0}
   exposedSprite: {fileID: 0}
 --- !u!114 &2941409578650522931

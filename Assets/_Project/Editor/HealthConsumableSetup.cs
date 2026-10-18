@@ -9,7 +9,8 @@ using UnityEngine;
 public static class HealthConsumableSetup
 {
     private const string Art = "Assets/_Project/Art/UI/Health/";
-    public const float Duration = 1.2f;
+    private const float DurationScale = 0.6f;
+    public const float Duration = 1.2f * DurationScale;
 
     [MenuItem("Tools/Lindavista/Preparar pastillas y animaciones de vida")]
     public static void Generate()
@@ -40,7 +41,8 @@ public static class HealthConsumableSetup
         string path = "Assets/_Project/Animations/Players/" + character + "/" + name + ".anim";
         var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
         if (clip == null) { clip = new AnimationClip { name = name }; AssetDatabase.CreateAsset(clip, path); }
-        clip.frameRate = 20f;
+        // Scale the final sample too, so clip.length is exactly 40% shorter.
+        clip.frameRate = 20f / DurationScale;
         var keys = new ObjectReferenceKeyframe[frames.Length + 1];
         for (int i = 0; i < frames.Length; i++)
             keys[i] = new ObjectReferenceKeyframe { time = Duration * i / frames.Length, value = frames[i] };

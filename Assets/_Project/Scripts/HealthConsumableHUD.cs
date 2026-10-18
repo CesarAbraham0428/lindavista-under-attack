@@ -65,7 +65,7 @@ public sealed class HealthConsumableHUD : MonoBehaviour
         use.interactable = player != null && player.CanUseHealthConsumable;
         int amount = ProgressionService.HealthConsumables(player != null ? player.Health.IsCesar : CharacterWeapons.SelectedCesar);
         string status = player != null && player.IsUsingHealthConsumable ? "USANDO…" :
-            player != null && !player.Health.CanHeal ? "VIDA LLENA" :
+            player != null && !player.Health.CanHeal ? "VIDA EXTRA" :
             Application.isMobilePlatform || MobileControlsHUD.IsVisible ? "USAR +1" : "H · VIDA +1";
         string text = status + "\n" + amount + " / " + ShopBalance.MaxHealthConsumables;
         if (previousLabel == text) return;

@@ -27,6 +27,8 @@ public sealed class BasicEnemy : MonoBehaviour
     [SerializeField, Min(0f)] private float attackWindup = 0.25f;
     [SerializeField, Min(1)] private int shotsPerAttack = 1;
     [SerializeField, Min(0.01f)] private float timeBetweenShots = 0.15f;
+    [Header("Ranged muzzle reference (first firing pose)")]
+    [SerializeField] private Sprite firingMuzzleReference;
     [Header("Objective (optional)")]
     [SerializeField] private Transform entranceTarget;
     [Header("Visual ground anchor (idle sprite, local units)")]
@@ -48,8 +50,11 @@ public sealed class BasicEnemy : MonoBehaviour
     private EnemyHealth health;
     private Animator animator;
     private SpriteRenderer sprite;
-    private WeaponAudioLibrary pistolAudioLibrary;
-    private AudioSource pistolShotSource;
+    private WeaponAudioLibrary weaponAudioLibrary;
+    private AudioSource weaponShotSource;
+    private int ShotAudioWeapon => attackStyle == AttackStyle.SMG ? 1 : 0;
+    private float ShotAudioVolume => weaponAudioLibrary.ShotVolume(ShotAudioWeapon) *
+        (attackStyle == AttackStyle.Pistol ? 0.9f : 1f);
     private PlayerActions target;
     private float nextTargetSearch;
     private float nextAttack;
@@ -61,6 +66,7 @@ public sealed class BasicEnemy : MonoBehaviour
     private Collider2D bodyCollider;
     private bool moving, movementInitialized;
     private const float AllySpacing = 1.25f;
+    private bool IsRanged => attackStyle == AttackStyle.Pistol || attackStyle == AttackStyle.SMG;
 
     /// <summary>Enables readable combat positioning for the first three level waves only.</summary>
     public void ConfigureTactics() => coordinatedCombat = true;
@@ -98,29 +104,29 @@ public sealed class BasicEnemy : MonoBehaviour
         animator.ResetTrigger(defeat);
         nextAttack = Time.time + attackCooldown;
         transform.localScale *= sizeMultiplier;
-        InitializePistolAudio();
+        InitializeWeaponAudio();
     }
 
-    private void InitializePistolAudio()
+    private void InitializeWeaponAudio()
     {
-        if (attackStyle != AttackStyle.Pistol) return;
-        // Enemy2 shares Marco's pistol clip and stays 10% quieter than his shots.
-        pistolAudioLibrary = Resources.Load<WeaponAudioLibrary>("WeaponAudioLibrary");
-        if (pistolAudioLibrary == null || pistolAudioLibrary.Shot(0) == null)
+        if (attackStyle != AttackStyle.Pistol && attackStyle != AttackStyle.SMG) return;
+        // Ranged enemies share Marco's weapon clips; Enemy2 remains 10% quieter.
+        weaponAudioLibrary = Resources.Load<WeaponAudioLibrary>("WeaponAudioLibrary");
+        if (weaponAudioLibrary == null || weaponAudioLibrary.Shot(ShotAudioWeapon) == null)
         {
-            Debug.LogWarning("Enemy pistol shot is missing from WeaponAudioLibrary.", this);
+            Debug.LogWarning("Enemy ranged shot is missing from WeaponAudioLibrary.", this);
             return;
         }
-        var audioObject = new GameObject("Enemy Pistol Fire Audio");
+        var audioObject = new GameObject(attackStyle == AttackStyle.SMG ? "Enemy SMG Fire Audio" : "Enemy Pistol Fire Audio");
         audioObject.transform.SetParent(transform, false);
-        pistolShotSource = audioObject.AddComponent<AudioSource>();
-        pistolShotSource.playOnAwake = false;
-        pistolShotSource.loop = false;
-        pistolShotSource.spatialBlend = 0f;
-        pistolShotSource.dopplerLevel = 0f;
-        pistolShotSource.priority = 96;
-        pistolShotSource.clip = pistolAudioLibrary.Shot(0);
-        pistolShotSource.volume = pistolAudioLibrary.ShotVolume(0) * 0.9f;
+        weaponShotSource = audioObject.AddComponent<AudioSource>();
+        weaponShotSource.playOnAwake = false;
+        weaponShotSource.loop = false;
+        weaponShotSource.spatialBlend = 0f;
+        weaponShotSource.dopplerLevel = 0f;
+        weaponShotSource.priority = 96;
+        weaponShotSource.clip = weaponAudioLibrary.Shot(ShotAudioWeapon);
+        weaponShotSource.volume = ShotAudioVolume;
     }
 
     private void Update()
@@ -270,7 +276,7 @@ public sealed class BasicEnemy : MonoBehaviour
         activeEnemies.Remove(this);
         StopAllCoroutines();
         attackInProgress = false;
-        if (pistolShotSource != null) pistolShotSource.Stop();
+        if (weaponShotSource != null) weaponShotSource.Stop();
     }
 
     private void OnDestroy()
@@ -353,8 +359,29 @@ public sealed class BasicEnemy : MonoBehaviour
 
     private bool HasLineOfSight(PlayerActions victim)
     {
+        Vector2 origin = sprite.bounds.center;
+        if (IsRanged)
+        {
+            float horizontal = victim.transform.position.x - transform.position.x;
+            bool flipX = Mathf.Abs(horizontal) > 0.05f ? horizontal > 0f : sprite.flipX;
+            if (!EnemyMuzzle.TryWorldPosition(sprite, firingMuzzleReference, flipX, out Vector2 muzzle) ||
+                !HasClearShotPath(origin, muzzle)) return false;
+            origin = muzzle;
+        }
+        return HasClearShotPath(origin, victim.AimOrigin);
+    }
+
+    private bool HasClearShotPath(Vector2 origin, Vector2 destination)
+    {
         using var query = ConsultasFisicasCombate.Obtener();
-        query.TrazarLinea(sprite.bounds.center, victim.AimOrigin);
+        if (IsRanged)
+        {
+            Vector2 delta = destination - origin;
+            float distance = delta.magnitude;
+            if (distance < 0.0001f) return true;
+            query.Barrer(origin, 0.06f, delta / distance, distance);
+        }
+        else query.TrazarLinea(origin, destination);
         foreach (RaycastHit2D hit in query.Impactos)
         {
             Collider2D collider = hit.collider;
@@ -423,20 +450,29 @@ public sealed class BasicEnemy : MonoBehaviour
     private bool FireAt(PlayerActions victim)
     {
         // Recheck at emission too: a windup or burst may outlive the crossing.
-        if (!CanHit(victim)) return false;
-        Vector2 origin = sprite.bounds.center;
+        if (!IsRanged || !CanHit(victim)) return false;
+        Face(victim.transform.position.x - transform.position.x);
+        // Idle has no raised weapon. Evaluate a firing pose before locating its
+        // barrel, including when a damage pose interrupted the animation.
+        if (!PrepareFiringPose() ||
+            !EnemyMuzzle.TryWorldPosition(sprite, firingMuzzleReference, sprite.flipX, out Vector2 origin)) return false;
         Vector2 destination = victim.AimOrigin;
-        Vector2 direction = destination - origin;
+        // A muzzle beyond thin cover must never let the shot skip that cover.
+        if (!HasClearShotPath(sprite.bounds.center, origin) ||
+            (coordinatedCombat && !HasClearShotPath(origin, destination))) return false;
+        float forward = sprite.flipX ? 1f : -1f;
+        bool pointBlank = (destination.x - origin.x) * forward < 0f;
+        // Preserve contact hits when the player overlaps the weapon, without
+        // drawing a bullet backwards from the barrel into the enemy's body.
+        Vector2 traceOrigin = pointBlank ? (Vector2)sprite.bounds.center : origin;
+        Vector2 direction = destination - traceOrigin;
         float distance = direction.magnitude;
-        if (distance < 0.01f)
-            return false;
-        direction /= distance;
-        origin += direction * 0.35f;
+        direction = distance > 0.0001f ? direction / distance : Vector2.right * forward;
 
         Collider2D nearest = null;
         float nearestDistance = float.PositiveInfinity;
         using var consulta = ConsultasFisicasCombate.Obtener();
-        consulta.Barrer(origin, 0.06f, direction, distance);
+        consulta.Barrer(traceOrigin, 0.06f, direction, distance);
         foreach (RaycastHit2D hit in consulta.Impactos)
         {
             if (hit.collider == null || hit.collider.GetComponentInParent<EnemyHealth>() != null)
@@ -453,13 +489,26 @@ public sealed class BasicEnemy : MonoBehaviour
 
         if (nearest != null)
             nearest.GetComponentInParent<PlayerActions>()?.TakeDamage(damage);
-        ShotVisual.EnemyShot(origin, direction, nearest != null ? nearestDistance : distance,
+        ShotVisual.EnemyShot(origin, pointBlank ? Vector2.right * forward : direction,
+            pointBlank ? 0f : nearest != null ? nearestDistance : distance,
             attackStyle == AttackStyle.SMG ? 1 : 0, nearest != null);
-        if (attackStyle == AttackStyle.Pistol && pistolShotSource != null)
+        if (weaponShotSource != null)
         {
-            pistolShotSource.volume = pistolAudioLibrary.ShotVolume(0) * 0.9f;
-            pistolShotSource.PlayOneShot(pistolAudioLibrary.Shot(0));
+            weaponShotSource.volume = ShotAudioVolume;
+            weaponShotSource.PlayOneShot(weaponAudioLibrary.Shot(ShotAudioWeapon));
         }
         return true;
+    }
+
+    private bool PrepareFiringPose()
+    {
+        bool smg = attackStyle == AttackStyle.SMG;
+        if (EnemyMuzzle.IsFiringSprite(sprite.sprite, smg)) return true;
+        int state = Animator.StringToHash(smg ? "Enemy4_SMGFire" : "Enemy2_PistolFire");
+        if (animator == null || animator.runtimeAnimatorController == null || !animator.HasState(0, state)) return false;
+        animator.ResetTrigger(attack);
+        animator.Play(state, 0, 0f);
+        animator.Update(0f);
+        return EnemyMuzzle.IsFiringSprite(sprite.sprite, smg);
     }
 }

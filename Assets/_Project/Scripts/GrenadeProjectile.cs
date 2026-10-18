@@ -46,10 +46,10 @@ public sealed class GrenadeProjectile : MonoBehaviour
             grenade.groundY = body.transform.TransformPoint(new Vector3(0f, feetY, 0f)).y;
         }
         grenade.groundY = Mathf.Min(grenade.groundY, origin.y - shotRadius);
-        // A modest upward launch remains visible for horizontal aim; aiming up
-        // or down adjusts the lob without turning it back into a straight rocket.
+        // Keep a shallow lob at horizontal aim and a restrained vertical lift
+        // when aiming upward, while preserving the faster forward travel.
         grenade.velocity = new Vector2(direction.x * speed * 0.8f,
-            5f + direction.y * speed * 0.6f);
+            3.5f + direction.y * speed * 0.4f);
 
         var artwork = CharacterWeapons.Artwork(true);
         Sprite ammo = artwork != null ? artwork.AmmoAt(2) : null;
@@ -163,13 +163,12 @@ public sealed class GrenadeProjectile : MonoBehaviour
                 {
                     settled = true;
                     velocity = Vector2.zero;
-                    visual.transform.rotation = Quaternion.Euler(0f, 0f, -90f);
                 }
             }
             else velocity = Vector2.Reflect(velocity, normal) * 0.35f;
         }
         transform.position = position;
-        if (!settled) visual.transform.Rotate(0f, 0f, -Mathf.Sign(shotDirection.x) * 280f * step);
+        // Keep the round's launch orientation throughout the arc and bounce.
     }
 
     private void Draw()
