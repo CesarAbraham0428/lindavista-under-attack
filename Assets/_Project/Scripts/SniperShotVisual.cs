@@ -83,33 +83,21 @@ public sealed class SniperShotVisual : MonoBehaviour
             blood.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
     }
 
+    public const string TracerName = "SniperTracer";
+    public const string BloodName = "SniperBloodImpact";
+
     public static Sprite GetTracerSprite() => tracerSprite != null ? tracerSprite :
-        tracerSprite = LoadTrimmed("SniperTracer", new Vector2(1f, 0.5f));
+        tracerSprite = LoadBaked(TracerName);
 
     public static Sprite GetBloodSprite() => bloodSprite != null ? bloodSprite :
-        bloodSprite = LoadTrimmed("SniperBloodImpact", Vector2.one * 0.5f);
+        bloodSprite = LoadBaked(BloodName);
 
-    private static Sprite LoadTrimmed(string resource, Vector2 pivot)
+    private static Sprite LoadBaked(string resource)
     {
-        Texture2D texture = Resources.Load<Texture2D>(resource);
-        if (texture == null || !texture.isReadable)
-        {
-            Debug.LogError("Missing readable sniper effect texture: " + resource);
-            return ProgressionVisuals.Projectile;
-        }
-        Color32[] pixels = texture.GetPixels32();
-        int minX = texture.width, minY = texture.height, maxX = -1, maxY = -1;
-        for (int y = 0; y < texture.height; y++)
-            for (int x = 0; x < texture.width; x++)
-                if (pixels[y * texture.width + x].a > 8)
-                {
-                    minX = Mathf.Min(minX, x); maxX = Mathf.Max(maxX, x);
-                    minY = Mathf.Min(minY, y); maxY = Mathf.Max(maxY, y);
-                }
-        if (maxX < minX || maxY < minY) return ProgressionVisuals.Projectile;
-        var sprite = Sprite.Create(texture, new Rect(minX, minY, maxX - minX + 1, maxY - minY + 1),
-            pivot, 256f, 0, SpriteMeshType.FullRect);
-        sprite.name = resource;
-        return sprite;
+        // Trimmed rectangle and pivot are baked at import (Tools/Lindavista/Bake effect sprite rectangles).
+        foreach (var sprite in Resources.LoadAll<Sprite>(resource))
+            if (sprite.name == resource) return sprite;
+        Debug.LogError("Missing baked sniper effect sprite: " + resource);
+        return ProgressionVisuals.Projectile;
     }
 }

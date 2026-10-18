@@ -107,8 +107,12 @@ public static class SniperShotChecks
         Clear();
         foreach (Sprite sprite in new[] { SniperShotVisual.GetTracerSprite(), SniperShotVisual.GetBloodSprite() })
         {
-            Check(sprite != null && sprite.texture.isReadable && sprite.name.StartsWith("Sniper"), "generated sprite loads");
-            Color32[] pixels = sprite.texture.GetPixels32();
+            Check(sprite != null && !sprite.texture.isReadable && sprite.name.StartsWith("Sniper"), "baked sprite loads without a CPU copy");
+            // The runtime texture has no CPU copy; check the alpha of the source image instead.
+            var source = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            source.LoadImage(System.IO.File.ReadAllBytes(AssetDatabase.GetAssetPath(sprite.texture)));
+            Color32[] pixels = source.GetPixels32();
+            Object.DestroyImmediate(source);
             int transparent = pixels.Count(p => p.a == 0), visible = pixels.Count(p => p.a > 24);
             Check(transparent > pixels.Length / 5 && visible > pixels.Length / 1000, "true alpha and visible sprite");
         }
@@ -245,7 +249,8 @@ public static class SniperShotChecks
                 animator.Update(0f);
                 var controller = player.AddComponent<PlayerWeaponController>();
                 var actions = player.AddComponent<PlayerActions>();
-                actions.enabled = false;
+                // Exercise the enabled gameplay path without advancing input frames;
+                // Verify() clears these temporary objects before its next yield.
                 actions.SelectTouchWeapon(1);
                 Check(controller.EquippedWeapon == 1, "Cesar equips sniper");
                 actions.SetTouchAimAndFire(Vector2.right);

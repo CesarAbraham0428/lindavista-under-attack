@@ -401,8 +401,7 @@ public static class MenuSceneBuilder
         {
             new EditorBuildSettingsScene(ScenePath + "MainMenu.unity", true),
             new EditorBuildSettingsScene(ScenePath + "CharacterSelection.unity", true),
-            new EditorBuildSettingsScene(ScenePath + "Gameplay.unity", true),
-            new EditorBuildSettingsScene(ScenePath + "Testing.unity", true)
+            new EditorBuildSettingsScene(ScenePath + "Gameplay.unity", true)
         };
     }
 

@@ -23,6 +23,10 @@ public sealed class BossIntroduction : MonoBehaviour
     private Text dialogue, counter;
     private bool presenting;
     private float nextAdvance;
+    private bool applicationPaused;
+    private bool applicationFocused = true;
+    private bool CanAdvance => presenting && !IsComplete && !applicationPaused && applicationFocused &&
+        !GameFlowController.IsPaused && !GameFlowController.IsMatchEnded && !PistolUpgradeShop.IsOpen;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() => active = null;
@@ -47,16 +51,19 @@ public sealed class BossIntroduction : MonoBehaviour
         nextAdvance = Time.unscaledTime + 0.25f;
         while (!IsComplete && !GameFlowController.IsMatchEnded) yield return null;
         // The last tap belongs to the dialogue, including a held pointer and touch release.
-        while (PointerHeld()) yield return null;
+        while (!GameFlowController.IsMatchEnded &&
+            (PointerHeld() || applicationPaused || !applicationFocused || GameFlowController.IsPaused)) yield return null;
         yield return null;
         Restore();
     }
 
     private void Update()
     {
-        if (!presenting || IsComplete || GameFlowController.IsPaused) return;
-        bool pressed = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-        pressed |= Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame;
+        if (!CanAdvance) return;
+        bool pressed = !Application.isMobilePlatform && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
+        if (Touchscreen.current != null)
+            foreach (var touch in Touchscreen.current.touches)
+                pressed |= touch.press.wasPressedThisFrame;
         pressed |= Keyboard.current != null && (Keyboard.current.spaceKey.wasPressedThisFrame ||
             Keyboard.current.enterKey.wasPressedThisFrame);
         if (pressed) Advance();
@@ -64,16 +71,33 @@ public sealed class BossIntroduction : MonoBehaviour
 
     public void Advance()
     {
-        if (!presenting || IsComplete || Time.unscaledTime < nextAdvance) return;
+        if (!CanAdvance || Time.unscaledTime < nextAdvance) return;
         nextAdvance = Time.unscaledTime + 0.18f;
         if (LineIndex + 1 >= Lines.Length) { IsComplete = true; return; }
         LineIndex++;
         RefreshText();
     }
 
-    private static bool PointerHeld() =>
-        (Mouse.current != null && Mouse.current.leftButton.isPressed) ||
-        (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed);
+    private static bool PointerHeld()
+    {
+        if (!Application.isMobilePlatform && Mouse.current != null && Mouse.current.leftButton.isPressed) return true;
+        if (Touchscreen.current != null)
+            foreach (var touch in Touchscreen.current.touches)
+                if (touch.press.isPressed) return true;
+        return false;
+    }
+
+    private void OnApplicationPause(bool paused)
+    {
+        applicationPaused = paused;
+        if (paused) MobileControlsHUD.CancelActiveTouches();
+    }
+
+    private void OnApplicationFocus(bool focused)
+    {
+        applicationFocused = focused;
+        if (!focused) MobileControlsHUD.CancelActiveTouches();
+    }
 
     private void Build(Sprite portrait)
     {

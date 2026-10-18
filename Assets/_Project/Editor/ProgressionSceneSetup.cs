@@ -35,7 +35,7 @@ public static class ProgressionSceneSetup
             }
             finally { PrefabUtility.UnloadPrefabContents(contents); }
         }
-        foreach (string name in new[] { "Gameplay", "Testing" })
+        foreach (string name in new[] { "Gameplay" })
         {
             Scene scene = EditorSceneManager.OpenScene(Root + "Scenes/" + name + ".unity", OpenSceneMode.Single);
             // Opening a scene can unload references held by the preceding scene.

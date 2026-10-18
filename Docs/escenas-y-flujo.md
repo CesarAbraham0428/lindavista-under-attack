@@ -1,6 +1,6 @@
 # Escenas y flujo
 
-Las cuatro escenas del proyecto están en `Assets/_Project/Scenes`. Unity las incluye actualmente en `EditorBuildSettings`, incluida la escena de pruebas.
+Las tres escenas del proyecto están en `Assets/_Project/Scenes` y forman la lista de `EditorBuildSettings`. La antigua escena de laboratorio `Testing` se eliminó; también se retiró de la build y del código que la reconocía.
 
 ## Flujo principal
 
@@ -8,8 +8,6 @@ Las cuatro escenas del proyecto están en `Assets/_Project/Scenes`. Unity las in
 MainMenu → CharacterSelection → Gameplay
     ↑              │
     └── volver ────┘
-
-Testing es una escena independiente para pruebas.
 ```
 
 ### `MainMenu`
@@ -35,18 +33,10 @@ Testing es una escena independiente para pruebas.
 - **Inicio y oleada:** la cámara abre en el tramo 5 para mostrar solo tres enemigos separados por 3 unidades, luego hace un paneo hacia la entrada. Al empezar el paneo, `E5_Enemigos` libera esos enemigos uno por uno; después crea el resto de la oleada gradualmente desde el extremo derecho de la formación inicial. El intervalo mínimo es de 3,2 segundos y se espera a que haya 3 unidades libres alrededor del punto de aparición. Los enemigos avanzan hacia la posición inicial del jugador (X=-6,72 en la escena actual). El personaje queda bloqueado durante la presentación. Los conteos y prefabs se conservan para los cuatro niveles; la cantidad inicial, separación, intervalo y espacio libre se configuran en el Inspector del spawner.
 - **Derrota:** la salud del personaje en cero o la llegada de un enemigo a la posición inicial activan la pantalla de derrota. Se bloquean las acciones y se puede reiniciar `Gameplay` o salir a `MainMenu`.
 - **Victoria:** tras la última muerte y la liberación completa de la oleada se permite recoger monedas; **FINALIZAR NIVEL** guarda la finalización y desbloquea el siguiente nivel. Los resultados incluyen acceso a las mejoras de pistola.
-- `Testing` conserva las cuatro variantes de enemigo para probar combate y animaciones. Consulta [Progresión](progresion-nivel-1.md) para el guardado y las recompensas.
-
-### `Testing`
-
-- Escena de laboratorio para probar cambios antes de llevarlos a `Gameplay`.
-- Tiene a Marco y César activos a la vez, cuatro enemigos (`Enemy1` a `Enemy4`) y el mismo tipo de escenario largo.
-- El HUD de vida muestra una fila por cada jugador activo. **Q** quita vida para probar el daño; no simula un impacto real de un enemigo.
-- El HUD de controles táctiles también está configurado para esta escena: aparece en plataformas móviles y se puede previsualizar en el Editor con **F9**.
+- Consulta [Progresión](progresion-nivel-1.md) para el guardado y las recompensas.
 
 ## Convención de desarrollo
 
-1. Probar el comportamiento aislado en `Testing`.
-2. Ajustar código y contenido hasta validar el resultado.
-3. Integrar la versión aprobada en `Gameplay` y comprobar el flujo con el personaje y nivel seleccionados.
-4. Mantener `Testing` como laboratorio para iteraciones futuras.
+1. Probar el cambio en `Gameplay` con el personaje y el nivel afectados.
+2. Cuando pueda verificarse automáticamente, añadir o actualizar una comprobación en **Tools > Lindavista**; varias se ejecutan en una escena vacía de Play Mode sin tocar el perfil real.
+3. Comprobar el flujo completo desde `MainMenu`.

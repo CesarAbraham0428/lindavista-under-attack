@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 /// <summary>Inactive combat objects belong to their level, never to the saved profile.</summary>
 internal sealed class SceneCombatPool<T> where T : Component
 {
-    private readonly Stack<T> available = new();
+    private readonly Stack<T> available;
     private readonly string label;
     private readonly int capacity;
     private Transform root;
@@ -13,7 +13,8 @@ internal sealed class SceneCombatPool<T> where T : Component
     internal SceneCombatPool(string label, int capacity)
     {
         this.label = label;
-        this.capacity = capacity;
+        this.capacity = Mathf.Max(0, capacity);
+        available = new Stack<T>(this.capacity);
     }
 
     private void EnsureScene()
@@ -30,6 +31,11 @@ internal sealed class SceneCombatPool<T> where T : Component
         T item = null;
         while (available.Count > 0 && item == null) item = available.Pop();
         if (item != null) return item;
+        return Create();
+    }
+
+    private T Create()
+    {
         var go = new GameObject(label);
         go.SetActive(false);
         go.transform.SetParent(root, false);
@@ -53,13 +59,14 @@ internal sealed class SceneCombatPool<T> where T : Component
     {
         EnsureScene();
         count = Mathf.Clamp(count, 0, capacity);
-        var items = new List<T>(count);
-        for (int i = 0; i < count; i++)
+        // Warm only the missing inactive objects. Repeated warmup (for example
+        // when the boss arrives) must neither rent existing objects nor allocate
+        // a temporary list or rebuild their visual components.
+        while (available.Count < count)
         {
-            T item = Rent();
+            T item = Create();
             prepare?.Invoke(item);
-            items.Add(item);
+            available.Push(item);
         }
-        foreach (T item in items) Return(item);
     }
 }

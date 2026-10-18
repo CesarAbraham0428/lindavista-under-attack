@@ -38,5 +38,14 @@ public static class SelectedCharacterBootstrap
 
         if (cesar != null)
             cesar.SetActive(!selectMarco);
+
+        // An inactive character still keeps its whole animation set resident (~20 MB on Android).
+        // Retrying or changing character reloads the scene, so the unused one is never needed again.
+        GameObject unused = selectMarco ? cesar : marco;
+        if (unused != null && (selectMarco ? marco : cesar) != null)
+        {
+            Object.Destroy(unused);
+            new GameObject("Unused level assets release").AddComponent<LiberacionRecursosNivel>();
+        }
     }
 }

@@ -58,6 +58,28 @@ public static class ComprobacionesGuardadoProgreso
             Exigir(repositorio.GuardarPendientes() && new ProgressionRepository(archivo).Municion(0, false) == 37,
                 "reintento del lote después del fallo");
 
+            // El guardado periódico escribe en otro hilo; suspender o salir espera a que termine.
+            Exigir(repositorio.TryConsumeAmmo(0, false), "consumo previo al guardado en segundo plano");
+            repositorio.GuardarPendientesEnSegundoPlano();
+            Exigir(repositorio.GuardarPendientes() && new ProgressionRepository(archivo).Municion(0, false) == 36,
+                "lote en segundo plano persistente al esperar la escritura");
+            Exigir(repositorio.TryConsumeAmmo(0, false), "consumo previo a fallo en segundo plano");
+            Directory.CreateDirectory(archivo + ".tmp");
+            repositorio.GuardarPendientesEnSegundoPlano();
+            Exigir(!repositorio.GuardarPendientes() && repositorio.LastError != null && repositorio.Municion(0, false) == 35,
+                "fallo en segundo plano conserva el consumo pendiente");
+            Directory.Delete(archivo + ".tmp");
+            Exigir(repositorio.GuardarPendientes() && new ProgressionRepository(archivo).Municion(0, false) == 35,
+                "reintento después de un fallo en segundo plano");
+            // Una instantánea anterior nunca reemplaza una confirmación síncrona posterior.
+            Exigir(repositorio.TryConsumeAmmo(0, false), "consumo previo a compra durante escritura");
+            repositorio.GuardarPendientesEnSegundoPlano();
+            Exigir(repositorio.TryCredit(5), "crédito síncrono durante escritura en segundo plano");
+            Exigir(repositorio.GuardarPendientes(), "espera de escrituras pendientes");
+            var ordenado = new ProgressionRepository(archivo);
+            Exigir(ordenado.Monedas == 80 && ordenado.Municion(0, false) == 34,
+                "orden de escrituras conserva la confirmación más reciente");
+
             // Al recuperarse desde .bak, el principal corrupto nunca debe reemplazarlo.
             string respaldo = File.ReadAllText(archivo + ".bak");
             File.WriteAllText(archivo, "archivo corrupto");

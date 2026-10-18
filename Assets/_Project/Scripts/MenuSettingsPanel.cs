@@ -17,6 +17,11 @@ public sealed class MenuSettingsPanel : MonoBehaviour
     [SerializeField] private GameObject controlsContent;
     private MenuMusicPlayer player;
     private bool bound;
+    private bool mobileLayout;
+    private Button displayTab;
+    private GameObject displayContent;
+    private Button fluidMode;
+    private Button batteryMode;
     public Slider MasterVolume => masterVolume;
     public Button BackButton { get; private set; }
 
@@ -47,12 +52,16 @@ public sealed class MenuSettingsPanel : MonoBehaviour
 
     public void ConfigurarControlesMoviles(bool movil)
     {
+        mobileLayout = movil;
+        ConfigurarPantalla(movil && (Application.platform == RuntimePlatform.Android || Application.isEditor));
+        AjustarSonido(movil);
         if (controlsContent == null) return;
         var teclado = controlsContent.transform.Find("Keyboard and Mouse");
         var tactil = controlsContent.transform.Find("Touch Controls");
         if (teclado != null) teclado.gameObject.SetActive(!movil);
         if (tactil == null) return;
         ProgressionUI.Percent((RectTransform)tactil, movil ? 0f : .595f, 0f, 1f, 1f);
+        ConfigurarAyudaTactil(tactil, movil);
         if (!movil) return;
         foreach (var texto in tactil.GetComponentsInChildren<Text>(true))
         {
@@ -60,6 +69,144 @@ public sealed class MenuSettingsPanel : MonoBehaviour
             texto.fontSize = texto.resizeTextMaxSize = tamano;
             texto.resizeTextMinSize = 24;
         }
+    }
+
+    private static void ConfigurarAyudaTactil(Transform touch, bool movil)
+    {
+        var help = touch.Find("Mobile Actions");
+        if (help == null && movil)
+        {
+            help = ProgressionUI.Image(touch, "Mobile Actions", Color.clear).transform;
+            ProgressionUI.Percent((RectTransform)help, 0f, 0f, 1f, .86f);
+            string[] captions = { "MOVERSE · ‹  ›", "APUNTAR Y DISPARAR", "RECARGAR · REC", "CAMBIAR ARMA", "RECUPERAR VIDA · +1", "PAUSA / ATRÁS" };
+            string[] hints = { "Mantén las flechas de la izquierda.", "Mantén y arrastra en el área derecha.", "Toca REC para recargar el arma.", "Toca el icono de un arma que tengas.", "Toca USAR +1. Necesitas pastillas y estar herido.", "Pausa la partida o vuelve al panel anterior." };
+            for (int i = 0; i < captions.Length; i++)
+            {
+                float left = i < 3 ? .025f : .515f;
+                float bottom = .68f - (i % 3) * .33f;
+                var row = ProgressionUI.Image(help, "Action " + i, new Color(.11f, .15f, .13f));
+                row.sprite = Resources.Load<Sprite>("UI/SettingsFrame");
+                row.type = Image.Type.Sliced;
+                ProgressionUI.Percent(row.rectTransform, left, bottom, left + .46f, bottom + .30f);
+                var title = ProgressionUI.Text(row.transform, "Action", captions[i], 35, TextAnchor.MiddleLeft);
+                CartoonUI.Typography(title);
+                title.resizeTextMinSize = 28;
+                title.color = ProgressionUI.Gold;
+                ProgressionUI.Percent(title.rectTransform, .045f, .53f, .955f, .96f);
+                var hint = ProgressionUI.Text(row.transform, "Hint", hints[i], 30, TextAnchor.MiddleLeft);
+                CartoonUI.Typography(hint);
+                hint.resizeTextMinSize = 26;
+                hint.color = new Color(.78f, .81f, .70f);
+                ProgressionUI.Percent(hint.rectTransform, .045f, .05f, .955f, .54f);
+            }
+        }
+        for (int i = 0; i < touch.childCount; i++)
+        {
+            var child = touch.GetChild(i);
+            if (child.name == "Heading") continue;
+            child.gameObject.SetActive(child == help ? movil : !movil);
+        }
+    }
+
+    private void ConfigurarPantalla(bool movil)
+    {
+        if (soundTab == null || controlsTab == null) return;
+        if (movil && displayTab == null)
+        {
+            var board = soundTab.transform.parent;
+            displayTab = ProgressionUI.Button(board, "PANTALLA", () => ShowSection(2));
+            displayTab.gameObject.name = "Display Tab";
+            displayTab.image.sprite = soundTab.image.sprite;
+            displayTab.image.type = soundTab.image.type;
+            var caption = displayTab.GetComponentInChildren<Text>();
+            CartoonUI.Typography(caption, true);
+            caption.fontSize = caption.resizeTextMaxSize = 38;
+            caption.resizeTextMinSize = 28;
+            displayContent = ProgressionUI.Image(board, "Display Content", Color.clear).gameObject;
+            ProgressionUI.Percent((RectTransform)displayContent.transform, .055f, .185f, .945f, .665f);
+            var title = ProgressionUI.Text(displayContent.transform, "Performance Heading", "ELIGE CÓMO JUGAR", 42, TextAnchor.MiddleCenter);
+            CartoonUI.Typography(title, true);
+            ProgressionUI.Percent(title.rectTransform, 0, .76f, 1, 1);
+            fluidMode = CrearModo("FLUIDO", "Hasta 60 FPS · prioriza la fluidez", false, .015f, .485f);
+            batteryMode = CrearModo("AHORRO DE BATERÍA", "Hasta 30 FPS · prioriza la batería", true, .515f, .985f);
+            var hint = ProgressionUI.Text(displayContent.transform, "Performance Hint", "Se aplica al instante y se guarda para la próxima partida.", 30, TextAnchor.MiddleCenter);
+            CartoonUI.Typography(hint);
+            ProgressionUI.Percent(hint.rectTransform, .02f, .02f, .98f, .20f);
+            displayContent.SetActive(false);
+        }
+        if (displayTab != null) displayTab.gameObject.SetActive(movil);
+        if (displayContent != null && !movil) displayContent.SetActive(false);
+        ProgressionUI.Percent((RectTransform)soundTab.transform, .055f, movil ? .69f : .715f, movil ? .345f : .485f, .825f);
+        ProgressionUI.Percent((RectTransform)controlsTab.transform, movil ? .365f : .515f, movil ? .69f : .715f, movil ? .635f : .945f, .825f);
+        if (movil && displayTab != null)
+            ProgressionUI.Percent((RectTransform)displayTab.transform, .655f, .69f, .945f, .825f);
+        if (soundContent != null)
+            ProgressionUI.Percent((RectTransform)soundContent.transform, .055f, .185f, .945f, movil ? .665f : .69f);
+        if (controlsContent != null)
+            ProgressionUI.Percent((RectTransform)controlsContent.transform, .055f, .185f, .945f, movil ? .665f : .69f);
+        RefreshModes();
+    }
+
+    private Button CrearModo(string caption, string hint, bool ahorro, float left, float right)
+    {
+        var button = ProgressionUI.Button(displayContent.transform, caption, () =>
+        {
+            ConfiguracionMovil.EstablecerModoAhorro(ahorro);
+            RefreshModes();
+        });
+        button.gameObject.name = ahorro ? "Battery Mode" : "Fluid Mode";
+        CartoonUI.ButtonStyle(button);
+        ProgressionUI.Percent((RectTransform)button.transform, left, .26f, right, .73f);
+        var text = button.GetComponentInChildren<Text>();
+        text.fontSize = text.resizeTextMaxSize = 40;
+        text.resizeTextMinSize = 30;
+        ProgressionUI.Percent(text.rectTransform, .04f, .43f, .96f, .94f);
+        var description = ProgressionUI.Text(button.transform, "Description", hint, 28, TextAnchor.MiddleCenter);
+        CartoonUI.Typography(description);
+        description.resizeTextMinSize = 24;
+        ProgressionUI.Percent(description.rectTransform, .04f, .06f, .96f, .42f);
+        return button;
+    }
+
+    private void RefreshModes()
+    {
+        if (fluidMode == null || batteryMode == null) return;
+        bool ahorro = ConfiguracionMovil.ModoAhorro;
+        StyleTab(fluidMode, !ahorro);
+        StyleTab(batteryMode, ahorro);
+        fluidMode.interactable = ahorro;
+        batteryMode.interactable = !ahorro;
+    }
+
+    private void AjustarSonido(bool movil)
+    {
+        if (soundContent == null) return;
+        foreach (var slider in new[] { masterVolume, musicVolume })
+        {
+            if (slider == null) continue;
+            var section = slider.transform.parent;
+            var rect = (RectTransform)section;
+            rect.anchorMin = new Vector2(rect.anchorMin.x, movil ? .50f : .635f);
+            rect.anchorMax = new Vector2(rect.anchorMax.x, 1f);
+            ProgressionUI.Percent((RectTransform)slider.transform, .055f, .08f, .945f, movil ? .65f : .43f);
+            var caption = section.Find("Caption") as RectTransform;
+            var value = section.Find("Value") as RectTransform;
+            if (caption != null) ProgressionUI.Percent(caption, .045f, movil ? .68f : .67f, .78f, .95f);
+            if (value != null) ProgressionUI.Percent(value, .78f, movil ? .68f : .67f, .955f, .95f);
+            var hint = section.Find("Hint");
+            if (hint != null) hint.gameObject.SetActive(!movil);
+        }
+        var heading = soundContent.transform.Find("Soundtrack Heading") as RectTransform;
+        if (heading != null) ProgressionUI.Percent(heading, 0f, movil ? .375f : .495f, 1f, movil ? .485f : .605f);
+        foreach (var button in trackButtons)
+        {
+            if (button == null) continue;
+            var rect = (RectTransform)button.transform;
+            rect.anchorMin = new Vector2(rect.anchorMin.x, movil ? .025f : .13f);
+            rect.anchorMax = new Vector2(rect.anchorMax.x, movil ? .36f : .48f);
+        }
+        var playback = soundContent.transform.Find("Playback Hint");
+        if (playback != null) playback.gameObject.SetActive(!movil);
     }
 
     private void OnDisable()
@@ -73,17 +220,26 @@ public sealed class MenuSettingsPanel : MonoBehaviour
 
     public void ShowSection(bool controls)
     {
-        if (soundContent != null) soundContent.SetActive(!controls);
-        if (controlsContent != null) controlsContent.SetActive(controls);
-        StyleTab(soundTab, !controls);
-        StyleTab(controlsTab, controls);
+        ShowSection(controls ? 1 : 0);
+    }
+
+    private void ShowSection(int section)
+    {
+        if (soundContent != null) soundContent.SetActive(section == 0);
+        if (controlsContent != null) controlsContent.SetActive(section == 1);
+        if (displayContent != null) displayContent.SetActive(mobileLayout && section == 2);
+        StyleTab(soundTab, section == 0);
+        StyleTab(controlsTab, section == 1);
+        StyleTab(displayTab, section == 2);
+        RefreshModes();
     }
 
     private static void StyleTab(Button tab, bool selected)
     {
         if (tab == null) return;
         tab.image.color = selected ? new Color(.36f, .46f, .22f) : new Color(.14f, .18f, .16f);
-        tab.GetComponentInChildren<Text>().color = selected ? ProgressionUI.Gold : CartoonUI.Cream;
+        var caption = tab.GetComponentInChildren<Text>();
+        if (caption != null) caption.color = selected ? ProgressionUI.Gold : CartoonUI.Cream;
     }
 
     private void Refresh()

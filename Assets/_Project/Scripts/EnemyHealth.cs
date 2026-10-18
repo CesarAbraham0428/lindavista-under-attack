@@ -28,6 +28,16 @@ public sealed class EnemyHealth : MonoBehaviour
     public event Action ShieldBroken;
     public bool IsShieldBroken => shieldBlocksFront && shieldBroken;
 
+    internal Vector3 DamageNumberAnchor
+    {
+        get
+        {
+            Bounds bounds = spriteRenderer != null && spriteRenderer.sprite != null ? spriteRenderer.bounds :
+                hitbox != null && hitbox.enabled ? hitbox.bounds : new Bounds(transform.position, Vector3.up);
+            return new Vector3(bounds.center.x, bounds.max.y, transform.position.z);
+        }
+    }
+
     /// <summary>Applies wave-specific shield durability. A broken shield never regenerates.</summary>
     public void ConfigureShieldOpening(int hits, float duration)
     {
@@ -118,7 +128,9 @@ public sealed class EnemyHealth : MonoBehaviour
         if (IsDead || amount <= 0 || GameFlowController.IsMatchEnded)
             return;
 
-        currentHealth = Mathf.Max(0, currentHealth - amount);
+        int appliedDamage = Mathf.Min(currentHealth, amount);
+        currentHealth -= appliedDamage;
+        DamageNumber.Show(this, appliedDamage);
         if (currentHealth <= 0)
         {
             IsDead = true;

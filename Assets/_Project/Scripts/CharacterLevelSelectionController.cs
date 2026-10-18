@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -17,10 +18,14 @@ public sealed class CharacterLevelSelectionController : MonoBehaviour
 
     private int selectedCharacter;
     private int selectedLevel;
+    private bool loadingScene;
 
     private void Awake()
     {
         AdaptacionMenusUI.Configurar(GetComponent<Canvas>());
+        // La flecha original se diseñó para ratón: una superficie mayor evita fallos con el pulgar.
+        if (backButton != null)
+            ((RectTransform)backButton.transform).sizeDelta = new Vector2(144f, 144f);
         if (characterButtons != null)
         {
             for (int i = 0; i < characterButtons.Length; i++)
@@ -56,8 +61,18 @@ public sealed class CharacterLevelSelectionController : MonoBehaviour
         if (startButton != null)
             startButton.onClick.AddListener(StartGame);
 
-        SelectCharacter(0);
-        SelectLevel(0);
+        int previousCharacter = PlayerPrefs.GetInt(SelectedCharacterKey, 0);
+        SelectCharacter(characterButtons != null && characterButtons.Length > 0 ? Mathf.Clamp(previousCharacter, 0, characterButtons.Length - 1) : 0);
+        int previousLevel = PlayerPrefs.GetInt(SelectedLevelKey, 0);
+        if (levelButtons != null && levelButtons.Length > 0)
+            previousLevel = Mathf.Clamp(previousLevel, 0, levelButtons.Length - 1);
+        SelectLevel(ProgressionService.IsLevelUnlocked(previousLevel) ? previousLevel : 0);
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            ReturnToMainMenu();
     }
 
     public void SelectCharacter(int index)
@@ -66,6 +81,7 @@ public sealed class CharacterLevelSelectionController : MonoBehaviour
             return;
 
         selectedCharacter = index;
+        PlayerPrefs.SetInt(SelectedCharacterKey, selectedCharacter);
         UpdateOutlines(characterOutlines, selectedCharacter);
     }
 
@@ -78,17 +94,22 @@ public sealed class CharacterLevelSelectionController : MonoBehaviour
             return;
 
         selectedLevel = index;
+        PlayerPrefs.SetInt(SelectedLevelKey, selectedLevel);
         UpdateOutlines(levelOutlines, selectedLevel);
     }
 
     public void ReturnToMainMenu()
     {
+        if (loadingScene) return;
+        loadingScene = true;
+        PlayerPrefs.Save();
         SceneManager.LoadScene("MainMenu");
     }
 
     public void StartGame()
     {
-        if (!ProgressionService.IsLevelUnlocked(selectedLevel)) return;
+        if (loadingScene || !ProgressionService.IsLevelUnlocked(selectedLevel)) return;
+        loadingScene = true;
         PlayerPrefs.SetInt(SelectedCharacterKey, selectedCharacter);
         PlayerPrefs.SetInt(SelectedLevelKey, selectedLevel);
         PlayerPrefs.Save();

@@ -41,8 +41,13 @@ public sealed class AreaSeguraUI : MonoBehaviour
         ultimoAncho = Screen.width;
         ultimoAlto = Screen.height;
         ultimaArea = Screen.safeArea;
-        zona.anchorMin = new Vector2(Mathf.Clamp01(ultimaArea.xMin / ultimoAncho), Mathf.Clamp01(ultimaArea.yMin / ultimoAlto));
-        zona.anchorMax = new Vector2(Mathf.Clamp01(ultimaArea.xMax / ultimoAncho), Mathf.Clamp01(ultimaArea.yMax / ultimoAlto));
+        Rect areaAplicada = ultimaArea;
+        // Android puede entregar un rectángulo vacío durante una rotación o al recuperar foco.
+        // Conservamos una zona útil hasta que el sistema publique los nuevos márgenes.
+        if (ultimaArea.width <= 0f || ultimaArea.height <= 0f)
+            areaAplicada = new Rect(0f, 0f, ultimoAncho, ultimoAlto);
+        zona.anchorMin = new Vector2(Mathf.Clamp01(areaAplicada.xMin / ultimoAncho), Mathf.Clamp01(areaAplicada.yMin / ultimoAlto));
+        zona.anchorMax = new Vector2(Mathf.Clamp01(areaAplicada.xMax / ultimoAncho), Mathf.Clamp01(areaAplicada.yMax / ultimoAlto));
         zona.offsetMin = zona.offsetMax = Vector2.zero;
     }
 }

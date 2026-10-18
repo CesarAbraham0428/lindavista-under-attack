@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>Barrel sockets measured on the 384 x 512 player animation cells.</summary>
@@ -26,20 +27,31 @@ public static class PlayerMuzzle
         P(383,176), P(381,170), P(347,323), P(342,321)
     };
 
+    private enum Sheet : byte { Marco, Cesar, CesarSniper }
+    // Sprite.name allocates a string per read; parse each animation frame once. Keyed by
+    // instance ID: a static Sprite reference would keep the other character's sheets resident.
+    private static readonly Dictionary<int, (Sheet sheet, int frame)> frames = new();
+
     public static Vector2 WorldPosition(SpriteRenderer renderer, int weaponIndex)
     {
         if (renderer == null || renderer.sprite == null)
             return renderer != null ? (Vector2)renderer.transform.position : Vector2.zero;
 
         Sprite sprite = renderer.sprite;
-        int frame = 0;
-        int separator = sprite.name.LastIndexOf('_');
-        if (sprite.name.Contains("_Fire_") && separator >= 0)
-            int.TryParse(sprite.name.Substring(separator + 1), out frame);
-        Vector2 pixel = sprite.name.StartsWith("Cesar_Francotirador_Fire_") ?
-            cesarSniper[Mathf.Clamp(frame, 0, 7)] :
-            (sprite.name.StartsWith("Cesar_") ? cesar : marco)
-                [Mathf.Clamp(weaponIndex, 0, 2)][Mathf.Clamp(frame, 0, 7)];
+        int id = sprite.GetInstanceID();
+        if (!frames.TryGetValue(id, out var parsed))
+        {
+            string name = sprite.name;
+            int frame = 0;
+            int separator = name.LastIndexOf('_');
+            if (name.Contains("_Fire_") && separator >= 0)
+                int.TryParse(name.Substring(separator + 1), out frame);
+            Sheet sheet = name.StartsWith("Cesar_Francotirador_Fire_") ? Sheet.CesarSniper :
+                name.StartsWith("Cesar_") ? Sheet.Cesar : Sheet.Marco;
+            frames[id] = parsed =(sheet, Mathf.Clamp(frame, 0, 7));
+        }
+        Vector2 pixel = parsed.sheet == Sheet.CesarSniper ? cesarSniper[parsed.frame] :
+            (parsed.sheet == Sheet.Cesar ? cesar : marco)[Mathf.Clamp(weaponIndex, 0, 2)][parsed.frame];
         Vector2 local = (Vector2.Scale(pixel, sprite.rect.size) - sprite.pivot) / sprite.pixelsPerUnit;
         if (renderer.flipX) local.x = -local.x;
         if (renderer.flipY) local.y = -local.y;

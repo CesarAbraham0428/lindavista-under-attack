@@ -48,7 +48,8 @@ public static class ShotVisualChecks
                         "Assets/_Project/Animations/Player_" + character + ".controller");
                     animator.Update(0f);
                     var actions = player.AddComponent<PlayerActions>();
-                    actions.enabled = false;
+                    // Exercise the enabled input path. The production guard rejects
+                    // disabled components; this synchronous check advances no input frames.
                     actions.SelectTouchWeapon(weapon);
                     // Check both a pointer behind the barrel (previously reversed
                     // shots) and a distant crosshair the muzzle ray must pass through.
@@ -310,7 +311,7 @@ public static class ShotVisualChecks
         try
         {
             var atlas = Resources.Load<Texture2D>("ShotProjectileAtlas");
-            Require(atlas != null && atlas.isReadable, "Readable projectile atlas is included in Resources");
+            Require(atlas != null && !atlas.isReadable, "Projectile atlas ships without a CPU copy (baked sprite rectangles)");
             for (int i = 0; i < 4; i++)
             {
                 Sprite sprite = ShotVisual.GetSprite(i);

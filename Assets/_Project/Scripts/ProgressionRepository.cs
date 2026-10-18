@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 [Serializable]
@@ -87,6 +88,12 @@ public sealed class ProgressionRepository
     private bool directorioPreparado;
     private bool writable = true;
     private ProgressionProfile profile;
+    // Disk access is serialized; sequence numbers keep an older snapshot from replacing a newer one.
+    private readonly object archivo = new();
+    private long secuenciaSolicitada, secuenciaEscrita;
+    private Task escrituraEnCurso;
+    private volatile bool falloEnSegundoPlano;
+    private volatile string errorSegundoPlano;
     public ProgressionProfile Snapshot => profile.Copy();
     // Las lecturas frecuentes no necesitan copiar los inventarios de ambos personajes.
     public int Monedas => profile.coins;
@@ -308,32 +315,56 @@ public sealed class ProgressionRepository
     }
 
     // Solo los consumos se agrupan; compras, monedas y niveles siguen confirmándose en disco.
-    public bool GuardarPendientes() => !municionPendiente || Commit(profile);
+    // Al suspender o salir, una escritura en segundo plano debe terminar (o repetirse aquí).
+    public bool GuardarPendientes()
+    {
+        escrituraEnCurso?.Wait();
+        RecuperarFalloEnSegundoPlano();
+        return !municionPendiente || Commit(profile);
+    }
+
+    /// <summary>
+    /// Confirma la munición diferida sin bloquear el cuadro: el JSON se toma aquí y el disco se
+    /// escribe en otro hilo. Un fallo deja los consumos pendientes para el siguiente intento.
+    /// </summary>
+    public void GuardarPendientesEnSegundoPlano()
+    {
+        RecuperarFalloEnSegundoPlano();
+        if (!municionPendiente || !writable || (escrituraEnCurso != null && !escrituraEnCurso.IsCompleted)) return;
+        string json = JsonUtility.ToJson(profile);
+        long secuencia = ++secuenciaSolicitada;
+        municionPendiente = false;
+        escrituraEnCurso = Task.Run(() =>
+        {
+            try
+            {
+                lock (archivo) Escribir(json, secuencia);
+            }
+            catch (Exception exception)
+            {
+                errorSegundoPlano = "No se pudo guardar el progreso: " + exception.Message;
+                falloEnSegundoPlano = true;
+            }
+        });
+    }
+
+    private void RecuperarFalloEnSegundoPlano()
+    {
+        if (!falloEnSegundoPlano) return;
+        falloEnSegundoPlano = false;
+        municionPendiente = true;
+        LastError = errorSegundoPlano;
+    }
 
     private bool Commit(ProgressionProfile next)
     {
         if (!writable) return false;
         try
         {
-            if (!directorioPreparado)
-            {
-                string directorio = Path.GetDirectoryName(path);
-                if (!string.IsNullOrEmpty(directorio)) Directory.CreateDirectory(directorio);
-                directorioPreparado = true;
-            }
-            string temporary = path + ".tmp";
-            File.WriteAllText(temporary, JsonUtility.ToJson(next));
-            // Never copy a corrupt primary over a valid backup during recovery.
-            if (File.Exists(path))
-            {
-                // Copiar el respaldo por separado evita borrar/reemplazar un .bak
-                // que un sincronizador de Windows puede mantener abierto.
-                if (principalValido) File.Copy(path, path + ".bak", true);
-                File.Replace(temporary, path, null);
-            }
-            else File.Move(temporary, path);
+            string json = JsonUtility.ToJson(next);
+            long secuencia = ++secuenciaSolicitada;
+            lock (archivo) Escribir(json, secuencia);
             profile = next;
-            principalValido = true;
             municionPendiente = false;
             LastError = null;
             return true;
@@ -343,5 +374,30 @@ public sealed class ProgressionRepository
             LastError = "No se pudo guardar el progreso: " + exception.Message;
             return false;
         }
+    }
+
+    // Called with the file lock held, from the main thread or the background writer.
+    private void Escribir(string json, long secuencia)
+    {
+        if (secuencia <= secuenciaEscrita) return;
+        if (!directorioPreparado)
+        {
+            string directorio = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(directorio)) Directory.CreateDirectory(directorio);
+            directorioPreparado = true;
+        }
+        string temporary = path + ".tmp";
+        File.WriteAllText(temporary, json);
+        // Never copy a corrupt primary over a valid backup during recovery.
+        if (File.Exists(path))
+        {
+            // Copiar el respaldo por separado evita borrar/reemplazar un .bak
+            // que un sincronizador de Windows puede mantener abierto.
+            if (principalValido) File.Copy(path, path + ".bak", true);
+            File.Replace(temporary, path, null);
+        }
+        else File.Move(temporary, path);
+        principalValido = true;
+        secuenciaEscrita = secuencia;
     }
 }

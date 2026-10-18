@@ -7,6 +7,8 @@ public sealed class ShotEffect : MonoBehaviour
 {
     private static int active;
     private const int limiteEfectos = 180;
+    // Android keeps contact flashes while bounding transparent sprite overdraw.
+    private static int LimiteActual => Application.platform == RuntimePlatform.Android ? 128 : limiteEfectos;
     private static readonly Stack<ShotEffect> disponibles = new();
     private static Transform contenedor;
     private SpriteRenderer visual;
@@ -18,7 +20,7 @@ public sealed class ShotEffect : MonoBehaviour
     public static ShotEffect Create(string label, Sprite sprite, Vector2 position, Vector2 velocity,
         Color color, float size, float endSize, float lifetime, int sortingOrder = 31)
     {
-        if (active >= limiteEfectos || sprite == null || GameFlowController.IsMatchEnded) return null;
+        if (active >= LimiteActual || sprite == null || GameFlowController.IsMatchEnded) return null;
         ShotEffect effect = null;
         while (disponibles.Count > 0 && effect == null) effect = disponibles.Pop();
         if (effect == null)
@@ -68,7 +70,7 @@ public sealed class ShotEffect : MonoBehaviour
         if (contenedor == null) contenedor = new GameObject("Efectos de disparo reutilizables").transform;
         transform.SetParent(contenedor, false);
         visual.sprite = null;
-        if (disponibles.Count < limiteEfectos) disponibles.Push(this);
+        if (disponibles.Count < LimiteActual) disponibles.Push(this);
         else Destroy(gameObject);
     }
 

@@ -11,7 +11,8 @@ public sealed class HealthConsumableHUD : MonoBehaviour
     private Text label;
     private PlayerActions player;
     private float nextSearch;
-    private string previousLabel;
+    private string previousStatus;
+    private int previousAmount = -1;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Register()
@@ -23,7 +24,7 @@ public sealed class HealthConsumableHUD : MonoBehaviour
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if ((scene.name == "Gameplay" || scene.name == "Testing") && active == null)
+        if (scene.name == "Gameplay" && active == null)
             new GameObject("Health Consumable HUD").AddComponent<HealthConsumableHUD>();
     }
 
@@ -54,7 +55,8 @@ public sealed class HealthConsumableHUD : MonoBehaviour
 
     private void Update()
     {
-        bool visible = !GameFlowController.IsMatchEnded && !GameFlowController.IsPaused && !PistolUpgradeShop.IsOpen;
+        bool visible = !GameFlowController.IsMatchEnded && !GameFlowController.IsPaused &&
+            !PistolUpgradeShop.IsOpen && !BossIntroduction.IsActive;
         if (canvas.gameObject.activeSelf != visible) canvas.gameObject.SetActive(visible);
         if (!visible) return;
         if ((player == null || !player.gameObject.activeInHierarchy) && Time.unscaledTime >= nextSearch)
@@ -67,10 +69,10 @@ public sealed class HealthConsumableHUD : MonoBehaviour
         string status = player != null && player.IsUsingHealthConsumable ? "USANDO…" :
             player != null && !player.Health.CanHeal ? "VIDA EXTRA" :
             Application.isMobilePlatform || MobileControlsHUD.IsVisible ? "USAR +1" : "H · VIDA +1";
-        string text = status + "\n" + amount + " / " + ShopBalance.MaxHealthConsumables;
-        if (previousLabel == text) return;
-        previousLabel = text;
-        label.text = text;
+        if (previousStatus == status && previousAmount == amount) return;
+        previousStatus = status;
+        previousAmount = amount;
+        label.text = status + "\n" + amount + " / " + ShopBalance.MaxHealthConsumables;
     }
 
     private void Use()

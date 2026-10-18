@@ -29,6 +29,8 @@ Solo está disponible la pistola. Su alcance es 18 unidades, tiene cargador de 1
 
 ## Enemigos
 
+Los impactos que descuentan vida muestran un número discreto sobre el enemigo, compatible con las seis armas de ambos personajes y el jefe. El efecto usa un pool acotado y se desvanece sin interceptar controles. Consulta [Números de daño](dano-flotante.md) para la integración, los ajustes y las pruebas.
+
 `BasicEnemy` busca cada 0,25 segundos al jugador activo más cercano que no esté derrotado. Puede acercarse, detenerse a rango y atacar con un tiempo de preparación. La escena `Testing` contiene cuatro instancias con estos ajustes propios:
 
 | Objeto | Estilo | Vida en `Testing` | Daño y cadencia |

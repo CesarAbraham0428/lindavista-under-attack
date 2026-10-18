@@ -56,6 +56,7 @@ public static class ProgressionService
     private static void ResetStatics() { repository = null; Changed = null; }
 
     public static bool GuardarPendientes() => repository == null || repository.GuardarPendientes();
+    public static void GuardarPendientesEnSegundoPlano() => repository?.GuardarPendientesEnSegundoPlano();
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void PrepararGuardado()

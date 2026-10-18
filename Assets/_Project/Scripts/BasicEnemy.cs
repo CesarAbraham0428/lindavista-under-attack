@@ -63,6 +63,8 @@ public sealed class BasicEnemy : MonoBehaviour
     private float fixedEntranceX;
     private bool coordinatedCombat;
     private bool attackInProgress;
+    private WaitForSeconds windupWait, burstWait;
+    private float cachedWindup, cachedBurstInterval;
     private Collider2D bodyCollider;
     private bool moving, movementInitialized;
     private const float AllySpacing = 1.25f;
@@ -329,7 +331,7 @@ public sealed class BasicEnemy : MonoBehaviour
         attackInProgress = true;
         try
         {
-            yield return new WaitForSeconds(attackWindup);
+            yield return CachedWait(ref windupWait, ref cachedWindup, attackWindup);
             if (attackStyle == AttackStyle.Melee || attackStyle == AttackStyle.ShieldMelee)
             {
                 if (CanHit(victim)) victim.TakeDamage(damage);
@@ -340,10 +342,20 @@ public sealed class BasicEnemy : MonoBehaviour
             for (int shot = 0; shot < count; shot++)
             {
                 if (!FireAt(victim)) yield break;
-                if (shot + 1 < count) yield return new WaitForSeconds(timeBetweenShots);
+                if (shot + 1 < count) yield return CachedWait(ref burstWait, ref cachedBurstInterval, timeBetweenShots);
             }
         }
         finally { attackInProgress = false; }
+    }
+
+    private static WaitForSeconds CachedWait(ref WaitForSeconds wait, ref float cachedDuration, float duration)
+    {
+        if (wait == null || cachedDuration != duration)
+        {
+            cachedDuration = duration;
+            wait = new WaitForSeconds(duration);
+        }
+        return wait;
     }
 
     private bool CanHit(PlayerActions victim)

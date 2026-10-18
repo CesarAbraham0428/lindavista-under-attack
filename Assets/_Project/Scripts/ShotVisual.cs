@@ -4,6 +4,9 @@ using UnityEngine;
 public sealed class ShotVisual : MonoBehaviour
 {
     public const float RocketWidth = 1.96f;
+    /// <summary>Sub-sprites baked into ShotProjectileAtlas (Tools/Lindavista/Bake effect sprite rectangles).</summary>
+    public static readonly string[] SpriteNames =
+        { "ShotProjectile_Pistol", "ShotProjectile_SMG", "ShotProjectile_Rocket", "ShotProjectile_Muzzle" };
     private static readonly Sprite[] sprites = new Sprite[4];
     private static bool atlasPreparado;
     private static Sprite softDot;
@@ -93,7 +96,9 @@ public sealed class ShotVisual : MonoBehaviour
             }
         }
         if (weapon != 2 || Time.time < nextSmoke) return;
-        nextSmoke = Time.time + 0.025f;
+        // Halve exhaust work and transparent overdraw on Android; the projectile,
+        // muzzle flash, impact and damage cadence remain unchanged.
+        nextSmoke = Time.time + (Application.platform == RuntimePlatform.Android ? 0.05f : 0.025f);
         // Rocket pivot is at its tail, so art and exhaust start at the barrel.
         Vector2 rear = (Vector2)transform.position + (Vector2)transform.right * 0.05f;
         Puff(rear, -(Vector2)transform.right * 0.35f + Vector2.up * 0.12f,
@@ -201,32 +206,12 @@ public sealed class ShotVisual : MonoBehaviour
     {
         if (atlasPreparado) return;
         atlasPreparado = true;
-        var texture = Resources.Load<Texture2D>("ShotProjectileAtlas");
-        if (texture == null || !texture.isReadable) return;
-        // Una sola copia temporal de píxeles sirve para recortar los cuatro efectos.
-        var pixels = texture.GetPixels32();
-        for (int indice = 0; indice < sprites.Length; indice++)
-            RecortarSprite(texture, pixels, indice);
-    }
-
-    private static void RecortarSprite(Texture2D texture, Color32[] pixels, int index)
-    {
-        // The rocket is wider than half the generated atlas; regions keep it intact.
-        Rect region = index == 0 ? new Rect(0, .5f, .5f, .5f) : index == 1 ? new Rect(.5f, .5f, .5f, .5f) :
-            index == 2 ? new Rect(0, 0, .57f, .5f) : new Rect(.58f, 0, .42f, .5f);
-        int left = (int)(region.xMin * texture.width), right = (int)(region.xMax * texture.width);
-        int bottom = (int)(region.yMin * texture.height), top = (int)(region.yMax * texture.height);
-        int minX = right, minY = top, maxX = left, maxY = bottom;
-        for (int y = bottom; y < top; y++)
-            for (int x = left; x < right; x++)
-                if (pixels[y * texture.width + x].a > 24)
-                {
-                    minX = Mathf.Min(minX, x); maxX = Mathf.Max(maxX, x);
-                    minY = Mathf.Min(minY, y); maxY = Mathf.Max(maxY, y);
-                }
-        if (maxX <= minX || maxY <= minY) return;
-        sprites[index] = Sprite.Create(texture, new Rect(minX, minY, maxX - minX + 1, maxY - minY + 1),
-            new Vector2(0, .5f), 256f);
+        // Los recortes se hornean al importar: la textura viaja comprimida y sin copia en CPU.
+        foreach (var sprite in Resources.LoadAll<Sprite>("ShotProjectileAtlas"))
+        {
+            int indice = System.Array.IndexOf(SpriteNames, sprite.name);
+            if (indice >= 0) sprites[indice] = sprite;
+        }
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

@@ -2,7 +2,7 @@
 
 Esta página describe la adaptación móvil y las optimizaciones presentes en el código. Las comprobaciones automatizadas verifican comportamientos concretos; los resultados y capturas de la revisión se registran por separado al terminar su ejecución. No se deduce rendimiento real de un teléfono a partir del Editor.
 
-Resultados ejecutados y capturas: [Validación del 16 de octubre de 2026](validacion-movil-2026-10-16.md).
+Resultados actuales y capturas: [Adaptación a Android y validación del 17 de octubre de 2026](adaptacion-android.md). Incluye las comprobaciones de controles en cuatro resoluciones, texturas, disparos, ciclo de vida e interfaz. No se generó APK por indicación del usuario. La [validación del 16 de octubre](validacion-movil-2026-10-16.md) se conserva como referencia histórica.
 
 ## Pantalla e interfaz
 
@@ -12,7 +12,7 @@ Resultados ejecutados y capturas: [Validación del 16 de octubre de 2026](valida
 - `GameFlowController` adapta pausa y resultado. Los HUD de vida, saldo, arma y munición distribuyen sus elementos según el espacio disponible. Los cambios de tamaño evitan repetir escrituras de geometría si las dimensiones siguen iguales.
 - `PistolUpgradeShop` usa una lista vertical con `ScrollRect` y recorte en móvil o cuando `Screen.height <= 800`. La cabecera, el saldo, el mensaje de compra y **VOLVER** quedan fuera de la lista; el personaje y las tres armas pueden recorrerse deslizando. Incluye indicador de desplazamiento y textos de compra ampliados para esta distribución.
 
-La adaptación se instala durante la ejecución y conserva las referencias de las escenas existentes. En `Gameplay` y `Testing`, **F9** alterna la previsualización táctil solo en el Editor. El detalle de acciones y reservas está en [Controles](controles.md).
+La adaptación se instala durante la ejecución y conserva las referencias de las escenas existentes. En `Gameplay`, **F9** alterna la previsualización táctil solo en el Editor. El detalle de acciones y reservas está en [Controles](controles.md).
 
 ## Entrada y ciclo de vida
 
@@ -35,8 +35,8 @@ La escritura serializa JSON compacto a un temporal. Si el principal previo era v
 - `Scripts/Combate/ConsultasFisicasCombate.cs` presta listas reutilizables para barridos, líneas y solapamientos, además de un conjunto para evitar daño repetido en una explosión. Las listas crecen cuando hace falta, de modo que una escena con muchos contactos no pierde impactos por llenar un array fijo. Cada consulta toma su propio contenedor, incluyendo explosiones disparadas desde otros eventos. Conserva las diferencias de máscaras entre barridos y solapamientos y la configuración de triggers.
 - `Scripts/Combate/ObjetivosCombate.cs` comparte la búsqueda de jugadores entre enemigos y recoge esa caché al cambiar de escena. `EnemyHealth` conserva referencias que antes buscaba durante impactos. Se reducen búsquedas globales y de componentes en los caminos frecuentes de combate.
 - `ShotEffect` reutiliza objetos y `SpriteRenderer` para las partículas breves. Reinicia edad, color, tamaño y orientación antes de reactivarlos. El límite de efectos sigue siendo 180; el contenedor pertenece a la escena para que al cambiar de nivel se libere el conjunto.
-- `ShotVisual` prepara los recortes del atlas con una única copia temporal de sus píxeles. `PlayerActions` conserva hashes y duración de animación por arma/controlador. `PlayerWeaponController` conserva la identidad del personaje y la cámara de disparo. Fuentes, marcos, ilustraciones de armas y retratos evitan cargas repetidas durante refrescos de interfaz.
-- `WeaponSelectionHUD` reutiliza imágenes de cartuchos entre cambios de capacidad y evita reconstruir variantes del mismo personaje. `HUDSpriteVariants` recorta en GPU antes de leer el sprite, usa un temporal del tamaño necesario y libera las copias de textura en CPU después de prepararlas.
+- `ShotVisual` y `SniperShotVisual` cargan recortes horneados como sprites importados (`EffectSpriteSetup`); sus texturas no conservan copia en CPU. `PlayerActions` conserva hashes y duración de animación por arma/controlador. `PlayerWeaponController` conserva la identidad del personaje y la cámara de disparo. Fuentes, marcos, ilustraciones de armas y retratos evitan cargas repetidas durante refrescos de interfaz.
+- `WeaponSelectionHUD` reutiliza imágenes de cartuchos entre cambios de capacidad y evita reconstruir variantes del mismo personaje. `HUDSpriteVariants` recorta en GPU, reduce la copia a un máximo de 256 px con mipmaps y libera las copias de textura en CPU después de prepararlas.
 - `DefeatBackdrop` reduce la captura en GPU antes de leer y desenfocar sus píxeles; evita crear un array administrado del tamaño completo de una pantalla de alta resolución. Sus texturas temporales se liberan incluso si falla la captura.
 - `SelectedLevelEnvironment` solo cambia la escala del cielo cuando varían zoom o proporción; libera su objeto, sprite y textura generados. La cámara y los controles limitan búsquedas repetidas cuando no hay jugador disponible. La selección de una pista ya activa y los cambios de volumen idénticos evitan trabajo repetido.
 
@@ -122,8 +122,10 @@ niveles con ambos personajes: disparo sostenido, cambios de arma, grupos de
 enemigos, pausa, derrota y reintento. Repetir en una build del equipo/dispositivo
 objetivo. En el Profiler se añadieron las muestras `Lindavista.ProjectileSweep` y
 `Lindavista.EnemyAI`; comparar CPU Timeline, GC Alloc, GPU y los fotogramas lentos
-con la misma resolución y oleada. El guardado periódico conserva sus garantías y
-no se trasladó a un hilo sin coordinación con las compras.
+con la misma resolución y oleada. Desde la [revisión de rendimiento](rendimiento-2026-10-17.md),
+el guardado periódico escribe en otro hilo, coordinado con las compras mediante un
+bloqueo y un número de secuencia; la suspensión, la salida y el cambio de escena
+siguen esperando a que el guardado termine.
 
 ## Dependencias y compilación
 
@@ -131,7 +133,7 @@ Se retiró de los archivos de paquetes la dependencia directa `com.unity.ai.infe
 
 Sentis aportaba 65 shaders y 42 compute shaders bajo su carpeta `Resources`; el intento de build Android estaba compilando variantes `Hidden/Sentis` ajenas al juego. Retirar la dependencia evita incluir ese conjunto en las siguientes resoluciones de paquetes. No se eliminaron assets del proyecto ni archivos de `PackageCache`. Se limpiaron únicamente sus dos símbolos de compilación (`SENTIS_ANALYTICS_ENABLED` y `APP_UI_EDITOR_ONLY`) y la referencia de configuración de App UI en `EditorBuildSettings`, conservando las acciones de Input System.
 
-**Estado posterior a la retirada:** los archivos JSON y las referencias del grafo se revisan en disco, pero la resolución/importación de paquetes y la compilación final quedan pendientes de que el Editor deje libre el build en curso. Las pruebas registradas hasta este punto son anteriores a esta retirada; todavía no se presenta una build Android validada ni un ahorro de tamaño medido.
+**Estado de la revisión del 17 de octubre:** los scripts quedaron compilados y la segunda sesión de QA en Play Mode terminó sin errores ni advertencias en la consola. Los resultados actuales están en [Adaptación a Android](adaptacion-android.md). No se generó un APK por indicación del usuario y no se midió ahorro de tamaño de un instalador.
 
 ## Reproducir las comprobaciones
 
@@ -140,7 +142,7 @@ Permite que Unity termine de importar y compilar antes de ejecutar las herramien
 | Comprobación | Preparación y ejecución | Qué comprueba |
 | --- | --- | --- |
 | Guardado agrupado | Menú **Tools > Lindavista > Verificar guardado agrupado**, o `ComprobacionesGuardadoProgreso.Ejecutar()` | Diez consumos sin diez escrituras, confirmación del lote, inventarios independientes, compra inmediata, lecturas sin asignaciones, victoria repetida sin reescritura, fallo de disco/reintento y recuperación de respaldo. Usa una carpeta temporal con identificador único y no cambia el perfil real. |
-| Controles móviles | Abrir `Gameplay` o `Testing` en Play Mode; esperar a que termine la introducción y mantener la partida activa, sin pausa ni tienda. Menú **Lindavista > Comprobar controles móviles (Play Mode)**, o `ComprobacionesMoviles.Ejecutar()` | Identificadores de varios dedos, flechas opuestas, salida de región, arrastre de apuntado, cancelación por pausa/segundo plano, límites de las áreas táctiles y cadencias de 60/90/120 Hz. Restaura visibilidad y libera toques al terminar. |
+| Controles móviles | Abrir `Gameplay` en Play Mode; esperar a que termine la introducción y mantener la partida activa, sin pausa ni tienda. Menú **Lindavista > Comprobar controles móviles (Play Mode)**, o `ComprobacionesMoviles.Ejecutar()` | Identificadores de varios dedos, flechas opuestas, salida de región, arrastre de apuntado, cancelación por pausa/segundo plano, límites de las áreas táctiles y cadencias de 60/90/120 Hz. Restaura visibilidad y libera toques al terminar. |
 | Geometría de interfaz | En Play Mode, abrir la pantalla que se quiera verificar. Menú **Tools > Lindavista > Verificar interfaz en pantalla actual**, o `ComprobacionesInterfazMovil.ValidarDisposicionActual()` | Los controles visibles quedan dentro del área segura y tienen una superficie que recibe raycast. Considera el recorte de las listas desplazables. Ejecutarla en menú, selección, ajustes, tienda, pausa y resultado, desplazando también la tienda hasta el final. |
 | Buffers y partículas | Iniciar una partida activa en Play Mode. Menú **Lindavista > Comprobar optimización de combate (Play Mode)**, o `ComprobacionesRendimientoCombate.Ejecutar()` | Más de 80 contactos sin truncamiento, triggers y capa Ignore Raycast, daño único y reutilización de partículas con estado reiniciado. Crea objetos de prueba alejados y los limpia al terminar. |
 

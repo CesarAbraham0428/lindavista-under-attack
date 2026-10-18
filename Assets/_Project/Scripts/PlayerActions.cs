@@ -1,8 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerActions : MonoBehaviour
 {
+    // Bars of the desktop crosshair in screen pixels around the aim point (formerly drawn with IMGUI).
+    private static readonly Rect[] BarrasMira =
+        { new Rect(-1f, 3f, 2f, 7f), new Rect(-1f, -10f, 2f, 7f), new Rect(-10f, -1f, 7f, 2f), new Rect(3f, -1f, 7f, 2f) };
     [Header("Mouse aim")]
     [SerializeField, Min(0.1f)] private float maxAimDistance = 18f;
 
@@ -31,10 +35,10 @@ public class PlayerActions : MonoBehaviour
     private float duracionPastilla;
     private float tiempoPastilla;
     private bool pastillaAplicada;
+    private RectTransform mira;
 
     public bool IsUsingHealthConsumable { get; private set; }
-    public bool CanUseHealthConsumable => isActiveAndEnabled && !inputLocked && !defeated &&
-        !GameFlowController.IsMatchEnded && !GameFlowController.IsPaused && !PistolUpgradeShop.IsOpen &&
+    public bool CanUseHealthConsumable => CanReceiveCombatInput &&
         health != null && health.CanHeal && weapons != null && !IsBusyExceptFire() &&
         ProgressionService.HealthConsumables(health.IsCesar) > 0 &&
         animator != null && animator.runtimeAnimatorController != null &&
@@ -42,6 +46,9 @@ public class PlayerActions : MonoBehaviour
 
     public bool IsDefeated => defeated;
     public bool IsInputLocked => inputLocked;
+    public bool CanReceiveCombatInput => isActiveAndEnabled && !inputLocked && !defeated &&
+        !IsUsingHealthConsumable && !GameFlowController.IsPaused && !GameFlowController.IsMatchEnded &&
+        !PistolUpgradeShop.IsOpen && !BossIntroduction.IsActive;
     public int CurrentHealth => health != null ? health.CurrentHealth : 0;
     public int MaxHealth => health != null ? health.MaxHealth : CharacterStats.BaseHealth(CharacterWeapons.IsCesar(gameObject));
     public PlayerHealth Health => health;
@@ -58,6 +65,7 @@ public class PlayerActions : MonoBehaviour
         if (!locked)
             return;
 
+        MobileControlsHUD.CancelActiveTouches();
         CancelHealthConsumable();
         hasAimInViewport = false;
         touchAimActive = false;
@@ -98,7 +106,7 @@ public class PlayerActions : MonoBehaviour
                 AdvanceHealthConsumable(Time.deltaTime);
             return;
         }
-        if (inputLocked || GameFlowController.IsPaused || PistolUpgradeShop.IsOpen)
+        if (!CanReceiveCombatInput)
             return;
 
         UpdateAim();
@@ -118,15 +126,6 @@ public class PlayerActions : MonoBehaviour
 
             if (Keyboard.current.rKey.wasPressedThisFrame)
                 TryReload();
-
-            if (gameObject.scene.name == "Testing" && Keyboard.current.qKey.wasPressedThisFrame)
-                TakeDamage(1);
-
-            if (gameObject.scene.name == "Testing" && Keyboard.current.eKey.wasPressedThisFrame)
-            {
-                TakeDamage(MaxHealth);
-                return;
-            }
         }
 
         bool mouseFireHeld = !Application.isMobilePlatform &&
@@ -147,7 +146,7 @@ public class PlayerActions : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (inputLocked || IsUsingHealthConsumable || GameFlowController.IsPaused || defeated || spriteRenderer == null)
+        if (!CanReceiveCombatInput || spriteRenderer == null)
             return;
 
         // Firing poses must face the target, even while walking the other way.
@@ -162,13 +161,13 @@ public class PlayerActions : MonoBehaviour
 
     public void SelectTouchWeapon(int index)
     {
-        if (!inputLocked && !GameFlowController.IsPaused && !defeated && index >= 0 && index <= 2)
+        if (CanReceiveCombatInput && index >= 0 && index <= 2)
             EquipWeapon(index);
     }
 
     public void EquipWeapon(int index)
     {
-        if (IsUsingHealthConsumable) return;
+        if (!CanReceiveCombatInput || weapons == null || index < 0 || index > 2) return;
         int previous = weapons.EquippedWeapon;
         if (!weapons.TryEquip(index) || previous == index || animator == null ||
             animator.runtimeAnimatorController == null) return;
@@ -214,7 +213,7 @@ public class PlayerActions : MonoBehaviour
 
     public void ReloadTouchWeapon()
     {
-        if (!inputLocked && !GameFlowController.IsPaused && !PistolUpgradeShop.IsOpen)
+        if (CanReceiveCombatInput)
             TryReload();
     }
 
@@ -226,6 +225,7 @@ public class PlayerActions : MonoBehaviour
     public bool TryUseHealthConsumable()
     {
         if (!CanUseHealthConsumable) return false;
+        MobileControlsHUD.CancelActiveTouches();
         StopTouchAimAndFire();
         fireRequested = false;
         IsUsingHealthConsumable = true;
@@ -274,13 +274,23 @@ public class PlayerActions : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (mira != null) Destroy(mira.root.gameObject);
         if (weapons != null) weapons.Changed -= OnWeaponChanged;
         if (health == null) return;
         health.Damaged -= OnDamaged;
         health.Died -= Defeat;
     }
 
+    private void OnEnable() => Canvas.willRenderCanvases += ActualizarMira;
+
     private void OnDisable()
+    {
+        Canvas.willRenderCanvases -= ActualizarMira;
+        if (mira != null) mira.gameObject.SetActive(false);
+        CancelarEntrada();
+    }
+
+    private void CancelarEntrada()
     {
         CancelHealthConsumable();
         fireRequested = false;
@@ -290,7 +300,12 @@ public class PlayerActions : MonoBehaviour
 
     private void OnApplicationFocus(bool tieneFoco)
     {
-        if (!tieneFoco) OnDisable();
+        if (!tieneFoco) CancelarEntrada();
+    }
+
+    private void OnApplicationPause(bool paused)
+    {
+        if (paused) CancelarEntrada();
     }
 
     private void Defeat()
@@ -314,7 +329,7 @@ public class PlayerActions : MonoBehaviour
 
     public void SetTouchAimAndFire(Vector2 direction)
     {
-        if (inputLocked || IsUsingHealthConsumable || GameFlowController.IsPaused || PistolUpgradeShop.IsOpen || defeated)
+        if (!CanReceiveCombatInput)
             return;
 
         touchAimActive = true;
@@ -326,6 +341,7 @@ public class PlayerActions : MonoBehaviour
 
     public void StopTouchAimAndFire()
     {
+        fireRequested = false;
         touchAimActive = false;
         touchFireHeld = false;
         if (animator != null)
@@ -336,7 +352,7 @@ public class PlayerActions : MonoBehaviour
 
     private void TryReload()
     {
-        if (inputLocked || GameFlowController.IsPaused || defeated || IsBusyExceptFire() || !weapons.TryReload())
+        if (!CanReceiveCombatInput || IsBusyExceptFire() || !weapons.TryReload())
             return;
 
         ResetFireTriggers();
@@ -354,7 +370,7 @@ public class PlayerActions : MonoBehaviour
 
     private void HoldFire()
     {
-        if (inputLocked || IsBusyExceptFire())
+        if (!CanReceiveCombatInput || IsBusyExceptFire())
             return;
 
         if (weapons.Magazine == 0) { TryReload(); return; }
@@ -455,24 +471,46 @@ public class PlayerActions : MonoBehaviour
         AimDirection = fromPlayer.normalized;
     }
 
-    private void OnGUI()
+    // An OnGUI method made Unity run IMGUI every frame on every platform (~370 B of garbage and
+    // ~0.2 ms per frame), even on Android where the crosshair is never shown. The same bars are
+    // now a tiny overlay canvas, created only when the desktop crosshair is first needed.
+    // willRenderCanvases runs after every LateUpdate, so the final camera position is used.
+    private void ActualizarMira()
     {
-        if (inputLocked || GameFlowController.IsPaused || defeated || aimCamera == null || !hasAimInViewport || MobileControlsHUD.IsVisible)
-            return;
+        bool visible = !(inputLocked || GameFlowController.IsPaused || defeated || aimCamera == null ||
+            !hasAimInViewport || MobileControlsHUD.IsVisible);
+        Vector3 screen = visible ? aimCamera.WorldToScreenPoint(AimTarget) : Vector3.zero;
+        visible &= screen.z > 0f;
+        if (mira == null)
+        {
+            if (!visible) return;
+            mira = CrearMira();
+        }
+        if (mira.gameObject.activeSelf != visible) mira.gameObject.SetActive(visible);
+        if (visible) mira.anchoredPosition = new Vector2(screen.x, screen.y);
+    }
 
-        Vector3 screen = aimCamera.WorldToScreenPoint(AimTarget);
-        if (screen.z <= 0f)
-            return;
-
-        float x = screen.x;
-        float y = Screen.height - screen.y;
-        Color previousColor = GUI.color;
-        GUI.color = Color.yellow;
-        GUI.DrawTexture(new Rect(x - 1f, y - 10f, 2f, 7f), Texture2D.whiteTexture);
-        GUI.DrawTexture(new Rect(x - 1f, y + 3f, 2f, 7f), Texture2D.whiteTexture);
-        GUI.DrawTexture(new Rect(x - 10f, y - 1f, 7f, 2f), Texture2D.whiteTexture);
-        GUI.DrawTexture(new Rect(x + 3f, y - 1f, 7f, 2f), Texture2D.whiteTexture);
-        GUI.color = previousColor;
+    private static RectTransform CrearMira()
+    {
+        var lienzo = new GameObject("Desktop Crosshair Canvas", typeof(Canvas)).GetComponent<Canvas>();
+        lienzo.renderMode = RenderMode.ScreenSpaceOverlay;
+        lienzo.sortingOrder = short.MaxValue; // IMGUI was drawn above every canvas.
+        var centro = new GameObject("Crosshair", typeof(RectTransform)).GetComponent<RectTransform>();
+        centro.SetParent(lienzo.transform, false);
+        centro.anchorMin = centro.anchorMax = centro.pivot = Vector2.zero;
+        centro.sizeDelta = Vector2.zero;
+        foreach (Rect barra in BarrasMira)
+        {
+            var imagen = new GameObject("Bar", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image)).GetComponent<Image>();
+            imagen.color = Color.yellow;
+            imagen.raycastTarget = false;
+            RectTransform rect = imagen.rectTransform;
+            rect.SetParent(centro, false);
+            rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
+            rect.anchoredPosition = barra.position;
+            rect.sizeDelta = barra.size;
+        }
+        return centro;
     }
 
     private bool IsBusyExceptFire()
