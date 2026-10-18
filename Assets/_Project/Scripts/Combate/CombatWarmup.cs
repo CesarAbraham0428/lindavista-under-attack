@@ -20,5 +20,8 @@ internal static class CombatWarmup
         yield return null;
         if (GameFlowController.IsMatchEnded) yield break;
         RocketImpact.Prewarm();
+        yield return null;
+        if (GameFlowController.IsMatchEnded) yield break;
+        DamageNumber.Prewarm();
     }
 }
