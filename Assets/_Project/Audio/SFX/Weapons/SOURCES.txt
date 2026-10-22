@@ -1,0 +1,22 @@
+Free weapon SFX sources and licenses
+DailySounds (free for games, commercial use allowed, attribution optional; do not redistribute raw files as a sound library):
+- Pistol_Fire_50Cal.mp3 — https://dailysounds.org/sounds/1411
+- SMG_Fire_FAMAS.mp3 — https://dailysounds.org/sounds/1460
+- RPG_Fire.mp3 — https://dailysounds.org/sounds/1154
+- Gun_Clip_Loading_Generic.mp3 — https://dailysounds.org/sounds/1710
+License: https://dailysounds.org/license
+
+OpenGameArt (CC0):
+- Pistol_Reload_Generic_CC0.wav — https://opengameart.org/content/gun-reload-sounds
+- Assault_Rifle_Reload_CC0.wav — https://opengameart.org/content/gun-reload-sounds
+
+SoundDino (free commercial-use license, no attribution; no raw-library redistribution):
+- RPG_Launcher_Load.mp3 — https://sounddino.com/en/effects/rpg/
+
+Prepared clips used by the game (Prepared/):
+- Pistol_Shot.wav: first shot only, original 0.035-1.015 s (0.980 s including its decay).
+- AssaultRifle_Shot.wav: first shot only, original 0.036-0.335 s (0.299 s including its decay).
+- RPG_Shot.wav: one launch, original 0.010-2.210 s (2.200 s including its decay).
+- Pistol_Reload.wav, AssaultRifle_Reload.wav, RPG_Reload.wav: each original reload converted to 1.200 s using pitch-preserving tempo adjustment.
+All prepared clips are mono, 48 kHz, 16-bit PCM WAV, normalized to -3 dBFS with short fades to avoid edit clicks.
+WeaponAudioLibrary references only these six prepared clips; the original recordings are not played in gameplay.

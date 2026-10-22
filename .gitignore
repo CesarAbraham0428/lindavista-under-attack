@@ -29,3 +29,18 @@ Thumbs.db
 .plastic/
 ignore.conf
 *.slnx
+
+# Temporales de compilacion Android
+/.utmp/
+
+# Caches de herramientas Android
+.cxx/
+.externalNativeBuild/
+
+# Paquetes de instalacion generados
+*.apk
+*.aab
+
+# Archivos auxiliares generados por Unity
+*_BackUpThisFolder_ButDontShipItWithYourGame/
+*_BurstDebugInformation_DoNotShip/

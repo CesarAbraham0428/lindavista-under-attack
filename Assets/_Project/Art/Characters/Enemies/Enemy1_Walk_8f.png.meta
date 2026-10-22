@@ -1,0 +1,341 @@
+fileFormatVersion: 2
+guid: f52a4488111ad8749b46f1d0394d7d78
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4788606053466592823
+    second: Enemy1_Walk_8f_0
+  - first:
+      213: -83591537420378241
+    second: Enemy1_Walk_8f_1
+  - first:
+      213: -4975138082344468078
+    second: Enemy1_Walk_8f_2
+  - first:
+      213: 5680928119978544789
+    second: Enemy1_Walk_8f_3
+  - first:
+      213: -7287425075598296365
+    second: Enemy1_Walk_8f_4
+  - first:
+      213: -2227593147103194825
+    second: Enemy1_Walk_8f_5
+  - first:
+      213: -6760406593687962769
+    second: Enemy1_Walk_8f_6
+  - first:
+      213: -782694852470468042
+    second: Enemy1_Walk_8f_7
+  - first:
+      213: 7081891746997199030
+    second: Enemy1_Walk_8f_8
+  - first:
+      213: -6056500470973416886
+    second: Enemy1_Walk_8f_9
+  - first:
+      213: -1705564229249500479
+    second: Enemy1_Walk_8f_10
+  - first:
+      213: 2742375555795226231
+    second: Enemy1_Walk_8f_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 83.33099
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Enemy1_Walk_8f_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 412
+        height: 512
+      alignment: 9
+      pivot: {x: 0.5319653, y: 0.48242188}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c9a6dd5a247b8db0800000000000000
+      internalID: -4788606053466592823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy1_Walk_8f_1
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 512
+        width: 392
+        height: 512
+      alignment: 9
+      pivot: {x: 0.4978819, y: 0.47851562}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7f54d980f507def0800000000000000
+      internalID: -83591537420378241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy1_Walk_8f_2
+      rect:
+        serializedVersion: 2
+        x: 804
+        y: 512
+        width: 337
+        height: 512
+      alignment: 9
+      pivot: {x: 0.52572614, y: 0.47851562}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29107550642c4fab0800000000000000
+      internalID: -4975138082344468078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy1_Walk_8f_3
+      rect:
+        serializedVersion: 2
+        x: 1141
+        y: 512
+        width: 395
+        height: 512
+      alignment: 9
+      pivot: {x: 0.54726505, y: 0.48046875}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59e49d9b606b6de40800000000000000
+      internalID: 5680928119978544789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy1_Walk_8f_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 412
+        height: 512
+      alignment: 9
+      pivot: {x: 0.54531485, y: 0.51953125}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3da70b1118dddda90800000000000000
+      internalID: -7287425075598296365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy1_Walk_8f_5
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 0
+        width: 356
+        height: 512
+      alignment: 9
+      pivot: {x: 0.51030815, y: 0.5214844}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 731d1d2c5dff511e0800000000000000
+      internalID: -2227593147103194825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy1_Walk_8f_6
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 402
+        height: 512
+      alignment: 9
+      pivot: {x: 0.53897935, y: 0.5234375}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6b350e65063e22a0800000000000000
+      internalID: -6760406593687962769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy1_Walk_8f_7
+      rect:
+        serializedVersion: 2
+        x: 1170
+        y: 0
+        width: 366
+        height: 512
+      alignment: 9
+      pivot: {x: 0.5359828, y: 0.515625}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63298f6bd2f4325f0800000000000000
+      internalID: -782694852470468042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5ff04b0a87a38fa48b31be0b2bc64b0b
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: False
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":2.0},"gridSpriteSize":{"x":384.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Enemy1_Walk_8f_0: -4788606053466592823
+      Enemy1_Walk_8f_1: -83591537420378241
+      Enemy1_Walk_8f_2: -4975138082344468078
+      Enemy1_Walk_8f_3: 5680928119978544789
+      Enemy1_Walk_8f_4: -7287425075598296365
+      Enemy1_Walk_8f_5: -2227593147103194825
+      Enemy1_Walk_8f_6: -6760406593687962769
+      Enemy1_Walk_8f_7: -782694852470468042
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

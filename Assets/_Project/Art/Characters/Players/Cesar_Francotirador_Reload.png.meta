@@ -1,0 +1,497 @@
+fileFormatVersion: 2
+guid: 27173a66c790bc746866645e412f282b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2903675813511130681
+    second: Cesar_Francotirador_Reload_0
+  - first:
+      213: 188932424599928913
+    second: Cesar_Francotirador_Reload_1
+  - first:
+      213: -5291196689768859286
+    second: Cesar_Francotirador_Reload_2
+  - first:
+      213: 6858628097932435584
+    second: Cesar_Francotirador_Reload_3
+  - first:
+      213: -1986436284332566449
+    second: Cesar_Francotirador_Reload_4
+  - first:
+      213: 7075074152432927711
+    second: Cesar_Francotirador_Reload_5
+  - first:
+      213: 4242605873329705014
+    second: Cesar_Francotirador_Reload_6
+  - first:
+      213: -2941827830397395713
+    second: Cesar_Francotirador_Reload_7
+  - first:
+      213: -1400635700613950991
+    second: Cesar_Francotirador_Reload_8
+  - first:
+      213: -346032407479863530
+    second: Cesar_Francotirador_Reload_9
+  - first:
+      213: 7853458854678518108
+    second: Cesar_Francotirador_Reload_10
+  - first:
+      213: -1243032996882776347
+    second: Cesar_Francotirador_Reload_11
+  - first:
+      213: 3169501629207515268
+    second: Cesar_Francotirador_Reload_12
+  - first:
+      213: 6214391607301894153
+    second: Cesar_Francotirador_Reload_13
+  - first:
+      213: 8643155892560792881
+    second: Cesar_Francotirador_Reload_14
+  - first:
+      213: -3174064919214902462
+    second: Cesar_Francotirador_Reload_15
+  - first:
+      213: 3212558255035655919
+    second: Cesar_Francotirador_Reload_16
+  - first:
+      213: -4467047308286841864
+    second: Cesar_Francotirador_Reload_17
+  - first:
+      213: -4338395974803291125
+    second: Cesar_Francotirador_Reload_18
+  - first:
+      213: 869321197337127300
+    second: Cesar_Francotirador_Reload_19
+  - first:
+      213: -2211341191084267107
+    second: Cesar_Francotirador_Reload_20
+  - first:
+      213: -3303217952044710311
+    second: Cesar_Francotirador_Reload_21
+  - first:
+      213: -5439808645153917084
+    second: Cesar_Francotirador_Reload_22
+  - first:
+      213: -4989219137014321009
+    second: Cesar_Francotirador_Reload_23
+  - first:
+      213: -3198999007089565129
+    second: Cesar_Francotirador_Reload_24
+  - first:
+      213: 7611577463865374773
+    second: Cesar_Francotirador_Reload_25
+  - first:
+      213: -3945521029555083058
+    second: Cesar_Francotirador_Reload_26
+  - first:
+      213: 8840303362156045280
+    second: Cesar_Francotirador_Reload_27
+  - first:
+      213: 6327257413943851447
+    second: Cesar_Francotirador_Reload_28
+  - first:
+      213: 7224616245844257693
+    second: Cesar_Francotirador_Reload_29
+  - first:
+      213: -6163911100991601207
+    second: Cesar_Francotirador_Reload_30
+  - first:
+      213: 33996423997268432
+    second: Cesar_Francotirador_Reload_31
+  - first:
+      213: 5523166623101560591
+    second: Cesar_Francotirador_Reload_32
+  - first:
+      213: 78817841410956249
+    second: Cesar_Francotirador_Reload_33
+  - first:
+      213: -8632230900079198970
+    second: Cesar_Francotirador_Reload_34
+  - first:
+      213: 4366770951169085950
+    second: Cesar_Francotirador_Reload_35
+  - first:
+      213: 3245086946743574120
+    second: Cesar_Francotirador_Reload_36
+  - first:
+      213: 8939276737646302691
+    second: Cesar_Francotirador_Reload_37
+  - first:
+      213: -1750882766958343998
+    second: Cesar_Francotirador_Reload_38
+  - first:
+      213: -3363549871231132854
+    second: Cesar_Francotirador_Reload_39
+  - first:
+      213: 3764024692763697860
+    second: Cesar_Francotirador_Reload_40
+  - first:
+      213: 3814600689988138960
+    second: Cesar_Francotirador_Reload_41
+  - first:
+      213: 5828036291203817832
+    second: Cesar_Francotirador_Reload_42
+  - first:
+      213: 445435929155314304
+    second: Cesar_Francotirador_Reload_43
+  - first:
+      213: -5274774915969714117
+    second: Cesar_Francotirador_Reload_44
+  - first:
+      213: 3914962656436788917
+    second: Cesar_Francotirador_Reload_45
+  - first:
+      213: 7690938325358494141
+    second: Cesar_Francotirador_Reload_46
+  - first:
+      213: -4540739302028889673
+    second: Cesar_Francotirador_Reload_47
+  - first:
+      213: 7116134589099363355
+    second: Cesar_Francotirador_Reload_48
+  - first:
+      213: 6024518349068058707
+    second: Cesar_Francotirador_Reload_49
+  - first:
+      213: -5019878516267749468
+    second: Cesar_Francotirador_Reload_50
+  - first:
+      213: 6425029153018992694
+    second: Cesar_Francotirador_Reload_51
+  - first:
+      213: -6365807241021671552
+    second: Cesar_Francotirador_Reload_52
+  - first:
+      213: -897958645637519988
+    second: Cesar_Francotirador_Reload_53
+  - first:
+      213: 1371734187556562807
+    second: Cesar_Francotirador_Reload_54
+  - first:
+      213: -3998019791065163924
+    second: Cesar_Francotirador_Reload_55
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 78.6
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 25
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 1
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 47
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 1
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Reload_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.49609375, y: 0.43652344}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93e693f94cdeb4820800000000000000
+      internalID: 2903675813511130681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Reload_1
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.47916666, y: 0.4345703}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15005d60a093f9200800000000000000
+      internalID: 188932424599928913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Reload_2
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.48046875, y: 0.4345703}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a69ba9505a4e196b0800000000000000
+      internalID: -5291196689768859286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Reload_3
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.48046875, y: 0.4345703}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 080a6cf9aedbe2f50800000000000000
+      internalID: 6858628097932435584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Reload_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.4856771, y: 0.5048828}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f48196759b2ce64e0800000000000000
+      internalID: -1986436284332566449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Reload_5
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.49479166, y: 0.5048828}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd3005fc476bf2260800000000000000
+      internalID: 7075074152432927711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Reload_6
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.4466146, y: 0.5048828}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 00b835b62f565234c8f43f4217ad8100
+      internalID: 1651739519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Reload_7
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.4518229, y: 0.5048828}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5cff9d918f24f2a408488d6a84280897
+      internalID: -140099543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 1c8b724b8322764429871aac2938c95e
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":2.0},"gridSpriteSize":{"x":391.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Cesar_Francotirador_Reload_0: 2903675813511130681
+      Cesar_Francotirador_Reload_1: 188932424599928913
+      Cesar_Francotirador_Reload_2: -5291196689768859286
+      Cesar_Francotirador_Reload_3: 6858628097932435584
+      Cesar_Francotirador_Reload_4: -1986436284332566449
+      Cesar_Francotirador_Reload_5: 7075074152432927711
+      Cesar_Francotirador_Reload_6: 1651739519
+      Cesar_Francotirador_Reload_7: -140099543
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

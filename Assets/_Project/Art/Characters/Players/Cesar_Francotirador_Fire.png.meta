@@ -1,0 +1,407 @@
+fileFormatVersion: 2
+guid: d2fb1a875d1244f47a5d6f4ca3304f31
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3518024900199571041
+    second: Cesar_Francotirador_Fire_0
+  - first:
+      213: -2204625587718855761
+    second: Cesar_Francotirador_Fire_1
+  - first:
+      213: -3169703660905410227
+    second: Cesar_Francotirador_Fire_2
+  - first:
+      213: -4840724022338134631
+    second: Cesar_Francotirador_Fire_3
+  - first:
+      213: -2354543460365611254
+    second: Cesar_Francotirador_Fire_4
+  - first:
+      213: 8177736440121120740
+    second: Cesar_Francotirador_Fire_5
+  - first:
+      213: -2409334502427642799
+    second: Cesar_Francotirador_Fire_6
+  - first:
+      213: -1607292782326569602
+    second: Cesar_Francotirador_Fire_7
+  - first:
+      213: 4203526548727756672
+    second: Cesar_Francotirador_Fire_8
+  - first:
+      213: 2383895775389284723
+    second: Cesar_Francotirador_Fire_9
+  - first:
+      213: 4564778880115578519
+    second: Cesar_Francotirador_Fire_10
+  - first:
+      213: 1086666852447492247
+    second: Cesar_Francotirador_Fire_11
+  - first:
+      213: 1153626283403365850
+    second: Cesar_Francotirador_Fire_12
+  - first:
+      213: 7441486321308144954
+    second: Cesar_Francotirador_Fire_13
+  - first:
+      213: -3978585785317805286
+    second: Cesar_Francotirador_Fire_14
+  - first:
+      213: -6887530376770017433
+    second: Cesar_Francotirador_Fire_15
+  - first:
+      213: -1033518241149468665
+    second: Cesar_Francotirador_Fire_16
+  - first:
+      213: 2436628846266323091
+    second: Cesar_Francotirador_Fire_17
+  - first:
+      213: -2866767848818595630
+    second: Cesar_Francotirador_Fire_18
+  - first:
+      213: -6438849439423580251
+    second: Cesar_Francotirador_Fire_19
+  - first:
+      213: -6349163439249412355
+    second: Cesar_Francotirador_Fire_20
+  - first:
+      213: -7671616189618875352
+    second: Cesar_Francotirador_Fire_21
+  - first:
+      213: 3299870913293551764
+    second: Cesar_Francotirador_Fire_22
+  - first:
+      213: 644038382479704514
+    second: Cesar_Francotirador_Fire_23
+  - first:
+      213: 1658585141502928507
+    second: Cesar_Francotirador_Fire_24
+  - first:
+      213: 7023469501945561096
+    second: Cesar_Francotirador_Fire_25
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 73.6
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 25
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 1
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 47
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 1
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Fire_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.4375, y: 0.40820312}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9120a81ef67d2fc0800000000000000
+      internalID: -3518024900199571041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Fire_1
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.38671875, y: 0.40820312}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa3e74565b89761e0800000000000000
+      internalID: -2204625587718855761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Fire_2
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.3606771, y: 0.40820312}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d415a707053f204d0800000000000000
+      internalID: -3169703660905410227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Fire_3
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 512
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.34375, y: 0.40820312}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99dd5d0262b42dcb0800000000000000
+      internalID: -4840724022338134631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Fire_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.47135416, y: 0.484375}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0f40bc923bf25fd0800000000000000
+      internalID: -2354543460365611254
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Fire_5
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.4127604, y: 0.484375}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e7df2cf6f72d7170800000000000000
+      internalID: 8177736440121120740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Fire_6
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.44921875, y: 0.484375}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15435b50903509ed0800000000000000
+      internalID: -2409334502427642799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cesar_Francotirador_Fire_7
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 384
+        height: 512
+      alignment: 9
+      pivot: {x: 0.4544271, y: 0.484375}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e752063fabfb1b9e0800000000000000
+      internalID: -1607292782326569602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 6d6a7a9c9f8d63445a56e726f52cafb4
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":2.0},"gridSpriteSize":{"x":384.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Cesar_Francotirador_Fire_0: -3518024900199571041
+      Cesar_Francotirador_Fire_1: -2204625587718855761
+      Cesar_Francotirador_Fire_2: -3169703660905410227
+      Cesar_Francotirador_Fire_3: -4840724022338134631
+      Cesar_Francotirador_Fire_4: -2354543460365611254
+      Cesar_Francotirador_Fire_5: 8177736440121120740
+      Cesar_Francotirador_Fire_6: -2409334502427642799
+      Cesar_Francotirador_Fire_7: -1607292782326569602
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
