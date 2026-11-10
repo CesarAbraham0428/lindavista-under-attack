@@ -19,6 +19,7 @@ public class PlayerActions : MonoBehaviour
     private bool hasAimInViewport;
     private bool touchAimActive;
     private bool touchFireHeld;
+    private bool touchAimManual;
     private bool inputLocked;
     private bool defeated;
     private bool fireRequested;
@@ -69,6 +70,7 @@ public class PlayerActions : MonoBehaviour
         CancelHealthConsumable();
         hasAimInViewport = false;
         touchAimActive = false;
+        touchAimManual = false;
         touchFireHeld = false;
         weapons?.CancelReload();
         if (animator != null)
@@ -153,6 +155,9 @@ public class PlayerActions : MonoBehaviour
         bool firingPose = animator != null && animator.GetCurrentAnimatorStateInfo(0).shortNameHash == estadoDisparo;
         float direction = fireRequested || firingPose ? AimDirection.x :
             movement != null ? movement.HorizontalInput : 0f;
+        // A near-vertical aim must not flip the sprite on its tiny horizontal component.
+        if ((fireRequested || firingPose) && Mathf.Abs(direction) < 0.1f)
+            direction = 0f;
         if (direction != 0f)
             spriteRenderer.flipX = direction < 0f;
         if (fireRequested)
@@ -327,6 +332,11 @@ public class PlayerActions : MonoBehaviour
         GameFlowController.ReportPlayerDefeat();
     }
 
+    /// <summary>
+    /// Dedo en la zona de disparo. Con una dirección dispara hacia ella; sin dirección
+    /// (dedo quieto) dispara hacia delante: hacia donde camina o, si no, hacia donde mira.
+    /// Nunca reutiliza una dirección antigua, que era lo que disparaba hacia atrás.
+    /// </summary>
     public void SetTouchAimAndFire(Vector2 direction)
     {
         if (!CanReceiveCombatInput)
@@ -334,15 +344,24 @@ public class PlayerActions : MonoBehaviour
 
         touchAimActive = true;
         touchFireHeld = true;
-        if (direction.sqrMagnitude > 0.0025f)
-            AimDirection = direction.normalized;
+        touchAimManual = direction.sqrMagnitude > 0.0025f;
+        AimDirection = touchAimManual ? direction.normalized : ForwardDirection();
         AimTarget = AimOrigin + AimDirection * maxAimDistance;
+    }
+
+    private Vector2 ForwardDirection()
+    {
+        float walking = movement != null ? movement.HorizontalInput : 0f;
+        if (Mathf.Abs(walking) > 0.01f)
+            return new Vector2(Mathf.Sign(walking), 0f);
+        return spriteRenderer != null && spriteRenderer.flipX ? Vector2.left : Vector2.right;
     }
 
     public void StopTouchAimAndFire()
     {
         fireRequested = false;
         touchAimActive = false;
+        touchAimManual = false;
         touchFireHeld = false;
         if (animator != null)
         {
@@ -431,6 +450,8 @@ public class PlayerActions : MonoBehaviour
 
         if (touchAimActive)
         {
+            if (!touchAimManual)
+                AimDirection = ForwardDirection();
             AimTarget = AimOrigin + AimDirection * maxAimDistance;
             return;
         }

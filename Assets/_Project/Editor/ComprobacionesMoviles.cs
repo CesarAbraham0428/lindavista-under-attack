@@ -26,8 +26,7 @@ public static class ComprobacionesMoviles
         typeof(MobileControlsHUD).GetMethod("SetVisible", Privado).Invoke(hud, new object[] { true });
         var movimiento = (PlayerMovement)Campo(hud, "movement");
         var acciones = (PlayerActions)Campo(hud, "actions");
-        TouchControlRegion izquierda = hud.transform.Find("Touch Canvas/Safe Area/Move Left").GetComponent<TouchControlRegion>();
-        TouchControlRegion derecha = hud.transform.Find("Touch Canvas/Safe Area/Move Right").GetComponent<TouchControlRegion>();
+        TouchControlRegion izquierda = hud.transform.Find("Touch Canvas/Safe Area/Move Stick").GetComponent<TouchControlRegion>();
         TouchControlRegion apuntado = hud.transform.Find("Touch Canvas/Safe Area/Aim and Fire").GetComponent<TouchControlRegion>();
         var flujo = UnityEngine.Object.FindFirstObjectByType<GameFlowController>();
         try
@@ -37,21 +36,43 @@ public static class ComprobacionesMoviles
             var clicDerecho = Puntero(77);
             clicDerecho.button = PointerEventData.InputButton.Right;
             izquierda.OnPointerDown(clicDerecho);
-            Exigir((float)Campo(movimiento, "touchHorizontal") == 0f, "Un clic secundario no captura el control táctil.");
-            izquierda.OnPointerDown(Puntero(11));
-            Exigir((float)Campo(movimiento, "touchHorizontal") == -1f, "Primer dedo mueve a la izquierda.");
+            izquierda.OnDrag(Puntero(77, Desplazado(izquierda, 80f)));
+            Exigir((float)Campo(movimiento, "touchHorizontal") == 0f, "Un clic secundario no captura el joystick.");
+            izquierda.OnPointerDown(Puntero(11, Desplazado(izquierda, 0f)));
+            Exigir((float)Campo(movimiento, "touchHorizontal") == 0f, "Tocar sin arrastrar no mueve (zona muerta).");
+            izquierda.OnDrag(Puntero(11, Desplazado(izquierda, -80f)));
+            Exigir((float)Campo(movimiento, "touchHorizontal") == -1f, "Arrastrar a la izquierda mueve a la izquierda.");
+            izquierda.OnDrag(Puntero(11, Desplazado(izquierda, 80f)));
+            Exigir((float)Campo(movimiento, "touchHorizontal") == 1f, "Arrastrar a la derecha mueve a la derecha.");
             izquierda.OnPointerUp(Puntero(99));
-            Exigir((float)Campo(movimiento, "touchHorizontal") == -1f, "Otro dedo no libera el control.");
-            derecha.OnPointerDown(Puntero(22));
-            Exigir((float)Campo(movimiento, "touchHorizontal") == 0f, "Dos flechas opuestas se compensan.");
-            derecha.OnPointerUp(Puntero(22));
-            Exigir((float)Campo(movimiento, "touchHorizontal") == -1f, "Soltar un dedo conserva el otro.");
+            Exigir((float)Campo(movimiento, "touchHorizontal") == 1f, "Otro dedo no libera el joystick.");
             izquierda.OnPointerExit(Puntero(11));
-            Exigir((float)Campo(movimiento, "touchHorizontal") == 0f, "Salir de una flecha libera movimiento.");
+            Exigir((float)Campo(movimiento, "touchHorizontal") == 1f, "Salir de la zona conserva el movimiento.");
+            izquierda.OnPointerUp(Puntero(11));
+            Exigir((float)Campo(movimiento, "touchHorizontal") == 0f, "Soltar el joystick detiene el movimiento.");
 
-            var punto = RectTransformUtility.WorldToScreenPoint(null, apuntado.transform.position + Vector3.right * 40f);
-            apuntado.OnPointerDown(Puntero(33, punto));
-            Exigir((bool)Campo(acciones, "touchFireHeld"), "Apuntado mantiene disparo.");
+            apuntado.OnPointerDown(Puntero(33, Desplazado(apuntado, 0f)));
+            var sprite = acciones.GetComponent<SpriteRenderer>();
+            Exigir((bool)Campo(acciones, "touchFireHeld"), "Tocar dispara hacia delante.");
+            Exigir(acciones.AimDirection.x * (sprite.flipX ? -1f : 1f) > 0.9f,
+                "Sin arrastrar, el disparo sale hacia donde mira el personaje (nunca hacia atrás).");
+            apuntado.OnPointerUp(Puntero(33));
+            sprite.flipX = true;
+            apuntado.OnPointerDown(Puntero(33, Desplazado(apuntado, 0f)));
+            Exigir(acciones.AimDirection.x < -0.9f, "Mirando a la izquierda, tocar dispara a la izquierda.");
+            apuntado.OnDrag(Puntero(33, Desplazado(apuntado, 80f)));
+            Exigir(acciones.AimDirection.x > 0.9f, "Arrastrar a la derecha invierte el disparo.");
+            apuntado.OnDrag(Puntero(33, Desplazado(apuntado, 0f)));
+            Exigir(acciones.AimDirection.x < -0.9f, "Volver al centro no conserva la dirección arrastrada.");
+            apuntado.OnPointerUp(Puntero(33));
+            sprite.flipX = false;
+            apuntado.OnPointerDown(Puntero(33, Desplazado(apuntado, 0f)));
+            apuntado.OnDrag(Puntero(33, Desplazado(apuntado, -80f)));
+            Exigir((bool)Campo(acciones, "touchFireHeld") && acciones.AimDirection.x < -0.9f,
+                "Arrastrar a la izquierda dispara hacia la izquierda.");
+            apuntado.OnDrag(Puntero(33, Desplazado(apuntado, 80f)));
+            Exigir((bool)Campo(acciones, "touchFireHeld") && acciones.AimDirection.x > 0.9f,
+                "Arrastrar a la derecha dispara hacia la derecha.");
             apuntado.OnPointerExit(Puntero(33));
             Exigir((bool)Campo(acciones, "touchFireHeld"), "Arrastre fuera conserva apuntado.");
             apuntado.OnPointerUp(Puntero(44));
@@ -60,28 +81,28 @@ public static class ComprobacionesMoviles
             apuntado.OnPointerUp(Puntero(33));
             Exigir(!(bool)Campo(acciones, "touchFireHeld") && !(bool)Campo(acciones, "fireRequested"),
                 "Soltar cancela también el disparo pendiente de LateUpdate.");
-            apuntado.OnPointerDown(Puntero(33, punto));
-            izquierda.OnPointerDown(Puntero(11));
+            Disparar(apuntado, 33);
+            Mover(izquierda, 11);
             acciones.SetInputLocked(true);
             Exigir(!(bool)Campo(acciones, "touchFireHeld") && (float)Campo(movimiento, "touchHorizontal") == 0f,
                 "Bloquear acciones libera inmediatamente ambos dedos.");
-            izquierda.OnPointerDown(Puntero(88));
+            Mover(izquierda, 88);
             Exigir((float)Campo(movimiento, "touchHorizontal") == 0f, "Un bloqueo rechaza dedos nuevos.");
             acciones.SetInputLocked(false);
             Exigir(!(bool)Campo(acciones, "touchFireHeld") && (float)Campo(movimiento, "touchHorizontal") == 0f,
                 "Desbloquear no recupera entradas antiguas.");
-            apuntado.OnPointerDown(Puntero(33, punto));
+            Disparar(apuntado, 33);
             apuntado.OnCancel(new BaseEventData(EventSystem.current));
             Exigir(!(bool)Campo(acciones, "touchFireHeld"), "El evento Cancel libera el apuntado.");
-            apuntado.OnPointerDown(Puntero(33, punto));
-            izquierda.OnPointerDown(Puntero(11));
+            Disparar(apuntado, 33);
+            Mover(izquierda, 11);
             flujo.PauseGame();
             Exigir(!(bool)Campo(acciones, "touchFireHeld") &&
                 (float)Campo(movimiento, "touchHorizontal") == 0f, "Pausa cancela ambos dedos.");
-            apuntado.OnPointerDown(Puntero(55, punto));
+            Disparar(apuntado, 55);
             Exigir(!(bool)Campo(acciones, "touchFireHeld"), "Pausa rechaza nuevas entradas.");
             flujo.ResumeGame();
-            izquierda.OnPointerDown(Puntero(11));
+            Mover(izquierda, 11);
             typeof(MobileControlsHUD).GetMethod("OnApplicationPause", Privado).Invoke(hud, new object[] { true });
             Exigir((float)Campo(movimiento, "touchHorizontal") == 0f, "Segundo plano libera toques.");
 
@@ -107,6 +128,22 @@ public static class ComprobacionesMoviles
 
     private static PointerEventData Puntero(int id, Vector2 posicion = default) =>
         new PointerEventData(EventSystem.current) { pointerId = id, position = posicion };
+
+    // Punto de pantalla a "pixeles" del centro de la zona, sobre el eje horizontal.
+    private static Vector2 Desplazado(TouchControlRegion region, float pixeles) =>
+        RectTransformUtility.WorldToScreenPoint(null, region.transform.position + Vector3.right * pixeles);
+
+    private static void Mover(TouchControlRegion joystick, int id)
+    {
+        joystick.OnPointerDown(Puntero(id, Desplazado(joystick, 0f)));
+        joystick.OnDrag(Puntero(id, Desplazado(joystick, 80f)));
+    }
+
+    private static void Disparar(TouchControlRegion joystick, int id)
+    {
+        joystick.OnPointerDown(Puntero(id, Desplazado(joystick, 0f)));
+        joystick.OnDrag(Puntero(id, Desplazado(joystick, 80f)));
+    }
 
     private static object Campo(object objeto, string nombre) => objeto.GetType().GetField(nombre, Privado).GetValue(objeto);
 
