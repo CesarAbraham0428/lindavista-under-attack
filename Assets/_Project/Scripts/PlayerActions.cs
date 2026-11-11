@@ -9,6 +9,8 @@ public class PlayerActions : MonoBehaviour
         { new Rect(-1f, 3f, 2f, 7f), new Rect(-1f, -10f, 2f, 7f), new Rect(-10f, -1f, 7f, 2f), new Rect(3f, -1f, 7f, 2f) };
     [Header("Mouse aim")]
     [SerializeField, Min(0.1f)] private float maxAimDistance = 18f;
+    /// <summary>Ángulo máximo (grados) por encima o por debajo de la horizontal al apuntar.</summary>
+    [SerializeField, Range(0f, 80f)] private float maxAimAngle = 40f;
 
     private Animator animator;
     private PlayerMovement movement;
@@ -345,8 +347,23 @@ public class PlayerActions : MonoBehaviour
         touchAimActive = true;
         touchFireHeld = true;
         touchAimManual = direction.sqrMagnitude > 0.0025f;
-        AimDirection = touchAimManual ? direction.normalized : ForwardDirection();
+        AimDirection = touchAimManual ? ClampAim(direction) : ForwardDirection();
         AimTarget = AimOrigin + AimDirection * maxAimDistance;
+    }
+
+    /// <summary>
+    /// Solo se apunta hacia la izquierda o la derecha dentro de un cono de ±maxAimAngle.
+    /// Una dirección casi vertical conserva el lado hacia el que mira el jugador.
+    /// </summary>
+    private Vector2 ClampAim(Vector2 direction)
+    {
+        if (direction.sqrMagnitude < 0.0001f) return ForwardDirection();
+        float side = Mathf.Abs(direction.x) > 0.2f * direction.magnitude
+            ? Mathf.Sign(direction.x)
+            : Mathf.Sign(ForwardDirection().x);
+        float angle = Mathf.Atan2(direction.y, Mathf.Abs(direction.x)) * Mathf.Rad2Deg;
+        angle = Mathf.Clamp(angle, -maxAimAngle, maxAimAngle) * Mathf.Deg2Rad;
+        return new Vector2(side * Mathf.Cos(angle), Mathf.Sin(angle));
     }
 
     private Vector2 ForwardDirection()
@@ -431,6 +448,9 @@ public class PlayerActions : MonoBehaviour
                 : 1f;
             shotDirection = Vector2.Lerp(AimDirection, shotDirection.normalized, preciseAim);
         }
+        // Never fire backwards or outside the allowed cone, whatever the input device.
+        shotDirection = ClampAim(shotDirection);
+        if (shotDirection.x * AimDirection.x < 0f) shotDirection = AimDirection;
         weapons.TryFire(spawnPosition, shotDirection.normalized, transform);
     }
 
@@ -484,12 +504,14 @@ public class PlayerActions : MonoBehaviour
 
     private void SetPointerAim(Vector2 pointerWorld)
     {
-        AimTarget = pointerWorld;
         Vector2 fromPlayer = pointerWorld - AimOrigin;
         if (fromPlayer.sqrMagnitude < 0.0001f)
             return;
 
-        AimDirection = fromPlayer.normalized;
+        AimDirection = ClampAim(fromPlayer);
+        // The crosshair follows the pointer horizontally but stays inside the allowed cone.
+        float reach = Mathf.Max(Mathf.Abs(fromPlayer.x), 0.5f);
+        AimTarget = AimOrigin + AimDirection * (reach / Mathf.Max(0.05f, Mathf.Abs(AimDirection.x)));
     }
 
     // An OnGUI method made Unity run IMGUI every frame on every platform (~370 B of garbage and

@@ -26,8 +26,9 @@ public sealed class TouchControlRegion : MonoBehaviour,
     /// <summary>Fracción del recorrido por debajo de la cual no se mueve ni se dispara.</summary>
     public const float DeadZone = 0.3f;
 
-    private const float RestAlpha = 0.30f;
-    private const float ActiveAlpha = 0.60f;
+    // En reposo el joystick debe verse claramente en pantalla para saber dónde tocar.
+    private const float RestAlpha = 0.55f;
+    private const float ActiveAlpha = 0.85f;
 
     private MobileControlsHUD hud;
     private TouchControlKind kind;

@@ -78,8 +78,8 @@ public sealed class MenuSettingsPanel : MonoBehaviour
         {
             help = ProgressionUI.Image(touch, "Mobile Actions", Color.clear).transform;
             ProgressionUI.Percent((RectTransform)help, 0f, 0f, 1f, .86f);
-            string[] captions = { "MOVERSE · ‹  ›", "APUNTAR Y DISPARAR", "RECARGAR · REC", "CAMBIAR ARMA", "RECUPERAR VIDA · +1", "PAUSA / ATRÁS" };
-            string[] hints = { "Mantén las flechas de la izquierda.", "Mantén y arrastra en el área derecha.", "Toca REC para recargar el arma.", "Toca el icono de un arma que tengas.", "Toca USAR +1. Necesitas pastillas y estar herido.", "Pausa la partida o vuelve al panel anterior." };
+            string[] captions = { "MOVERSE · JOYSTICK", "APUNTAR Y DISPARAR", "RECARGAR", "CAMBIAR ARMA", "RECUPERAR VIDA · +1", "PAUSA / ATRÁS" };
+            string[] hints = { "Arrastra el joystick izquierdo a los lados.", "Mantén el joystick de la mirilla y arrástralo para apuntar.", "Toca el botón del cargador para recargar.", "Toca el icono de un arma que tengas.", "Toca USAR +1. Necesitas pastillas y estar herido.", "Pausa la partida o vuelve al panel anterior." };
             for (int i = 0; i < captions.Length; i++)
             {
                 float left = i < 3 ? .025f : .515f;
@@ -332,9 +332,9 @@ public sealed class MenuSettingsPanel : MonoBehaviour
 
         var touch = Box(parent, "Touch Controls", new Color(.14f, .18f, .16f), .595f, 0, 1, 1);
         Label(touch.transform, "Heading", "PANTALLA TÁCTIL", 35, .04f, .865f, .96f, .98f, TextAnchor.MiddleCenter);
-        ControlRow(touch.transform, "Moverse", "<   >", "Mantén las flechas de la izquierda.", .63f, .825f);
-        ControlRow(touch.transform, "Apuntar y disparar", "ÁREA DERECHA", "Mantén y arrastra el dedo.", .43f, .625f);
-        ControlRow(touch.transform, "Recargar", "REC", "Toca el botón de recarga.", .23f, .425f);
+        ControlRow(touch.transform, "Moverse", "JOYSTICK", "Arrastra el joystick izquierdo a los lados.", .63f, .825f);
+        ControlRow(touch.transform, "Apuntar y disparar", "MIRILLA", "Mantén y arrastra el joystick derecho.", .43f, .625f);
+        ControlRow(touch.transform, "Recargar", "CARGADOR", "Toca el botón del cargador.", .23f, .425f);
         ControlRow(touch.transform, "Cambiar arma", "ICONOS", "Toca el icono del arma que tengas.", .03f, .225f);
     }
 

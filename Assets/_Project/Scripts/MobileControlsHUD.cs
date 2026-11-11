@@ -246,7 +246,7 @@ public sealed class MobileControlsHUD : MonoBehaviour
         CreateControl("Move Stick", "MOVER", TouchControlKind.MoveStick,
             Vector2.zero, new Vector2(270f, 190f), new Vector2(480f, 340f),
             ZoneColor, 30);
-        CreateControl("Aim and Fire", "DISPARO\n(arrastra para apuntar)", TouchControlKind.AimAndFire,
+        CreateControl("Aim and Fire", "", TouchControlKind.AimAndFire,
             new Vector2(1f, 0f), new Vector2(-270f, 190f),
             new Vector2(480f, 340f), ZoneColor, 30);
         // La recarga queda fuera de la zona de disparo para no pulsarla sin querer.
@@ -376,8 +376,11 @@ public sealed class MobileControlsHUD : MonoBehaviour
         if (kind == TouchControlKind.Reload)
         {
             image.sprite = CircleSprite();
-            RectTransform icon = CreateCircle("Reload Icon", rect, size.x * 0.62f, Color.white);
-            icon.GetComponent<Image>().sprite = ReloadSprite();
+            Sprite iconoRecarga = Resources.Load<Sprite>("UI/IconoRecarga");
+            RectTransform icon = CreateCircle("Reload Icon", rect, size.x * (iconoRecarga != null ? 0.82f : 0.62f), Color.white);
+            Image iconImage = icon.GetComponent<Image>();
+            iconImage.sprite = iconoRecarga != null ? iconoRecarga : ReloadSprite();
+            iconImage.preserveAspect = true;
         }
         else
             CreateLabel(rect, label, fontSize);
@@ -391,6 +394,16 @@ public sealed class MobileControlsHUD : MonoBehaviour
             stickBase = CreateCircle("Stick Base", rect, TouchControlRegion.StickRadius * 2f,
                 new Color(1f, 1f, 1f, 1f));
             knob = CreateCircle("Stick Knob", rect, TouchControlRegion.StickRadius * 0.85f, tint);
+            Sprite iconoDisparo = aim ? Resources.Load<Sprite>("UI/IconoDisparo") : null;
+            if (iconoDisparo != null)
+            {
+                // El knob del disparo ES la mirilla: sin tinte para conservar sus colores.
+                knob.sizeDelta = Vector2.one * TouchControlRegion.StickRadius * 1.3f;
+                Image knobImage = knob.GetComponent<Image>();
+                knobImage.sprite = iconoDisparo;
+                knobImage.color = Color.white;
+                knobImage.preserveAspect = true;
+            }
             // Las etiquetas quedan detrás del joystick, como pista de uso.
             rect.Find("Label").SetAsFirstSibling();
         }

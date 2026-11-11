@@ -1097,7 +1097,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: REC
+  m_Text: CARGADOR
 --- !u!222 &284338560
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4043,7 +4043,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Toca el bot\xF3n de recarga."
+  m_Text: "Toca el bot\xF3n del cargador."
 --- !u!222 &886189253
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5234,7 +5234,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: <   >
+  m_Text: JOYSTICK
 --- !u!222 &1092856199
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5689,7 +5689,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\xC1REA DERECHA"
+  m_Text: MIRILLA
 --- !u!222 &1221509698
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5955,7 +5955,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Mant\xE9n y arrastra el dedo."
+  m_Text: "Mant\xE9n y arrastra el joystick derecho."
 --- !u!222 &1307718592
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9010,7 +9010,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Mant\xE9n las flechas de la izquierda."
+  m_Text: Arrastra el joystick izquierdo a los lados.
 --- !u!222 &2135049068
 CanvasRenderer:
   m_ObjectHideFlags: 0
